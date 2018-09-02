@@ -8,7 +8,7 @@ var sassMiddleware = require('node-sass-middleware');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var port = process.env.PORT || 3000
+var port = process.env.PORT || 3752
 
 var app = express();
 
