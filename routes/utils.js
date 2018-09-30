@@ -1,6 +1,6 @@
 require('isomorphic-fetch');
 var Dropbox = require('dropbox').Dropbox;
-var dbx = new Dropbox({ accessToken: '<Insert Access Token Here>' });
+var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
 
 exports.getFile = function(name) {
     dbx.filesDownload({path: '/'+name+'.mp3'})
