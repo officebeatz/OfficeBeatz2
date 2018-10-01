@@ -4,7 +4,7 @@ var utils= require('./utils')
 //Starts up the player.
 exports.audioPlay=async function() {
     load(utils.getRandomFile()).then(function (buffer) {
-    play(buffer)
+        play(buffer)
     })
    // await sleep(2700000)
    await sleep(300000)
