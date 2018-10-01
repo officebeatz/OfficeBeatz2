@@ -7,6 +7,8 @@
     "test": "jasmine"
   },
   "dependencies": {
+    "audio-loader": "^1.0.3",
+    "audio-play": "^2.2.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dropbox": "^4.0.9",
