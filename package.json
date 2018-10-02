@@ -17,7 +17,8 @@
     "isomorphic-fetch": "^2.2.1",
     "morgan": "~1.9.0",
     "node-sass-middleware": "0.11.0",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "windows-build-tools": "^5.0.0"
   },
   "devDependencies": {
     "jasmine": "^3.2.0"
