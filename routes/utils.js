@@ -1,6 +1,6 @@
 require('isomorphic-fetch');
 var Dropbox = require('dropbox').Dropbox;
-var dbx = new Dropbox({ accessToken: 'd5D9_cIEfCAAAAAAAAAAC0LciLBkuXDZ6Pa73WlmuxPO9G8Q6O6lM3w_f9YMj7L4' });
+var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
 
 function getFile(name) {
     return new Promise(function (resolve, reject){
