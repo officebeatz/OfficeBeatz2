@@ -1,11 +1,12 @@
 require('isomorphic-fetch');
 var Dropbox = require('dropbox').Dropbox;
-var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
+var dbx = new Dropbox({ accessToken: 'd5D9_cIEfCAAAAAAAAAAC0LciLBkuXDZ6Pa73WlmuxPO9G8Q6O6lM3w_f9YMj7L4' });
 
 function getFile(name) {
     return new Promise(function (resolve, reject){
-        dbx.filesDownload({path: '/'+name}).then(function(response){
-            resolve(response.fileBinary);
+        dbx.sharingListSharedLinks({path: '/'+name}).then(function(response){
+            var link = response.links[0].url.substring(0, response.links[0].url.length-1) + "1";
+            resolve(link);
         }).catch(function(error){
             console.log(error);
             reject(error);
@@ -22,7 +23,7 @@ exports.getRandomFile = function(){
                 index = parseInt(Math.random()*response.entries.length);
                 name = response.entries[index].name;
             }
-            var buff = getFile(name).then(function(result){
+            getFile(name).then(function(result){
                 resolve(result);
             });
         }).catch(function(error) {

@@ -1,6 +1,9 @@
 extends layout
 
+
 block content
   h1= title
   p Welcome to the 
     span(id='accented') #{title}
+  audio(autoplay='')
+    source(type='audio/mp3' src=link)
