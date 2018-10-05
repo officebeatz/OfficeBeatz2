@@ -3,7 +3,8 @@ extends layout
 
 block content
   h1= title
-  p Welcome to the 
+  p(id='welcome-paragraph') Welcome to the 
     span(id='accented') #{title}
-  audio(autoplay='')
-    source(type='audio/mp3' src=link)
+  div(id='audio-container')
+    audio(controls='')
+      source(type='audio/mp3' src=link)
