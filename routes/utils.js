@@ -1,6 +1,16 @@
 require('isomorphic-fetch');
 var Dropbox = require('dropbox').Dropbox;
 var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
+/**
+ * Utils module
+ * @module utils
+ */
+
+/**
+ * Takes in a filename as a string and returns a shareable link to the corresponding dropbox file.
+ * @param {string} name filename
+ * @returns link to the file
+ */
 
 function getFile(name) {
     return new Promise(function (resolve, reject){
@@ -14,6 +24,11 @@ function getFile(name) {
     })
     
 };
+/** 
+ * Takes in nothing, and generates a randomly selected filename from the dropbox
+ * which is passed into getFile, and returns the result of calling getFile. 
+ * @returns link to a random file
+ */
 
 exports.getRandomFile = function(){
     return new Promise(function(resolve, reject){
