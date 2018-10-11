@@ -6,7 +6,7 @@ var utils = require('./utils');
  */
 router.get('/', function(req, res, next) {
   utils.getRandomFile().then(function(result){
-    res.render('index', { title: 'Employee Wellness Project', link: result });
+    res.render('index', { title: 'OfficeBeatZ', link: result });
   })
 });
 module.exports = router;
