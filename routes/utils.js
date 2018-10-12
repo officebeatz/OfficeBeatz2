@@ -7,6 +7,24 @@ var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
  */
 
 /**
+ * If a sharing link does not exist for a certain file, the method will generate a sharing link for the file
+ * @param {string} name filename
+ * @returns link to the file
+ */
+
+function generateSharingLink(name){
+    return new Promise(function(resolve, reject){
+        dbx.sharingCreateSharedLinkWithSettings({path: '/'+name, settings: {requested_visibility: "public"}}).then(function(response){
+            var link = response.url.substring(0, response.url.length-1) + "1";
+            resolve(link);
+        }).catch(function(error){
+            console.log(error);
+            reject(error);
+        });
+    })
+}
+
+/**
  * Takes in a filename as a string and returns a shareable link to the corresponding dropbox file.
  * @param {string} name filename
  * @returns link to the file
@@ -15,8 +33,14 @@ var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
 function getFile(name) {
     return new Promise(function (resolve, reject){
         dbx.sharingListSharedLinks({path: '/'+name}).then(function(response){
-            var link = response.links[0].url.substring(0, response.links[0].url.length-1) + "1";
-            resolve(link);
+            if (response.links[0]){
+                var link = response.links[0].url.substring(0, response.links[0].url.length-1) + "1";
+                resolve(link);
+            } else {
+                generateSharingLink(name).then(function(resp){
+                    resolve(resp);
+                });
+            }
         }).catch(function(error){
             console.log(error);
             reject(error);
