@@ -9,4 +9,13 @@ router.get('/', function(req, res, next) {
     res.render('index', { title: 'OfficeBeatZ', link: result });
   })
 });
+
+/**
+ * POST Endpoint for looping request
+ */
+router.post('/api/next', function(req, res, next){
+  utils.getRandomFile().then(function(result){
+    res.send(result);
+  })
+})
 module.exports = router;
