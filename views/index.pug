@@ -2,9 +2,38 @@ extends layout
 
 
 block content
-  h1= title
-  p(id='welcome-paragraph') Welcome to the 
-    span(id='accented') #{title}
-  div(id='audio-container')
-    audio(controls='')
-      source(type='audio/mp3' src=link)
+  nav(class='nav-extended grey darken-4 nav-center')
+    div(class='nav-wrapper container')
+      ul(class='middle')
+        li
+          a(class='waves-effect waves-light btn-flat light-blue accent-3', id='play') Play
+          a(class='waves-effect waves-light btn-flat light-blue accent-3', id='pause') Stop
+          a(class='waves-effect waves-light btn-flat light-blue accent-3', id='mute') Mute
+    div(class='nav-content')
+      ul(class='tabs tabs-transparent')
+        li(class='tab')
+          a(class='active', href='#tab1') Tab1
+        li(class='tab')
+          a(href='#tab2') Tab2
+        li(class='tab')
+          a(href='#tab3') Tab3
+
+  ul(class='sidenav', id='mobile-demo')
+    li
+      a(href="#!") Things
+    li
+      a(href="#!") Leeroy
+  div(id='tab1', class='col s12')
+    h1= title
+    p(id='welcome-paragraph') Welcome to  
+      span(id='accented') #{title}
+    div(id='audio-container')
+      audio(id='audioSource')
+        source(type='audio/mp3' src=link)
+  div(id='tab2', class='col s12')
+    p Test 2
+  div(id='tab3', class='col s12')
+    p Test 3
+
+  script(src='/javascripts/bin/materialize.min.js')
+  script(src='/javascripts/main.js')
