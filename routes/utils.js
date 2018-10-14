@@ -12,12 +12,12 @@ var dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
  * @returns link to the file
  */
 
-function generateSharingLink(name){
-    return new Promise(function(resolve, reject){
-        dbx.sharingCreateSharedLinkWithSettings({path: '/'+name, settings: {requested_visibility: "public"}}).then(function(response){
-            var link = response.url.substring(0, response.url.length-1) + "1";
+function generateSharingLink(name) {
+    return new Promise(function (resolve, reject) {
+        dbx.sharingCreateSharedLinkWithSettings({ path: '/' + name, settings: { requested_visibility: "public" } }).then(function (response) {
+            var link = response.url.substring(0, response.url.length - 1) + "1";
             resolve(link);
-        }).catch(function(error){
+        }).catch(function (error) {
             console.log(error);
             reject(error);
         });
@@ -31,22 +31,22 @@ function generateSharingLink(name){
  */
 
 function getFile(name) {
-    return new Promise(function (resolve, reject){
-        dbx.sharingListSharedLinks({path: '/'+name}).then(function(response){
-            if (response.links[0]){
-                var link = response.links[0].url.substring(0, response.links[0].url.length-1) + "1";
+    return new Promise(function (resolve, reject) {
+        dbx.sharingListSharedLinks({ path: '/' + name }).then(function (response) {
+            if (response.links[0]) {
+                var link = response.links[0].url.substring(0, response.links[0].url.length - 1) + "1";
                 resolve(link);
             } else {
-                generateSharingLink(name).then(function(resp){
+                generateSharingLink(name).then(function (resp) {
                     resolve(resp);
                 });
             }
-        }).catch(function(error){
+        }).catch(function (error) {
             console.log(error);
             reject(error);
         });
     })
-    
+
 };
 /** 
  * Takes in nothing, and generates a randomly selected filename from the dropbox
@@ -54,22 +54,22 @@ function getFile(name) {
  * @returns link to a random file
  */
 
-exports.getRandomFile = function(){
-    return new Promise(function(resolve, reject){
-        dbx.filesListFolder({path: ''}).then(function(response) {
+exports.getRandomFile = function () {
+    return new Promise(function (resolve, reject) {
+        dbx.filesListFolder({ path: '' }).then(function (response) {
             let name = '';
-            while (!name.endsWith('.mp3')){
-                index = parseInt(Math.random()*response.entries.length);
+            while (!name.endsWith('.mp3')) {
+                index = parseInt(Math.random() * response.entries.length);
                 name = response.entries[index].name;
             }
-            getFile(name).then(function(result){
+            getFile(name).then(function (result) {
                 resolve(result);
             });
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.error(error);
             reject(error);
         });
     })
-    
+
 
 }

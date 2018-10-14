@@ -4,8 +4,8 @@ var utils = require('./utils');
 /**
  * GET home page.
  */
-router.get('/', function(req, res, next) {
-  utils.getRandomFile().then(function(result){
+router.get('/', function (req, res, next) {
+  utils.getRandomFile().then(function (result) {
     res.render('index', { title: 'OfficeBeatZ', link: result });
   })
 });
@@ -13,8 +13,8 @@ router.get('/', function(req, res, next) {
 /**
  * POST Endpoint for looping request
  */
-router.post('/api/next', function(req, res, next){
-  utils.getRandomFile().then(function(result){
+router.post('/api/next', function (req, res, next) {
+  utils.getRandomFile().then(function (result) {
     res.send(result);
   })
 })
