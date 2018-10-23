@@ -4,6 +4,7 @@ $(document).ready(function () {
 
     const TIME_INTERVAL = 15000; // 15 Seconds for testing purposes
 
+
     var audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object
 
     $('#play').click(function () {
@@ -27,7 +28,11 @@ $(document).ready(function () {
                 audioElement.src = responseData;
             }, error: console.error
         });
-        audioElement.play();
+
+        // Delay to prevent overlap while changing audio source
+        setTimeout(function () {
+            audioElement.play();
+        }, 1500);
     }
 
     $('#pause').click(function () {
