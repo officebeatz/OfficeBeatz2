@@ -43,9 +43,31 @@ block content
 
 
     div(id='advanced-settings', class='col s12')
-      div(class='content-container')
-        h3 Advanced Settings
-        p Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorem ullam dicta distinctio error, hic iusto molestias doloribus officia, eaque ut, non ipsam impedit. Cupiditate, necessitatibus.
+      h3 Advanced Settings
+      div(class='content-container intervalForm')
+        form(action='#')
+          ul(class="collapsible", data-collapsible="expandable")
+            li
+              div(class="collapsible-header" active) Intervals
+              div(class="collapsible-body")
+                p
+                  label(for="shortInterval")
+                    input(name="intervalGroup", type="radio", id="shortInterval")
+                    span Short Intervals (15 Minutes)
+                p
+                  label(for='mediumInterval')
+                    input(name="intervalGroup", type="radio", id="mediumInterval")
+                    span Medium Intervals (30 Minutes)
+                p
+                  label(for='longInterval')
+                    input(name="intervalGroup", type="radio", id="longInterval" checked)
+                    span Long Intervals (45 Minutes)
+                p
+                  label(for='customInterval')
+                    input(name="intervalGroup", type="radio", id="customInterval")
+                    span Custom Interval 
+                      input(placeholder="# of Minutes", id="customIntervalValue", type="number", min="1", max="120")
+          button(class='btn-large waves-effect waves-light light-blue accent-3', type="submit", name="settingsSubmit") Submit
 
   footer(class='page-footer')
     div(class='container')

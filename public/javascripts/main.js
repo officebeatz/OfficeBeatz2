@@ -1,6 +1,7 @@
 $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.tabs').tabs();
+    $('.collapsible').collapsible({ accordion : false });
 
     const TIME_INTERVAL = 15000; // 15 Seconds for testing purposes
 
