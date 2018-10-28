@@ -3,8 +3,7 @@ $(document).ready(function () {
     $('.tabs').tabs();
     $('.collapsible').collapsible({ accordion : false });
 
-    const TIME_INTERVAL = 15000; // 15 Seconds for testing purposes
-
+    let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000 // Defaults to 45 minutes if not previously set
 
     var audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object
 
@@ -46,5 +45,24 @@ $(document).ready(function () {
         } else {
             audioElement.muted = false;
         }
+    });
+
+    $("#advancedSettingsForm").submit(function (event) {
+
+        let radioCheck = $('input[name=intervalGroup]:checked', '#advancedSettingsForm').val();
+        if (radioCheck == 'custom') {
+            let customValue = $('#customIntervalValue').val();
+            if (customValue < 1 || customValue > 120) {
+                event.preventDefault();
+                console.error("Custom intervals must be between 1 and 120 minutes.");
+            } else {
+                TIME_INTERVAL = customValue * 60 * 1000;
+                localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL)
+            }
+        } else {
+            TIME_INTERVAL = radioCheck * 60 * 1000;
+            localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL)
+        }
+
     });
 });
