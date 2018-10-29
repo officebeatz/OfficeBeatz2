@@ -1,6 +1,5 @@
 extends layout
 
-
 block content
   header
     nav(class='nav-extended grey darken-4 nav-center')
@@ -35,20 +34,20 @@ block content
         audio(id='audioSource')
           source(type='audio/mp3' src=link)
 
-
     div(id='getting-started', class='col s12')
       div(class='content-container')
         h3 Getting Started
         p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum dolorem similique eligendi. Rerum sit, cumque recusandae, sint libero aut iure ea blanditiis debitis labore animi temporibus dicta, iste commodi! Iusto, id! Sit fugiat corporis perferendis minima illo earum quos quas? Laboriosam repellendus magnam iste perspiciatis unde quia vel eveniet nobis?
 
-
     div(id='advanced-settings', class='col s12')
       h3 Advanced Settings
       div(class='content-container intervalForm')
         form(id='advancedSettingsForm', action='#')
-          ul(class="collapsible", data-collapsible="expandable")
-            li
-              div(class="collapsible-header" active) Intervals
+          ul(class="collapsible", data-collapsible="accordion")
+            li(class="active")
+              div(class="collapsible-header")
+                i(class="small material-icons") access_time
+                | Intervals
               div(class="collapsible-body")
                 p
                   label(for="shortInterval")
@@ -93,3 +92,4 @@ block content
 
   script(src='/javascripts/bin/materialize.min.js')
   script(src='/javascripts/main.js')
+  

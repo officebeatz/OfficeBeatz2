@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $('.sidenav').sidenav();
     $('.tabs').tabs();
-    $('.collapsible').collapsible({ accordion : false });
+    $('.collapsible').collapsible();
 
     let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000 // Defaults to 45 minutes if not previously set
     let activeInterval = false;
