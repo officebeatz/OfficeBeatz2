@@ -15,6 +15,7 @@ router.get('/', function (req, res, next) {
  */
 router.post('/api/next', function (req, res, next) {
   utils.getRandomFile().then(function (result) {
+    console.log(result)
     res.send(result);
   })
 })
