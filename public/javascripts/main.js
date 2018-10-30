@@ -13,7 +13,7 @@ $(document).ready(function () {
         audioElement.play();
 
         // If the interval is already determined, do not set another one
-        if(!active) {
+        if(!activeInterval) {
             timeout();
         }
     });
