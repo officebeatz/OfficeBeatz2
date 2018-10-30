@@ -1,91 +1,13 @@
 extends layout
 
 block content
-  header
-    nav(class='nav-extended grey darken-4 nav-center')
-      div(class='nav-wrapper container')
-        ul(class='middle')
-          li
-            a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='play') Play
-            a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='pause') Stop
-            a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute') Mute
-      div(class='nav-content')
-        ul(class='tabs tabs-transparent')
-          li(class='tab')
-            a(class='active', href='#home') Home
-          li(class='tab')
-            a(href='#getting-started') Getting Started
-          li(class='tab')
-            a(href='#advanced-settings') Advanced Settings
+  include header.pug
 
   main
-    div(id='home', class='col s12')
-      img(src='/images/officebeatz-banner.png', class='banner')
-      div(class='content-container')
-        p(id='stuff') Welcome to <span id='accented'>#{title}</span>, a simple web application designed to get you out of your seat and moving around intermittently to improve your health. Studies have shown that sedentary behavior caused due to working in an office environment can have severe impacts on your physical health as you age. These negative impacts can be avoided by standing up and stretching or taking a short walk roughly once an hour.
-        br
-        p(id='stuff') OfficeBeatZ will help improve your health by reminding you to get up and move through the power of music. It is believed that we as humans are more likely to respond positively to a stimulus like music than we are to a general purpose alarm used by other health solutions.
+    include home-tab.pug
+    include getting-started-tab.pug
+    include advanced-settings-tab.pug
 
-      div(id='audio-container')
-        audio(id='audioSource')
-          source(type='audio/mp3' src=link)
-
-    div(id='getting-started', class='col s12')
-      div(class='content-container')
-        h3 Getting Started
-        p Lorem ipsum dolor sit amet, consectetur adipisicing elit. Earum dolorem similique eligendi. Rerum sit, cumque recusandae, sint libero aut iure ea blanditiis debitis labore animi temporibus dicta, iste commodi! Iusto, id! Sit fugiat corporis perferendis minima illo earum quos quas? Laboriosam repellendus magnam iste perspiciatis unde quia vel eveniet nobis?
-
-    div(id='advanced-settings', class='col s12')
-      h3 Advanced Settings
-      div(class='content-container intervalForm')
-        form(id='advancedSettingsForm', action='#')
-          ul(class="collapsible", data-collapsible="accordion")
-            li(class="active")
-              div(class="collapsible-header")
-                i(class="small material-icons") access_time
-                | Intervals
-              div(class="collapsible-body")
-                p
-                  label(for="shortInterval")
-                    input(name="intervalGroup", type="radio", id="shortInterval", value='15')
-                    span Short Intervals (15 Minutes)
-                p
-                  label(for='mediumInterval')
-                    input(name="intervalGroup", type="radio", id="mediumInterval", value='30')
-                    span Medium Intervals (30 Minutes)
-                p
-                  label(for='longInterval')
-                    input(name="intervalGroup", type="radio", id="longInterval", value='45' checked)
-                    span Long Intervals (45 Minutes)
-                p
-                  label(for='customInterval')
-                    input(name="intervalGroup", type="radio", id="customInterval", value='custom')
-                    span Custom Interval 
-                      input(placeholder="# of Minutes", id="customIntervalValue", type="number", min="1", max="120")
-          button(class='btn-large waves-effect waves-light light-blue accent-3', type="submit", name="settingsSubmit") Submit
-
-  footer(class='page-footer')
-    div(class='container')
-      div(class='row')
-        div(class='col s7')
-          h5(class='white-text') OfficeBeatZ
-          p(class='grey-text text-lighten-1 smaller') OfficeBeatZ is a collaborative effort inspired by Gabriel Zieff and developed by Cody Simmons, Hunter Chen, and Brian Henrick.
-        div(class='col s5')
-          h5(class='white-text') Links
-          ul(class='smaller')
-            li
-              a(class='grey-text text-lighten-1', href='https://github.com/CodyMichaelSimmons/EmployeeWellnessProject/wiki', target='_blank') Documentation
-            li
-              a(class='grey-text text-lighten-1', href='https://materializecss.com/', target='_blank') Materialize
-            li
-              a(class='grey-text text-lighten-1', href='https://pugjs.org/api/getting-started.html', target='_blank') Pug
-    div(class='footer-copyright valign-wrapper')
-      div(class='container')
-        div(class='row')
-          div(class='grey-text text-lighten-1 col s7')  © 2018 Copyright Cody Simmons, Hunter Chen, Brian Henrick
-          a(class='grey-text text-lighten-1 col s5', href='https://github.com/CodyMichaelSimmons/EmployeeWellnessProject', target='_blank')
-            i(class='fab fa-github-square fa-lg')
-
-  script(src='/javascripts/bin/materialize.min.js')
-  script(src='/javascripts/main.js')
+  include footer.pug
+  include scripts.pug
   
