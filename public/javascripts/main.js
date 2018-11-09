@@ -17,7 +17,7 @@ $(document).ready(function () {
         audioElement.play();
 
         // If the interval is already determined, do not set another one.
-        if(!activeInterval) {
+        if (!activeInterval) {
             timeout();
         }
     });
@@ -86,7 +86,7 @@ $(document).ready(function () {
 
     // Updates interval display in option bar.
     function updateInterval(interval) {
-        $("#intervalDisplay").html(function() {
+        $("#intervalDisplay").html(function () {
             let spannedInterval = "<span id='spannedInterval'>" + (((interval) / 1000) / 60) + "</span>";
             return "Current Interval: " + spannedInterval + " minutes.";
         });
