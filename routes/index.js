@@ -5,6 +5,7 @@ var utils = require('./utils');
  * GET home page.
  */
 router.get('/', function (req, res, next) {
+  utils.getGenresList();
   utils.getRandomFile().then(function (result) {
     res.render('index', { title: 'OfficeBeatZ', link: result });
   })
@@ -19,4 +20,13 @@ router.post('/api/next', function (req, res, next) {
     res.send(result);
   })
 })
+
+/**
+ * GET Endpoint for webhook
+ */
+router.get('/api/webhook', function(req, res, next){
+  utils.updateDBX();
+})
+
+
 module.exports = router;
