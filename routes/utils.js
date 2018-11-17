@@ -1,5 +1,5 @@
 require('isomorphic-fetch');
-const https = require('https');
+var request = require('request');
 const fs = require('fs');
 const nodeID3 = require('node-id3');
 const Dropbox = require('dropbox').Dropbox;
@@ -14,6 +14,7 @@ const dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
  * @param {string} url sharing url
  * @returns download url
  */
+
 function convertLink(url){
     return url.substring(0, url.length - 1) + "1";
 }
@@ -75,10 +76,10 @@ exports.getRandomFile = function () {
                 name = response.entries[index].name;
             }
             getFile(name).then(function (result) {
-                let buffer = new Buffer(result);
-                console.log(buffer);
-                let tags = nodeID3.read(buffer);
-                console.log(tags);
+                // let buffer = new Buffer(result);
+                // console.log(buffer);
+                // let tags = nodeID3.read(buffer);
+                // console.log(tags);
                 resolve(result);
             });
         }).catch(function (error) {
@@ -95,7 +96,27 @@ exports.getRandomFile = function () {
 
  exports.updateDBX = function(){
     return new Promise(function (resolve, reject){
+        var config = {};
         dbx.filesListFolder({path: ''}).then(function(response){
+            for (var song of response.entries){
+                if (song.name.endsWith('.mp3')){
+                    var name = song.name.substring(0, song.name.length-4);
+                    getFile(song.name).then(function(link){
+                        request({url: link, encoding: null }, (err, resp, buffer) => {
+                            if (!err && resp.statusCode == 200){
+                                console.log(typeof(buffer));
+                                var tags = nodeID3.read(buffer);
+                                console.log(tags);
+                            } else{
+                                console.log(err);
+                                console.log(resp);
+                                reject(err);
+                            }
+                        })
+                    });
+                    
+                }
+            }
             resolve(response);
         }).catch(function(error){
             console.error(error);
@@ -112,15 +133,20 @@ exports.getRandomFile = function () {
  exports.getGenresList = function(){
      return new Promise(function (resolve, reject){
         dbx.filesGetTemporaryLink({ path: '/config.json'}).then(function(response){
-            var file = fs.createWriteStream('config.json');
-            https.get(response, resp => {
-                console.log(resp);
-                // var stream = resp.pipe(file);
-                // stream.on('finish', function(){
-
-                // })
-            })
-            resolve(response);
+            // console.log('dbx response');
+            // console.log(response.link);
+            request(response.link, function(error, resp, body){
+                if (!error && resp.statusCode == 200){
+                    var config = JSON.parse(body);
+                    console.log('config');
+                    console.log(config);
+                    resolve(config);
+                } else {
+                    console.log(error);
+                    reject(error);
+                }
+            });
+            //resolve(response.link);
         }).catch(function(error){
             console.error(error);
             reject(error);
