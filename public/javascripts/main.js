@@ -73,9 +73,6 @@ $(document).ready(function () {
                 }, error: console.error
             });
             audioElement.play();
-        } else {
-
-        }
 
     });
 
