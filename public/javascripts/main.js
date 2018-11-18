@@ -61,8 +61,8 @@ $(document).ready(function () {
         }
     });
     //Loads up a new song if a song is already playing, otherwise does nothing.
-    $('#skip').click(function(){
-        if(!audioElement.paused){
+    $('#skip').click(function () {
+        if (!audioElement.paused) {
             $.ajax({
                 url: '/api/next',
                 data: null,
@@ -73,10 +73,10 @@ $(document).ready(function () {
                 }, error: console.error
             });
             audioElement.play();
-        }else{
+        } else {
 
         }
-        
+
     });
 
     // Submits and updates interval between songs.
