@@ -7,7 +7,7 @@ $(document).ready(function () {
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('#volSlider');
-    let tempVol=50;
+    let tempVol = 50;
 
     // Updates entries requiring TIME_INTERVAL
     determineRadioButton(TIME_INTERVAL);
@@ -58,16 +58,16 @@ $(document).ready(function () {
     $('#mute').click(function () {
         if (audioElement.volume != 0) {
             volumeControl.val(0);
-            audioElement.volume=0;
+            audioElement.volume = 0;
         } else {
-            audioElement.volume=tempVol/100;
+            audioElement.volume = tempVol / 100;
             volumeControl.val(tempVol);
         }
     });
     //Updates volume when slider is changed.
-    $('#vol-control').click(function(){
-        tempVol=this.value;
-        audioElement.volume=this.value / 100
+    $('#vol-control').click(function () {
+        tempVol = this.value;
+        audioElement.volume = this.value / 100
     });
 
 
