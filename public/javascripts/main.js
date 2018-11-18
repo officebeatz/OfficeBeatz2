@@ -60,6 +60,24 @@ $(document).ready(function () {
             audioElement.muted = false;
         }
     });
+    //Loads up a new song if a song is already playing, otherwise does nothing.
+    $('#skip').click(function(){
+        if(!audioElement.paused){
+            $.ajax({
+                url: '/api/next',
+                data: null,
+                type: "POST",
+                success: function (responseData) {
+                    console.log(responseData);
+                    audioElement.src = responseData;
+                }, error: console.error
+            });
+            audioElement.play();
+        }else{
+
+        }
+        
+    });
 
     // Submits and updates interval between songs.
     $("#advancedSettingsForm").submit(function (event) {
