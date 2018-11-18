@@ -60,6 +60,7 @@ $(document).ready(function () {
             audioElement.muted = false;
         }
     });
+
     //Loads up a new song if a song is already playing, otherwise does nothing.
     $('#skip').click(function () {
         if (!audioElement.paused) {
@@ -96,7 +97,6 @@ $(document).ready(function () {
             localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL)
             updateInterval(TIME_INTERVAL);
         }
-
     });
 
     // Updates interval display in option bar.
