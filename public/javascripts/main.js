@@ -73,7 +73,7 @@ $(document).ready(function () {
                 }, error: console.error
             });
             audioElement.play();
-
+        }
     });
 
     // Submits and updates interval between songs.
