@@ -6,7 +6,9 @@ var utils = require('./utils');
  */
 router.get('/', function (req, res, next) {
   //utils.getGenresList();
-  utils.updateDBX();
+  utils.updateDBX().then(function(results){
+    console.log(results);
+  });
   utils.getRandomFile().then(function (result) {
     res.render('index', { title: 'OfficeBeatZ', link: result });
   })

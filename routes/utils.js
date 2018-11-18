@@ -61,6 +61,61 @@ function getFile(name) {
     });
 };
 
+// /**
+//  * 
+//  * @param {JSON} songs
+//  * @param {function} function
+//  * @param {JSON} config  
+//  * @return updated_config
+//  */
+
+// function extractAllID3(songs, fn, config){
+//     return songs.reduce(function(promise, song){
+//         return promise.then(function(){
+//             console.log(song);
+//             return fn(song, config);
+//         });
+//     }, Promise.resolve());
+// }
+
+// /**
+//  * @param {JSON} song song
+//  * @param {JSON} config config
+//  * @returns {Promise}
+//  */
+
+// function extractID3(song, config){
+//     return new Promise((resolve, reject) => {
+//         if (song.name.endsWith('.mp3')){
+//             getFile(song.name).then(function(link){
+//                 request({url: link, encoding: null }, (err, resp, buffer) => {
+//                     if (!err && resp.statusCode == 200){
+//                         nodeID3.read(buffer, function(tags){
+//                             if (config.counts[tags.genre]){
+//                                 config.counts[tags.genre]++;
+//                             } else {
+//                                 config.counts[tags.genre] = 1;
+//                             }
+//                             config.songs[tags.title] = {
+//                                 "title": tags.title,
+//                                 "artist": tags.artist,
+//                                 "genre": tags.genre,
+//                                 "year": tags.year
+//                             }
+//                             console.log(config.songs[tags.title]);
+//                             resolve();
+//                         });
+//                     }
+//                 });
+//             }).catch(function(error){
+//                 console.log(error);
+//                 reject(error);
+//             });
+//         }
+//     })
+    
+// }
+
 /** 
  * Takes in nothing, and generates a randomly selected filename from the dropbox
  * which is passed into getFile, and returns the result of calling getFile. 
@@ -76,10 +131,6 @@ exports.getRandomFile = function () {
                 name = response.entries[index].name;
             }
             getFile(name).then(function (result) {
-                // let buffer = new Buffer(result);
-                // console.log(buffer);
-                // let tags = nodeID3.read(buffer);
-                // console.log(tags);
                 resolve(result);
             });
         }).catch(function (error) {
@@ -89,6 +140,43 @@ exports.getRandomFile = function () {
     });
 }
 
+async function extractAllID3(songs, config){
+    var conf = config;
+    for (var song of songs){
+        conf = await extractID3(song, conf);
+        //console.log(conf);
+    }
+    console.log(conf);
+    return conf;
+}
+
+function extractID3(song, config){
+    if (song.name.endsWith('.mp3')){
+        getFile(song.name).then(function(link){
+            request({url: link, encoding: null }, (err, resp, buffer) => {
+                if (!err && resp.statusCode == 200){
+                    nodeID3.read(buffer, function(tags){
+                        console.log("song!");
+                        if (config.counts[tags.genre]){
+                            config.counts[tags.genre]++;
+                        } else {
+                            config.counts[tags.genre] = 1;
+                        }
+                        config.songs[tags.title] = {
+                            "title": tags.title,
+                            "artist": tags.artist,
+                            "genre": tags.genre,
+                            "year": tags.year
+                        }
+                        console.log(config.songs[tags.title]);
+                        return config;
+                    });
+                }
+            });
+        });
+    }
+}
+
 /**
  * Takes in nothing and updates the dropbox genre file
  * @returns Success or Failure
@@ -96,28 +184,14 @@ exports.getRandomFile = function () {
 
  exports.updateDBX = function(){
     return new Promise(function (resolve, reject){
-        var config = {};
         dbx.filesListFolder({path: ''}).then(function(response){
-            for (var song of response.entries){
-                if (song.name.endsWith('.mp3')){
-                    var name = song.name.substring(0, song.name.length-4);
-                    getFile(song.name).then(function(link){
-                        request({url: link, encoding: null }, (err, resp, buffer) => {
-                            if (!err && resp.statusCode == 200){
-                                console.log(typeof(buffer));
-                                var tags = nodeID3.read(buffer);
-                                console.log(tags);
-                            } else{
-                                console.log(err);
-                                console.log(resp);
-                                reject(err);
-                            }
-                        })
-                    });
-                    
-                }
-            }
-            resolve(response);
+            var config = {
+                "counts":{},
+                "songs":{}
+            };
+            extractAllID3(response.entries, config).then(result => {
+                resolve(result);
+            });
         }).catch(function(error){
             console.error(error);
             reject(error);
