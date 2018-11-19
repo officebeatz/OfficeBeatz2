@@ -6,7 +6,7 @@ $(document).ready(function () {
     let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000 // Defaults to 45 minutes if not previously set.
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
-    let volumeControl = $('#volSlider');
+    let volumeControl = $('.volSlider');
     let tempVol = 50;
 
     // Updates entries requiring TIME_INTERVAL
@@ -65,7 +65,7 @@ $(document).ready(function () {
         }
     });
     //Updates volume when slider is changed.
-    $('#vol-control').click(function () {
+    $('#vol-control').on("input change", function () {
         tempVol = this.value;
         audioElement.volume = this.value / 100
     });
