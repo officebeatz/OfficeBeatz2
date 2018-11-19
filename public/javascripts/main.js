@@ -111,6 +111,9 @@ $(document).ready(function () {
 
     // Updates interval display in option bar.
     function updateInterval(interval) {
+        if (interval < 3600 || interval > 7200000) {
+            return null;
+        }
         $("#intervalDisplay").html(function () {
             let spannedInterval = "<span id='spannedInterval'>" + (((interval) / 1000) / 60) + "</span>";
             return "Current Interval: " + spannedInterval + " minutes.";
