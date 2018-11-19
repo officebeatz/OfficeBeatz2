@@ -6,6 +6,8 @@ $(document).ready(function () {
     let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000 // Defaults to 45 minutes if not previously set.
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
+    let volumeControl = $('.volSlider');
+    let tempVol = 50;
 
     // Updates entries requiring TIME_INTERVAL
     determineRadioButton(TIME_INTERVAL);
@@ -54,12 +56,20 @@ $(document).ready(function () {
     });
 
     $('#mute').click(function () {
-        if (audioElement.muted == false) {
-            audioElement.muted = true;
+        if (audioElement.volume != 0) {
+            volumeControl.val(0);
+            audioElement.volume = 0;
         } else {
-            audioElement.muted = false;
+            audioElement.volume = tempVol / 100;
+            volumeControl.val(tempVol);
         }
     });
+    //Updates volume when slider is changed.
+    $('#vol-control').on("input change", function () {
+        tempVol = this.value;
+        audioElement.volume = this.value / 100
+    });
+
 
     //Loads up a new song if a song is already playing, otherwise does nothing.
     $('#skip').click(function () {
