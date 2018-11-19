@@ -28,6 +28,10 @@ a
 
 h3
   text-align: center
+  padding-bottom: 20px
+
+h5
+  padding-top: 50px
 
 .banner
   width: 30%
@@ -87,3 +91,46 @@ input[type=number]::-webkit-inner-spin-button
   margin-left: 5px
   text-align: center
   
+#intervalDisplay
+  padding-left: 20px
+  font-size: 12px
+  color: #616161
+
+#spannedInterval
+  color: #00b0ff
+  padding-left: 5px
+  padding-right: 3px
+
+#gs-list, #gs-notes
+  list-style: none
+  counter-reset: item
+
+#gs-list, #gs-notes
+  li
+    counter-increment: item
+    margin-bottom: 5px
+
+#gs-list
+  li:before
+    content: counter(item)
+    color: #00b0ff
+    margin-right: 10px
+
+#gs-notes
+  li:before
+    content: "*"
+    color: #00b0ff
+    margin-right: 10px  
+
+#vol-control
+  width: 250px
+  height: 80%
+  line-height: 80%
+  border: none
+  position: relative
+  margin-top: 8px
+  transform: translate(0%,-25%)
+  -moz-transform: translate(0%,120%)
+
+.thumb
+  visibility: hidden
