@@ -44,15 +44,9 @@ function generateSharingLink(name) {
 
 function getFile(name) {
     return new Promise(function (resolve, reject) {
-        dbx.sharingListSharedLinks({ path: '/' + name }).then(function (response) {
-            if (response.links[0]) {
-                var link = convertLink(response.links[0].url);
-                resolve(link);
-            } else {
-                generateSharingLink(name).then(function (resp) {
-                    resolve(resp);
-                });
-            }
+        dbx.filesGetTemporaryLink({ path: '/' + name }).then(function (response) {
+            console.log(response.link);
+            resolve(response.link);
         }).catch(function (error) {
             console.log(error);
             reject(error);
