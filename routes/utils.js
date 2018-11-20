@@ -9,34 +9,6 @@ const dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
  */
 
 /**
- * Takes in dropbox file sharing link and returns the download link
- * @param {string} url sharing url
- * @returns download url
- */
-
-function convertLink(url){
-    return url.substring(0, url.length - 1) + "1";
-}
-
-/**
- * If a sharing link does not exist for a certain file, the method will generate a sharing link for the file
- * @param {string} name filename
- * @returns link to the file
- */
-
-function generateSharingLink(name) {
-    return new Promise(function (resolve, reject) {
-        dbx.sharingCreateSharedLinkWithSettings({ path: '/' + name, settings: { requested_visibility: "public" } }).then(function (response) {
-            var link = convertLink(response.url);
-            resolve(link);
-        }).catch(function (error) {
-            console.log(error);
-            reject(error);
-        });
-    });
-}
-
-/**
  * Takes in a filename as a string and returns a shareable link to the corresponding dropbox file.
  * @param {string} name filename
  * @returns link to the file
@@ -45,7 +17,6 @@ function generateSharingLink(name) {
 function getFile(name) {
     return new Promise(function (resolve, reject) {
         dbx.filesGetTemporaryLink({ path: '/' + name }).then(function (response) {
-            console.log(response.link);
             resolve(response.link);
         }).catch(function (error) {
             console.log(error);
@@ -58,14 +29,13 @@ function getFile(name) {
  * 
  * @param {Array} songs
  * @param {function} function
- * @param {JSON} config  
+ * @param {JSON} config
  * @return updated_config
  */
 
 function extractAllID3(songs, fn, config){
     return songs.reduce((p, song) => {
         return p.then((conf) => {
-            console.log(song);
             return fn(song, conf);
         });
     }, Promise.resolve(config));
@@ -95,7 +65,7 @@ function extractID3(song, config){
                             "artist": tags.artist,
                             "genre": tags.genre,
                             "year": tags.year,
-                            "length": tags.length
+                            "filename": song.name
                         }
                         resolve(config);
                     } else {
@@ -151,7 +121,6 @@ exports.getRandomFile = function () {
             };
             extractAllID3(response.entries, extractID3, config).then(result => {
                 dbx.filesUpload({contents: JSON.stringify(result, null, "\t"), path: "/config.json", mode: {".tag": "overwrite"}}).then((response) => {
-                    console.log(response);
                     resolve();
                 }).catch((error) => {
                     console.log(error);
@@ -188,3 +157,20 @@ exports.getRandomFile = function () {
         });
      });
  }
+
+ /**
+  * Takes a song name and returns temp link for song
+  * @param {string} name
+  * @returns {url} link
+  */
+
+  exports.getSong = function(name){
+      return new Promise(function(resolve, reject){
+          getFile(name).then((result) => {
+              resolve(result);
+          }).catch((err) => {
+              console.log(err);
+              reject(err);
+          });
+      })
+  }
