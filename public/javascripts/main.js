@@ -8,11 +8,30 @@ $(document).ready(function () {
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
     let tempVol = 50;
+    var genreList;
+    var genrePreferences;
+    var decadePreferences;
+    getGenres().then((result) => {
+        genreList = result;
+        console.log(genreList.counts);
+        var genres = [];
+        for (var key in genreList.counts) {
+            genres.push(key);
+        }
+        //This iterates through the genre stuff, add in making checkboxes out of this later~
+        for (var i = 0; i < genres.length; i++) {
+            console.log(genres[i] + ": " + genreList.counts[genres[i]]);
+        }
+
+    });
+
+
+
+
 
     // Updates entries requiring TIME_INTERVAL
     determineRadioButton(TIME_INTERVAL);
     updateInterval(TIME_INTERVAL);
-
     $('#play').click(function () {
         // Updates autoplay after an action has taken place.
         audioElement.autoplay = true;
@@ -34,16 +53,7 @@ $(document).ready(function () {
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
-        $.ajax({
-            url: '/api/next',
-            data: null,
-            type: "POST",
-            success: function (responseData) {
-                console.log(responseData);
-                audioElement.src = responseData;
-            }, error: console.error
-        });
-
+        findNextSongWithPreferences(genrePreferences, decadePreferences);
         // Delay to prevent overlap while changing audio source.
         setTimeout(function () {
             audioElement.play();
@@ -74,15 +84,7 @@ $(document).ready(function () {
     //Loads up a new song if a song is already playing, otherwise does nothing.
     $('#skip').click(function () {
         if (!audioElement.paused) {
-            $.ajax({
-                url: '/api/next',
-                data: null,
-                type: "POST",
-                success: function (responseData) {
-                    console.log(responseData);
-                    audioElement.src = responseData;
-                }, error: console.error
-            });
+            findNextSongWithPreferences(genrePreferences, decadePreferences);
             audioElement.play();
         }
     });
@@ -131,6 +133,106 @@ $(document).ready(function () {
         } else {
             $("#customInterval").prop("checked", true);
             $("#customIntervalValue").val((((TIME_INTERVAL) / 1000) / 60));
+        }
+    }
+
+    function getGenres() {
+        return new Promise(function (resolve, reject) {
+            $.ajax({
+                url: '/api/genres',
+                data: null,
+                type: "POST",
+                success: function (responseData) {
+                    console.log(responseData)
+                }, error: console.error
+            }).then(function (response) {
+                resolve(response);
+            }).catch(function (error) {
+                console.log(error);
+                reject(error);
+            });
+        });
+    }
+
+    function submitGenres(event) {
+        event.preventDefault();
+        var genres = [];
+        for (var key in genreList.counts) {
+            genres.push(key);
+        }
+        //Need to be hooked up to the front end.
+        //genrePreferences=$('input[name=genreGroup]:checked', '#advancedSettingsForm').val();
+        genrePreferences = [];
+
+        //temporarily hardcoding them to R&B and Blues Rock for testing
+        genrePreferences.push(genres[3]);
+        genrePreferences.push(genres[7]);
+        findNextSongWithPreferences(genrePreferences, decadePreferences);
+    }
+
+    function submitYears(event) {
+        event.preventDefault();
+        //It'll just store a range, so two values. Think that's easier.
+        decarePreferences = [];
+        decadePreferences.push(1980);
+        decadePreferences.push(1985);
+        findNextSongWithPreferences(genrePreferences, decadePreferences);
+    }
+
+    function findNextSongWithPreferences(genreArray, decadeArray) {
+        //if there are no preferences, just makes a call to /api/next which selects from the whole database
+        if (typeof genreArray == "undefined" && typeof decadeArray == "undefined") {
+            $.ajax({
+                url: '/api/next',
+                data: null,
+                type: "POST",
+                success: function (responseData) {
+                    console.log(responseData);
+                    audioElement.src = responseData;
+                }, error: console.error
+            });
+        } else {
+            //run through the whole JSON file and get the list of songs that match those genres, and randomize through the list
+            var songList = [];
+            if (typeof genreArray != "undefined" && typeof decadeArray != "undefined") {
+                for (key in genreList.songs) {
+                    if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
+                        songList.push(genreList.songs[key].filename);
+                    }
+                }
+            } else if (typeof decadeArray == "undefined") {
+                for (key in genreList.songs) {
+                    if (genreArray.includes(genreList.songs[key].genre)) {
+                        songList.push(genreList.songs[key].filename);
+                    }
+                }
+            } else {
+                for (key in genreList.songs) {
+                    if (decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
+                        songList.push(genreList.songs[key].filename);
+                    }
+                }
+            }
+
+            console.log(songList);
+            let name = '';
+            index = parseInt(Math.random() * songList.length);
+            name = songList[index];
+            console.log(name);
+
+            // post request to /api/song in the headers make a tag called song, put name there
+            $.ajax({
+                url: '/api/song',
+                data: null,
+                headers: {
+                    'song': name
+                },
+                type: "POST",
+                success: function (responseData) {
+                    console.log(responseData)
+                    audioElement.src = responseData;
+                }, error: console.error
+            });
         }
     }
 });
