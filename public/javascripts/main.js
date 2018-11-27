@@ -167,7 +167,11 @@ $(document).ready(function () {
         //temporarily hardcoding them to R&B and Blues Rock for testing
         genrePreferences.push(genres[3]);
         genrePreferences.push(genres[7]);
-        findNextSongWithPreferences(genrePreferences, decadePreferences);
+        if (makeSongList(genrePreferences, decadePreferences).length < 5) {
+            console.log("Fewer than five songs available, change your preferences.");
+        } else {
+            findNextSongWithPreferences(genrePreferences, decadePreferences);
+        }
     }
 
     function submitYears(event) {
@@ -176,7 +180,10 @@ $(document).ready(function () {
         decarePreferences = [];
         decadePreferences.push(1980);
         decadePreferences.push(1985);
-        findNextSongWithPreferences(genrePreferences, decadePreferences);
+        if (makeSongList(genrePreferences, decadePreferences).length < 5) {
+            console.log("Fewer than five songs available, change your preferences.");
+        }
+
     }
 
     function findNextSongWithPreferences(genreArray, decadeArray) {
@@ -193,26 +200,7 @@ $(document).ready(function () {
             });
         } else {
             //run through the whole JSON file and get the list of songs that match those genres, and randomize through the list
-            var songList = [];
-            if (typeof genreArray != "undefined" && typeof decadeArray != "undefined") {
-                for (key in genreList.songs) {
-                    if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                        songList.push(genreList.songs[key].filename);
-                    }
-                }
-            } else if (typeof decadeArray == "undefined") {
-                for (key in genreList.songs) {
-                    if (genreArray.includes(genreList.songs[key].genre)) {
-                        songList.push(genreList.songs[key].filename);
-                    }
-                }
-            } else {
-                for (key in genreList.songs) {
-                    if (decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                        songList.push(genreList.songs[key].filename);
-                    }
-                }
-            }
+            var songList = makeSongList(genreArray, decadeArray);
 
             console.log(songList);
             let name = '';
@@ -234,5 +222,29 @@ $(document).ready(function () {
                 }, error: console.error
             });
         }
+    }
+
+    function makeSongList(genreArray, decadeArray) {
+        var songList = [];
+        if (typeof genreArray != "undefined" && typeof decadeArray != "undefined") {
+            for (key in genreList.songs) {
+                if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
+                    songList.push(genreList.songs[key].filename);
+                }
+            }
+        } else if (typeof decadeArray == "undefined") {
+            for (key in genreList.songs) {
+                if (genreArray.includes(genreList.songs[key].genre)) {
+                    songList.push(genreList.songs[key].filename);
+                }
+            }
+        } else {
+            for (key in genreList.songs) {
+                if (decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
+                    songList.push(genreList.songs[key].filename);
+                }
+            }
+        }
+        return songList;
     }
 });
