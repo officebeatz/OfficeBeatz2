@@ -25,9 +25,6 @@ $(document).ready(function () {
 
     }
 
-    console.log(genrePreferences)
-    console.log(decadePreferences)
-
     getGenres().then((result) => {
         genreList = result;
         console.log(genreList.counts);
@@ -219,6 +216,17 @@ $(document).ready(function () {
             if (genrePreferences.indexOf('Rap') > -1) {
                 $('#rapBox').prop('checked', true);
             }
+        } else {
+            $('#reggaeBox').prop('checked', true);
+            $('#popBox').prop('checked', true);
+            $('#rAndBBox').prop('checked', true);
+            $('#rockBox').prop('checked', true);
+            $('#latinBox').prop('checked', true);
+            $('#hipHopBox').prop('checked', true);
+            $('#bluesBox').prop('checked', true);
+            $('#rockPopBox').prop('checked', true);
+            $('#otherBox').prop('checked', true);
+            $('#rapBox').prop('checked', true);
         }
     }
 
@@ -335,36 +343,53 @@ $(document).ready(function () {
     }
 
     function populateGenres(genrePreferences) {
+        let unfiltered = true;
+
         if ($('#reggaeBox').is(':checked')) {
             genrePreferences.push(genres[0]);
+            unfiltered = false;
         }
         if ($('#popBox').is(':checked')) {
             genrePreferences.push(genres[1]);
+            unfiltered = false;
         }
         if ($('#rAndBBox').is(':checked')) {
             genrePreferences.push(genres[3]);
+            unfiltered = false;
         }
         if ($('#rockBox').is(':checked')) {
             genrePreferences.push(genres[4]);
+            unfiltered = false;
         }
         if ($('#latinBox').is(':checked')) {
             genrePreferences.push(genres[5]);
+            unfiltered = false;
         }
         if ($('#hipHopBox').is(':checked')) {
             genrePreferences.push(genres[6]);
+            unfiltered = false;
         }
         if ($('#bluesBox').is(':checked')) {
             genrePreferences.push(genres[7]);
+            unfiltered = false;
         }
         if ($('#rockPopBox').is(':checked')) {
             genrePreferences.push(genres[8]);
+            unfiltered = false;
         }
         if ($('#rapBox').is(':checked')) {
             genrePreferences.push(genres[9]);
+            unfiltered = false;
         }
         if ($('#otherBox').is(':checked')) {
             genrePreferences.push(genres[2]);
             genrePreferences.push(genres[10]);
+            unfiltered = false;
+        }
+
+        if (unfiltered) {
+            genrePreferences.push(genres[0], genres[1], genres[3], genres[4], genres[5], genres[6]);
+            genrePreferences.push(genres[7], genres[8], genres[9], genres[2], genres[10]);
         }
 
         return genrePreferences;
