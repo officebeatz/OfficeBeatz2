@@ -1,0 +1,7 @@
+div(class='content-container intervalForm')
+  form(id='advancedSettingsForm', action='#')
+    ul(class="collapsible", data-collapsible="accordion")
+      include interval-form.pug
+      include genre-form.pug
+      include decade-form.pug
+    button(class='btn-large waves-effect waves-light light-blue accent-3', type="submit", name="settingsSubmit") Submit
