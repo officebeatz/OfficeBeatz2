@@ -1,0 +1,16 @@
+li(class="not-active")
+  div(class="collapsible-header")
+    i(class="small material-icons valign-wrapper") today
+    | Years
+    div(id="decadeDisplay" class="valign-wrapper")
+  div(class="collapsible-body")
+    p
+      div(class="row")
+        div(class="input-field col s3")
+          i(class="material-icons prefix") today
+          input(placeholder="1940" id="startingDecade" type="number" min="1940" max="2019")
+          label(for="startingDecade") Start Year
+        div(class="input-field col s3")
+          i(class="material-icons prefix") today
+          input(placeholder="2019" id="endingDecade" type="number" min="1940" max="2019")
+          label(for="endingDecade") End Year
