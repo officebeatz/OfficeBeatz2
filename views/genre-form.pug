@@ -5,42 +5,46 @@ li(class="not-active")
     div(id="genreDisplay" class="valign-wrapper")
   div(class="collapsible-body")
     p
+      label(for="selectBox")
+        input(name="genreGroup", type="checkbox", id="selectBox", value='select')
+        span Select All
+    p
       label(for="reggaeBox")
-        input(name="genreGroup", type="checkbox", id="reggaeBox", value='reggae')
+        input(name="genreGroup", type="checkbox", id="reggaeBox", class="genreGroup", value='reggae')
         span Reggae
     p
       label(for="popBox")
-        input(name="genreGroup", type="checkbox", id="popBox", value='pop')
+        input(name="genreGroup", type="checkbox", id="popBox", class="genreGroup", value='pop')
         span Pop
     p
       label(for="rAndBBox")
-        input(name="genreGroup", type="checkbox", id="rAndBBox", value='rAndB')
+        input(name="genreGroup", type="checkbox", id="rAndBBox", class="genreGroup", value='rAndB')
         span R &amp; B
     p
       label(for="rockBox")
-        input(name="genreGroup", type="checkbox", id="rockBox", value='rock')
+        input(name="genreGroup", type="checkbox", id="rockBox", class="genreGroup", value='rock')
         span Rock
     p
       label(for="latinBox")
-        input(name="genreGroup", type="checkbox", id="latinBox", value='latin')
+        input(name="genreGroup", type="checkbox", id="latinBox", class="genreGroup", value='latin')
         span Latin
     p
       label(for="hipHopBox")
-        input(name="genreGroup", type="checkbox", id="hipHopBox", value='hipHop')
+        input(name="genreGroup", type="checkbox", id="hipHopBox", class="genreGroup", value='hipHop')
         span Hip-Hop
     p
       label(for="bluesBox")
-        input(name="genreGroup", type="checkbox", id="bluesBox", value='blues')
+        input(name="genreGroup", type="checkbox", id="bluesBox", class="genreGroup", value='blues')
         span Blues
     p
       label(for="rockPopBox")
-        input(name="genreGroup", type="checkbox", id="rockPopBox", value='rockPop')
+        input(name="genreGroup", type="checkbox", id="rockPopBox", class="genreGroup", value='rockPop')
         span Pop Rock
     p
       label(for="rapBox")
-        input(name="genreGroup", type="checkbox", id="rapBox", value='rap')
+        input(name="genreGroup", type="checkbox", id="rapBox", class="genreGroup", value='rap')
         span Rap
     p
       label(for="otherBox")
-        input(name="genreGroup", type="checkbox", id="otherBox", value='other')
+        input(name="genreGroup", type="checkbox", id="otherBox", class="genreGroup", value='other')
         span Miscellaneous

@@ -434,4 +434,34 @@ $(document).ready(function () {
             updateInterval(TIME_INTERVAL);
         }
     }
+
+    $("#selectBox").change(function () {
+        if (this.checked) {
+            $(".genreGroup").each(function () {
+                this.checked = true;
+            });
+        } else {
+            $(".genreGroup").each(function () {
+                this.checked = false;
+            });
+        }
+    });
+
+    $(".genreGroup").click(function () {
+        if ($(this).is(":checked")) {
+            var isAllChecked = 0;
+
+            $(".genreGroup").each(function () {
+                if (!this.checked)
+                    isAllChecked = 1;
+            });
+
+            if (isAllChecked == 0) {
+                $("#selectBox").prop("checked", true);
+            }
+        }
+        else {
+            $("#selectBox").prop("checked", false);
+        }
+    });
 });
