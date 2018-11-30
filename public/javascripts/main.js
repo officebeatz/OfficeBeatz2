@@ -44,6 +44,7 @@ $(document).ready(function () {
     updateInterval(TIME_INTERVAL);
     updateGenreDisplay(genrePreferences);
     updateDecadeDisplay(decadePreferences);
+    allSelectedOrNot();
 
     $('#play').click(function () {
         // Updates autoplay after an action has taken place.
@@ -124,7 +125,7 @@ $(document).ready(function () {
     function updateGenreDisplay(genrePreferences) {
         $("#genreDisplay").html(function () {
             if (!genrePreferences) {
-                let spannedGenre = "<span id='spannedGenre'> Unfiltered </span>";
+                let spannedGenre = "<span id='spannedGenre'> Reggae, Pop, R&B, Rock, Latin, Hip-Hop, Blues, Pop Rock, Rap, Miscellaneous </span>";
                 return "Current Genres: " + spannedGenre + ".";
             }
             if (genrePreferences.length > 0) {
@@ -449,19 +450,23 @@ $(document).ready(function () {
 
     $(".genreGroup").click(function () {
         if ($(this).is(":checked")) {
-            var isAllChecked = 0;
-
-            $(".genreGroup").each(function () {
-                if (!this.checked)
-                    isAllChecked = 1;
-            });
-
-            if (isAllChecked == 0) {
-                $("#selectBox").prop("checked", true);
-            }
+            allSelectedOrNot();
         }
         else {
             $("#selectBox").prop("checked", false);
         }
     });
+
+    function allSelectedOrNot() {
+        var isAllChecked = 0;
+
+        $(".genreGroup").each(function () {
+            if (!this.checked)
+                isAllChecked = 1;
+        });
+
+        if (isAllChecked == 0) {
+            $("#selectBox").prop("checked", true);
+        }
+    }
 });
