@@ -279,10 +279,15 @@ $(document).ready(function () {
             findNextSongWithPreferences(genrePreferences, decadePreferences);
         }
     }
-
+    /**
+     * Makes a post request to get the next song based on preferences.
+     * It works even if the preferences are null.
+     * @param {*} genreArray 
+     * @param {*} decadeArray 
+     */
     function findNextSongWithPreferences(genreArray, decadeArray) {
         //if there are no preferences, just makes a call to /api/next which selects from the whole database
-        if (typeof genreArray == "undefined" && typeof decadeArray == "undefined") {
+        if (genreArray == null && decadeArray == null) {
             $.ajax({
                 url: '/api/next',
                 data: null,
@@ -317,16 +322,22 @@ $(document).ready(function () {
             });
         }
     }
-
+    /** Returns a list of songs with the given genre and decade preferences.
+     *  Also used to get a count of how many songs pass the filter for sanity checks.
+     *  Do not call this function if both are null, but it's fine if one or the other is null.
+     *  @param {*} genreArray 
+     *  @param {*} decadeArray
+     *  @returns an array containing all songs that pass the filter
+     * */
     function makeSongList(genreArray, decadeArray) {
         let songList = [];
-        if (typeof genreArray != "undefined" && typeof decadeArray != "undefined") {
+        if (genreArray != null && decadeArray != null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
                     songList.push(genreList.songs[key].filename);
                 }
             }
-        } else if (typeof decadeArray == "undefined") {
+        } else if (decadeArray == null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre)) {
                     songList.push(genreList.songs[key].filename);
