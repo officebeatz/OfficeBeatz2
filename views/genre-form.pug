@@ -11,44 +11,75 @@ li(class="not-active")
     p
       label(for="reggaeBox")
         input(name="genreGroup", type="checkbox", id="reggaeBox", class="genreGroup", value='reggae')
-        span Reggae
+        span Reggae 
+        span(class="starter") (
+        span(id="genreCount") 20
+        span )
     p
       label(for="popBox")
         input(name="genreGroup", type="checkbox", id="popBox", class="genreGroup", value='pop')
         span Pop
+        span(class="starter") (
+        span(id="genreCount") 32
+        span )
     p
       label(for="rAndBBox")
         input(name="genreGroup", type="checkbox", id="rAndBBox", class="genreGroup", value='rAndB')
         span R &amp; B
+        span(class="starter") (
+        span(id="genreCount") 5
+        span )
     p
       label(for="rockBox")
         input(name="genreGroup", type="checkbox", id="rockBox", class="genreGroup", value='rock')
         span Rock
+        span(class="starter") (
+        span(id="genreCount") 88
+        span )
     p
       label(for="latinBox")
         input(name="genreGroup", type="checkbox", id="latinBox", class="genreGroup", value='latin')
         span Latin
+        span(class="starter") (
+        span(id="genreCount") 14
+        span )
     p
       label(for="hipHopBox")
         input(name="genreGroup", type="checkbox", id="hipHopBox", class="genreGroup", value='hipHop')
         span Hip-Hop
+        span(class="starter") (
+        span(id="genreCount") 32
+        span )
     p
       label(for="bluesBox")
         input(name="genreGroup", type="checkbox", id="bluesBox", class="genreGroup", value='blues')
         span Blues
+        span(class="starter") (
+        span(id="genreCount") 6
+        span )
     p
       label(for="rockPopBox")
         input(name="genreGroup", type="checkbox", id="rockPopBox", class="genreGroup", value='rockPop')
         span Pop Rock
+        span(class="starter") (
+        span(id="genreCount") 7
+        span )
     p
       label(for="rapBox")
         input(name="genreGroup", type="checkbox", id="rapBox", class="genreGroup", value='rap')
         span Rap
+        span(class="starter") (
+        span(id="genreCount") 1
+        span )
     p
       label(for="otherBox")
         input(name="genreGroup", type="checkbox", id="otherBox", class="genreGroup", value='other')
         span Miscellaneous
+        span(class="starter") (
+        span(id="genreCount") 1
+        span )
 
     div(class="as-notes genre-notes") 
       p If no selection is made, a song will be picked from any genre.
+      p The number in parenthesis indicates how many total songs of that genre are available across all years.
       p Filtering by too few genres may result in few or zero songs fitting your criteria.
