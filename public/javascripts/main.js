@@ -35,6 +35,7 @@ $(document).ready(function () {
         for (let i = 0; i < genres.length; i++) {
             console.log(genres[i] + ": " + genreList.counts[genres[i]]);
         }
+        findNextSongWithPreferences(genrePreferences, decadePreferences)
     });
 
     // Updates entries requiring TIME_INTERVAL
@@ -271,13 +272,23 @@ $(document).ready(function () {
         decadePreferences = populateDecades(decadePreferences);
 
         if (makeSongList(genrePreferences, decadePreferences).length < 5) {
-            alert("Fewer than five songs available, change your preferences.");
+            $("#formFeedback").html(function () {
+                let errorMessage = "<span id='errorMessage'> Error! </span>"
+                return errorMessage + "Fewer than five songs available, please broaden your preferences."
+            });
+            feedbackAnimation();
         } else {
             updateGenreDisplay(genrePreferences);
             localStorage.setItem("GENRE_PREFERENCES", JSON.stringify(genrePreferences));
             updateDecadeDisplay(decadePreferences);
             localStorage.setItem("DECADE_PREFERENCES", JSON.stringify(decadePreferences));
             findNextSongWithPreferences(genrePreferences, decadePreferences);
+
+            $("#formFeedback").html(function () {
+                let successMessage = "<span id='successMessage'> Success! </span>"
+                return successMessage + "Settings successfully updated!"
+            });
+            feedbackAnimation();
         }
     }
     /**
@@ -468,5 +479,12 @@ $(document).ready(function () {
         if (isAllChecked == 0) {
             $("#selectBox").prop("checked", true);
         }
+    }
+
+    function feedbackAnimation () {
+        $("#formFeedback").fadeIn(1000);
+        setTimeout(function () {
+            $("#formFeedback").fadeOut(1000);
+        }, 5000)
     }
 });
