@@ -1,0 +1,19 @@
+li(class="not-active")
+  div(class="collapsible-header")
+    i(class="small material-icons valign-wrapper") today 
+    | Years
+    div(id="decadeDisplay" class="valign-wrapper")
+  div(class="collapsible-body")
+    p
+      div(class="row")
+        div(class="input-field inline col s12 m9 l4")
+          i(class="material-icons prefix") today
+          input(placeholder="Starting Year" id="startingDecade" type="number" min="1940" max="2019")
+      div(class="row")
+        div(class="input-field inline col s12 m9 l4")
+          i(class="material-icons prefix") today
+          input(placeholder="Ending Year" id="endingDecade" type="number" min="1940" max="2019")
+    
+    div(class="as-notes") 
+      p Songs will be selected from the years between and including the first and second entry.
+      p Your first year must be before your second or the filter will not return any available songs.
