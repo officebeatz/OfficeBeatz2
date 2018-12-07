@@ -317,10 +317,9 @@ $(document).ready(function () {
             let name = '';
             index = parseInt(Math.random() * songList.length);
             name = songList[index].filename;
-            songTitle=songList[index].title+" ";
-            songArtist=songList[index].artist;
-            document.getElementById("titleID").innerHTML = songTitle;
-            document.getElementById("artistID").innerHTML = songArtist;
+            songTitle = songList[index].title+" ";
+            songArtist = songList[index].artist;
+            updateSongDisplay(songTitle, songArtist);
             console.log(name);
 
             // post request to /api/song in the headers make a tag called song, put name there
@@ -490,5 +489,15 @@ $(document).ready(function () {
         setTimeout(function () {
             $("#formFeedback").fadeOut(1000);
         }, 5000)
+    }
+
+    function updateSongDisplay(title, artist) {
+        $("#titleID").html(function () {
+            return title;
+        });
+
+        $("#artistID").html(function () {
+            return artist;
+        });
     }
 });
