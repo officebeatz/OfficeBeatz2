@@ -12,6 +12,8 @@ $(document).ready(function () {
     let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+    let songTitle="All Star";
+    let songArtist="Smashmouth";
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -312,11 +314,12 @@ $(document).ready(function () {
         } else {
             //run through the whole JSON file and get the list of songs that match those genres, and randomize through the list
             let songList = makeSongList(genreArray, decadeArray);
-
-            console.log(songList);
             let name = '';
             index = parseInt(Math.random() * songList.length);
-            name = songList[index];
+            name = songList[index].filename;
+            songTitle = songList[index].title+" ";
+            songArtist = songList[index].artist;
+            updateSongDisplay(songTitle, songArtist);
             console.log(name);
 
             // post request to /api/song in the headers make a tag called song, put name there
@@ -346,19 +349,19 @@ $(document).ready(function () {
         if (genreArray != null && decadeArray != null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                    songList.push(genreList.songs[key].filename);
+                    songList.push(genreList.songs[key]);
                 }
             }
         } else if (decadeArray == null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre)) {
-                    songList.push(genreList.songs[key].filename);
+                    songList.push(genreList.songs[key]);
                 }
             }
         } else {
             for (key in genreList.songs) {
                 if (decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                    songList.push(genreList.songs[key].filename);
+                    songList.push(genreList.songs[key]);
                 }
             }
         }
@@ -486,5 +489,15 @@ $(document).ready(function () {
         setTimeout(function () {
             $("#formFeedback").fadeOut(1000);
         }, 5000)
+    }
+
+    function updateSongDisplay(title, artist) {
+        $("#titleID").html(function () {
+            return title;
+        });
+
+        $("#artistID").html(function () {
+            return artist;
+        });
     }
 });
