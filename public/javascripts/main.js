@@ -52,12 +52,19 @@ $(document).ready(function () {
     $('#play').click(function () {
         // Updates autoplay after an action has taken place.
         audioElement.autoplay = true;
-        audioElement.play();
+
+        if(audioElement.paused) {
+            audioElement.play();
+        } else {
+            audioElement.pause();
+        }
 
         // If the interval is already determined, do not set another one.
         if (!activeInterval) {
             timeout();
         }
+
+        checkIcon();
     });
 
     // Makes an API request for a new song every TIME_INTERVAL milliseconds.
@@ -78,10 +85,6 @@ $(document).ready(function () {
         timeout();
     }
 
-    $('#pause').click(function () {
-        audioElement.pause();
-    });
-
     $('#mute').click(function () {
         if (audioElement.volume != 0) {
             volumeControl.val(0);
@@ -90,13 +93,46 @@ $(document).ready(function () {
             audioElement.volume = tempVol / 100;
             volumeControl.val(tempVol);
         }
+
+        checkVolIcon();
     });
+
     //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
         tempVol = this.value;
         audioElement.volume = this.value / 100;
+
+        checkVolIcon();
     });
 
+    function checkIcon () {
+        if(audioElement.paused) {
+            $("#play").html(function () {
+                let currentIcon = "<i class='material-icons'>play_arrow</i>";
+                return currentIcon;
+            });
+        }
+    
+        if(!audioElement.paused) {
+            $("#play").html(function () {
+                let currentIcon = "<i class='material-icons'>pause</i>";
+                return currentIcon;
+            });
+        }
+    }
+
+    function checkVolIcon () {
+        let volIcon;
+        if (audioElement.volume == 0) {
+            volIcon = "<i class='material-icons'>volume_off</i>";
+        } else {
+            volIcon = "<i class='material-icons'>volume_up</i>";
+        }
+
+        $("#mute").html(function () {
+            return volIcon;
+        });
+    }
 
     //Loads up a new song if a song is already playing, otherwise does nothing.
     $('#skip').click(function () {
@@ -293,6 +329,7 @@ $(document).ready(function () {
             feedbackAnimation();
         }
     }
+    
     /**
      * Makes a post request to get the next song based on preferences.
      * It works even if the preferences are null.
@@ -337,6 +374,7 @@ $(document).ready(function () {
             });
         }
     }
+
     /** Returns a list of songs with the given genre and decade preferences.
      *  Also used to get a count of how many songs pass the filter for sanity checks.
      *  Do not call this function if both are null, but it's fine if one or the other is null.
@@ -346,6 +384,7 @@ $(document).ready(function () {
      * */
     function makeSongList(genreArray, decadeArray) {
         let songList = [];
+
         if (genreArray != null && decadeArray != null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
@@ -414,8 +453,9 @@ $(document).ready(function () {
         }
 
         if (unfiltered) {
-            genrePreferences.push(genres[0], genres[1], genres[3], genres[4], genres[5], genres[6]);
-            genrePreferences.push(genres[7], genres[8], genres[9], genres[2], genres[10]);
+            for(let i = 0; i < genres.length; i++) {
+                genrePreferences.push(genres[i]);
+            }
         }
 
         return genrePreferences;
