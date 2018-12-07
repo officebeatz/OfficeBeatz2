@@ -1,5 +1,5 @@
 li(class="not-active")
-  div(class="collapsible-header")
+  div(class="collapsible-header valign-wrapper")
     i(class="small material-icons valign-wrapper") music_note
     | Genres
     div(id="genreDisplay" class="valign-wrapper")
@@ -79,7 +79,8 @@ li(class="not-active")
         span(id="genreCount") 1
         span )
 
-    div(class="as-notes genre-notes") 
+    div(class="as-notes genre-notes z-depth-1", id="genreNotesContainer") 
+      p(id="notes-header") Notes
       p If no selection is made, a song will be picked from any genre.
       p The number in parenthesis indicates how many total songs of that genre are available across all years.
       p Filtering by too few genres may result in few or zero songs fitting your criteria.
