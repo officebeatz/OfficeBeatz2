@@ -3,14 +3,15 @@ div(id='getting-started', class='col s12')
     h3 Getting Started
     ol(id='gs-list') 
       li Select an interval under the advanced settings tab. You can choose a preset option or set your own custom interval between 1 and 120 minutes. <span id='accented'><sup>**<sup></span> 
-      li Press play to begin. A random song will immediately start playing. A new song will begin after the set interval has completed. 
-      li The stop button pauses the current song. The next song will begin after the set interval has completed.
+      li Apply filters based on Genre and Year.
+      li Press play to begin. A new song will begin after the set interval has completed. 
+      li The start / pause button pauses the current song. The next song will begin after the set interval has completed.
       li Skip will choose a new random song if a song is currently playing.
-      li The slider next to the buttons adjusts volume.
-      li You can filter by genre or year in advanced settings.
+      li Muting a song will not stop new songs from playing, but you will not hear them.
 
-    h5 Notes
-    ul(id='gs-notes')
-      li The next time you load up OfficeBeatz, it will remember your interval settings.
-      li If your interval is under 7 minutes it may interrupt a currently playing song. 
-      li If you filter to under five songs, it's recommended you change your settings.
+    div(id='notes-container')
+      p(id='notes-header') Notes
+      ul(id='gs-notes')
+        li The next time you load up OfficeBeatz, it will remember your advanced settings.
+        li If your interval is under 7 minutes it may interrupt a currently playing song. 
+        li If your filter is too strict, you will be asked to broaden it.

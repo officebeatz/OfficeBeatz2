@@ -30,9 +30,6 @@ h3
   text-align: center
   padding-bottom: 20px
 
-h5
-  padding-top: 50px
-
 .banner
   width: 30%
   min-width: 300px
@@ -142,8 +139,8 @@ input[type=number]::-webkit-inner-spin-button
   border: none
   position: relative
   margin-top: 8px
-  transform: translate(0%,-25%)
-  -moz-transform: translate(0%,120%)
+  -webkit-transform: translate(0%,30%)
+  -moz-transform: translate(0%,100%)
 
 .thumb
   visibility: hidden
@@ -176,3 +173,37 @@ input[type=number]::-webkit-inner-spin-button
   color: #ff5252
   padding-right: 15px
   font-weight: 700
+
+.title-container
+  background-color: #212121
+  text-align: center
+  width: 65%
+  height: auto
+  margin: 0 auto
+  margin-bottom: 25px
+  line-height: 32px
+
+.songDisplay
+  color: #616161
+
+#titleID, #artistID
+  color: #00b0ff
+
+#notes-container, #genreNotesContainer, #decadeNotesContainer
+  background-color: #212121
+  padding: 15px
+  margin-top: 15px
+  p
+    color: #616161
+  #notes-header
+    color: #00b0ff
+
+#notes-header
+  color: #00b0ff
+  padding-bottom: 10px
+
+input[type='number'] 
+  -moz-appearance: textfield
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button 
+  -webkit-appearance: none

@@ -1,9 +1,14 @@
 div(id='home', class='col s12')
   img(src='/images/officebeatz-banner.png', class='banner')
+  div(class='title-container z-depth-1')
+    a(class='songDisplay') Current song: 
+    a(id='titleID', class='songDisplay')
+    a(class='songDisplay')  by 
+    a(id='artistID', class='songDisplay')
   div(class='content-container')
-    p(id='stuff') Welcome to <span id='accented'>#{title}</span>, a simple web application designed to get you out of your seat and moving around intermittently to improve your health. Studies have shown that sedentary behavior caused due to working in an office environment can have severe impacts on your physical health as you age. These negative impacts can be avoided by standing up and stretching or taking a short walk roughly once an hour.
+    p(id='stuff') Welcome to <span id='accented'>#{title}</span>, a simple web application designed to get you out of your seat and on your feet. Prolonged sitting even for as little as one hour, damages the health of our vessels, and over time increases our risk of cardiovascular disease. Standing, stretching, or taking a short walk every 30-60 minutes can help to lessen the damaging effects of sitting.
     br
-    p(id='stuff') OfficeBeatZ will help improve your health by reminding you to get up and move through the power of music. It is believed that we as humans are more likely to respond positively to a stimulus like music than we are to a general purpose alarm used by other health solutions.
+    p(id='stuff') <span id='accented'>#{title}</span> will help improve your health by reminding you to get up and move through the power of your favorite songs. Unlike boring or annoying alarm reminders, OfficeBeatz, we hope, will facilitate a fun, energizing environment in your workplace, all while improving your health!
 
   div(id='audio-container')
     audio(id='audioSource')

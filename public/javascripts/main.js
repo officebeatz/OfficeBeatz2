@@ -12,6 +12,8 @@ $(document).ready(function () {
     let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+    let songTitle="All Star";
+    let songArtist="Smashmouth";
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -50,12 +52,19 @@ $(document).ready(function () {
     $('#play').click(function () {
         // Updates autoplay after an action has taken place.
         audioElement.autoplay = true;
-        audioElement.play();
+
+        if(audioElement.paused) {
+            audioElement.play();
+        } else {
+            audioElement.pause();
+        }
 
         // If the interval is already determined, do not set another one.
         if (!activeInterval) {
             timeout();
         }
+
+        checkIcon();
     });
 
     // Makes an API request for a new song every TIME_INTERVAL milliseconds.
@@ -76,10 +85,6 @@ $(document).ready(function () {
         timeout();
     }
 
-    $('#pause').click(function () {
-        audioElement.pause();
-    });
-
     $('#mute').click(function () {
         if (audioElement.volume != 0) {
             volumeControl.val(0);
@@ -88,13 +93,46 @@ $(document).ready(function () {
             audioElement.volume = tempVol / 100;
             volumeControl.val(tempVol);
         }
+
+        checkVolIcon();
     });
+
     //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
         tempVol = this.value;
         audioElement.volume = this.value / 100;
+
+        checkVolIcon();
     });
 
+    function checkIcon () {
+        if(audioElement.paused) {
+            $("#play").html(function () {
+                let currentIcon = "<i class='material-icons'>play_arrow</i>";
+                return currentIcon;
+            });
+        }
+    
+        if(!audioElement.paused) {
+            $("#play").html(function () {
+                let currentIcon = "<i class='material-icons'>pause</i>";
+                return currentIcon;
+            });
+        }
+    }
+
+    function checkVolIcon () {
+        let volIcon;
+        if (audioElement.volume == 0) {
+            volIcon = "<i class='material-icons'>volume_off</i>";
+        } else {
+            volIcon = "<i class='material-icons'>volume_up</i>";
+        }
+
+        $("#mute").html(function () {
+            return volIcon;
+        });
+    }
 
     //Loads up a new song if a song is already playing, otherwise does nothing.
     $('#skip').click(function () {
@@ -122,7 +160,11 @@ $(document).ready(function () {
             return "Current Interval: " + spannedInterval + " minutes.";
         });
     }
-
+    /**
+     * Updates the UI with the current genre preferences.
+     * @param {*} genrePreferences 
+     * @returns a list of the current genre preferences to be displayed
+     */
     function updateGenreDisplay(genrePreferences) {
         $("#genreDisplay").html(function () {
             if (!genrePreferences) {
@@ -155,7 +197,11 @@ $(document).ready(function () {
             }
         });
     }
-
+    /**
+     * Updates the UI with the current year preferences. 
+     * @param {*} decadePreferences 
+     * @returns a range with the current year preferences
+     */
     function updateDecadeDisplay(decadePreferences) {
         $("#decadeDisplay").html(function () {
             if (!decadePreferences) {
@@ -185,7 +231,11 @@ $(document).ready(function () {
             $("#customIntervalValue").val((((TIME_INTERVAL) / 1000) / 60));
         }
     }
-
+    /**
+     * Creates the genre checkboxes for advanced settings.
+     * Unfortunately hardcoded, so if a new genre was added you'd need to add it here.
+     * @param {*} genrePreferences 
+     */
     function determineCheckboxes(genrePreferences) {
         if (genrePreferences) {
             if (genrePreferences.indexOf('Reggae') > -1) {
@@ -238,7 +288,9 @@ $(document).ready(function () {
             $("#endingDecade").val(decadePreferences[1])
         }
     }
-
+    /**
+     * Creates the genre preferences based on id3 information from getGenres().
+     */
     function getGenres() {
         return new Promise(function (resolve, reject) {
             $.ajax({
@@ -256,7 +308,9 @@ $(document).ready(function () {
             });
         });
     }
-
+    /**
+     * Creates the genre preferences based on id3 information from getGenres().
+     */
     function submitGenres() {
         let genres = [];
         for (var key in genreList.counts) {
@@ -266,7 +320,10 @@ $(document).ready(function () {
         genrePreferences = [];
         genrePreferences = populateGenres(genrePreferences);
     }
-
+    /**
+     * Creates the decade preferences and checks how many songs are available.
+     * If fewer than five, throws an error.
+     */
     function submitYears() {
         decadePreferences = [];
         decadePreferences = populateDecades(decadePreferences);
@@ -291,6 +348,7 @@ $(document).ready(function () {
             feedbackAnimation();
         }
     }
+    
     /**
      * Makes a post request to get the next song based on preferences.
      * It works even if the preferences are null.
@@ -298,42 +356,38 @@ $(document).ready(function () {
      * @param {*} decadeArray 
      */
     function findNextSongWithPreferences(genreArray, decadeArray) {
-        //if there are no preferences, just makes a call to /api/next which selects from the whole database
+        let songList=[];
+        //if there are no preferences, makes a dummy array to get makeSongList to function
         if (genreArray == null && decadeArray == null) {
-            $.ajax({
-                url: '/api/next',
-                data: null,
-                type: "POST",
-                success: function (responseData) {
-                    console.log(responseData);
-                    audioElement.src = responseData;
-                }, error: console.error
-            });
+            tempArray=[1940,2019];
+            songList=makeSongList(genreArray, tempArray);
         } else {
             //run through the whole JSON file and get the list of songs that match those genres, and randomize through the list
-            let songList = makeSongList(genreArray, decadeArray);
+            songList = makeSongList(genreArray, decadeArray);
+        }   
+        let name = '';
+        index = parseInt(Math.random() * songList.length);
+        name = songList[index].filename;
+        songTitle = songList[index].title+" ";
+        songArtist = songList[index].artist;
+        updateSongDisplay(songTitle, songArtist);
+        console.log(name);
 
-            console.log(songList);
-            let name = '';
-            index = parseInt(Math.random() * songList.length);
-            name = songList[index];
-            console.log(name);
-
-            // post request to /api/song in the headers make a tag called song, put name there
-            $.ajax({
-                url: '/api/song',
-                data: null,
-                headers: {
-                    'song': name
-                },
-                type: "POST",
-                success: function (responseData) {
-                    console.log(responseData)
-                    audioElement.src = responseData;
-                }, error: console.error
-            });
-        }
+        // post request to /api/song in the headers make a tag called song, put name there
+        $.ajax({
+            url: '/api/song',
+            data: null,
+            headers: {
+                'song': name
+            },
+            type: "POST",
+            success: function (responseData) {
+                console.log(responseData)
+                audioElement.src = responseData;
+            }, error: console.error
+        });
     }
+
     /** Returns a list of songs with the given genre and decade preferences.
      *  Also used to get a count of how many songs pass the filter for sanity checks.
      *  Do not call this function if both are null, but it's fine if one or the other is null.
@@ -343,22 +397,23 @@ $(document).ready(function () {
      * */
     function makeSongList(genreArray, decadeArray) {
         let songList = [];
+
         if (genreArray != null && decadeArray != null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                    songList.push(genreList.songs[key].filename);
+                    songList.push(genreList.songs[key]);
                 }
             }
         } else if (decadeArray == null) {
             for (key in genreList.songs) {
                 if (genreArray.includes(genreList.songs[key].genre)) {
-                    songList.push(genreList.songs[key].filename);
+                    songList.push(genreList.songs[key]);
                 }
             }
         } else {
             for (key in genreList.songs) {
                 if (decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                    songList.push(genreList.songs[key].filename);
+                    songList.push(genreList.songs[key]);
                 }
             }
         }
@@ -411,8 +466,9 @@ $(document).ready(function () {
         }
 
         if (unfiltered) {
-            genrePreferences.push(genres[0], genres[1], genres[3], genres[4], genres[5], genres[6]);
-            genrePreferences.push(genres[7], genres[8], genres[9], genres[2], genres[10]);
+            for(let i = 0; i < genres.length; i++) {
+                genrePreferences.push(genres[i]);
+            }
         }
 
         return genrePreferences;
@@ -486,5 +542,15 @@ $(document).ready(function () {
         setTimeout(function () {
             $("#formFeedback").fadeOut(1000);
         }, 5000)
+    }
+
+    function updateSongDisplay(title, artist) {
+        $("#titleID").html(function () {
+            return title;
+        });
+
+        $("#artistID").html(function () {
+            return artist;
+        });
     }
 });
