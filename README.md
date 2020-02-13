@@ -61,3 +61,6 @@ However, your changes are still only in your branch that you made; if you want y
 To deploy `master` after changes have been made, go to the app on Heroku and click the `Deploy` option. It will ask which branch you want to deploy: select `master`. If any errors occur, Heroku will abort the process and give you an error message.
 
 ~~Production can be found [here](http://officebeatz.net/). And beta / staging can be found [here](http://beta.officebeatz.net/).~~
+
+
+Howdy =) -Garrett
