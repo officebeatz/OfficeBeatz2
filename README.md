@@ -6,18 +6,17 @@ Welcome to OfficeBeatZ (formerly known as the EmployeeWellnessProject), a simple
 
 OfficeBeatZ will help improve your health by reminding you to get up and move through the power of your favorite songs. Unlike boring or annoying alarm reminders, OfficeBeatz, we hope, will facilitate a fun, energizing environment in your workplace, all while improving your health!
 
-### Wiki & General Use (under construction)
-
-~~For general information regarding this project, please consult the [Wiki](https://github.com/CodyMichaelSimmons/EmployeeWellnessProject/wiki). The wiki contains much of the information regarding general use of the app and basic instructions.~~
+* [Beta/Staging](http://officebeatz2-beta.herokuapp.com/) - auto deploys from master
+* [Production](http://officebeatz2.herokuapp.com/) - manually promoted from beta
 
 ### Basic Setup
 
 To get your local files setup to make your own changes:
 
-1. Change to an empty directory and run `git clone https://github.com/officebeatz/OfficeBeatz2.git`
+1. `cd` to an empty directory and run `git clone https://github.com/officebeatz/OfficeBeatz2.git`.
 1. After the files are cloned, run `npm install` in the new directory to download dependencies.
-1. To run the app locally, you will need to have the Dropbox token set as a local variable on your computer.
-1. Once your token has been setup, using the command `npm start` will start the process on port 3752. You can access the app at http://localhost:3752/
+1. Rename the `.env.example` file to `.env` and edit the placeholder text with the Dropbox API token.
+1. Once your token has been setup, using the command `npm run dev-start` will start the process on port 3752. You can access the app at http://localhost:3752/
 
 ### Running Tests
 
@@ -55,9 +54,3 @@ However, your changes are still only in your branch that you made; if you want y
 1. Add any context/description/notes about your changes, and then you're good to go! Generally, try to list the changes you made, and add any comments you think might help others review your code.
 1. **Ask someone to review your code.** -- Changing master (including pull requests) is a protected branch, so it requires at least one reviewer to *approve* your pull request.
 1. Click **Merge**! -- Once your code has been reviewed (and nothing breaks when you run it on your local), then click merge! If there are merge conflicts, then feel free to ask Jason (the tech lead) to merge it for you.
-
-### Deploying
-
-To deploy `master` after changes have been made, go to the app on Heroku and click the `Deploy` option. It will ask which branch you want to deploy: select `master`. If any errors occur, Heroku will abort the process and give you an error message.
-
-~~Production can be found [here](http://officebeatz.net/). And beta / staging can be found [here](http://beta.officebeatz.net/).~~
