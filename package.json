@@ -3,12 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "dev-start": "NODE_ENV=dev npm start",
     "start": "node ./bin/www",
     "test": "jasmine"
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
     "dropbox": "^4.0.12",
     "express": "^4.16.4",
     "http-errors": "~1.6.2",
