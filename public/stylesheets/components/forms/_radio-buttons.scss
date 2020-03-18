@@ -70,6 +70,40 @@
   background-color: $radio-fill-color;
 }
 
+//add traffic light colors
+
+//short
+[id="shortInterval"]:checked + span:after,
+[id="shortInterval"].with-gap:checked + span:before,
+[id="shortInterval"].with-gap:checked + span:after {
+  border: $short-border;
+}
+[id="shortInterval"]:checked + span:after,
+[id="shortInterval"].with-gap:checked + span:after {
+  background-color: $short-fill-color;
+}
+
+//medium
+[id="mediumInterval"]:checked + span:after,
+[id="mediumInterval"].with-gap:checked + span:before,
+[id="mediumInterval"].with-gap:checked + span:after {
+  border: $medium-border;
+}
+[id="mediumInterval"]:checked + span:after,
+[id="mediumInterval"].with-gap:checked + span:after {
+  background-color: $medium-fill-color;
+}
+
+//long
+[id="longInterval"]:checked + span:after,
+[id="longInterval"].with-gap:checked + span:before,
+[id="longInterval"].with-gap:checked + span:after {
+  border: $long-border;
+}
+[id="longInterval"]:checked + span:after,
+[id="longnterval"].with-gap:checked + span:after {
+  background-color: $long-fill-color;
+}
 [type="radio"]:checked + span:after {
   transform: scale(1.02);
 }
