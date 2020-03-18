@@ -6,7 +6,7 @@
     "start": "node ./bin/www",
     "test": "jasmine"
   },
-"dependencies": {
+  "dependencies": {
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dropbox": "^4.0.12",
