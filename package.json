@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "node_modules/.bin/browserify client/main.js > public/javascripts/bundle.js",
-    "start": "npm run build && node ./bin/www",
-    "start:dev": "NODE_ENV=dev npm start",
+    "start": "node ./bin/www",
+    "start:dev": "npm run build && NODE_ENV=dev npm start",
     "test": "jasmine"
   },
   "dependencies": {
