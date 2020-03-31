@@ -21,5 +21,14 @@ html
     meta(name='msapplication-TileImage', content="/images/mstile-144x144.png")
     meta(name='msapplication-config', content="/images/browserconfig.xml")
     meta(name='theme-color', content="#212121")
+
+    // Global site tag (gtag.js) - Google Analytics
+    script(async, src='https://www.googletagmanager.com/gtag/js?id=UA-161445530-1')
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-161445530-1');
+
   body
     block content
