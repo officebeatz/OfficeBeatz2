@@ -1,7 +1,11 @@
+testRequire = require('./testRequire.js');
+
 $(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
+
+    testRequire();
 
     let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000; // Defaults to 45 minutes if not previously set.
     let activeInterval = false;
@@ -112,7 +116,7 @@ $(document).ready(function () {
                 return currentIcon;
             });
         }
-    
+
         if(!audioElement.paused) {
             $("#play").html(function () {
                 let currentIcon = "<i class='material-icons'>pause</i>";
@@ -162,7 +166,7 @@ $(document).ready(function () {
     }
     /**
      * Updates the UI with the current genre preferences.
-     * @param {*} genrePreferences 
+     * @param {*} genrePreferences
      * @returns a list of the current genre preferences to be displayed
      */
     function updateGenreDisplay(genrePreferences) {
@@ -198,8 +202,8 @@ $(document).ready(function () {
         });
     }
     /**
-     * Updates the UI with the current year preferences. 
-     * @param {*} decadePreferences 
+     * Updates the UI with the current year preferences.
+     * @param {*} decadePreferences
      * @returns a range with the current year preferences
      */
     function updateDecadeDisplay(decadePreferences) {
@@ -234,7 +238,7 @@ $(document).ready(function () {
     /**
      * Creates the genre checkboxes for advanced settings.
      * Unfortunately hardcoded, so if a new genre was added you'd need to add it here.
-     * @param {*} genrePreferences 
+     * @param {*} genrePreferences
      */
     function determineCheckboxes(genrePreferences) {
         if (genrePreferences) {
@@ -348,12 +352,12 @@ $(document).ready(function () {
             feedbackAnimation();
         }
     }
-    
+
     /**
      * Makes a post request to get the next song based on preferences.
      * It works even if the preferences are null.
-     * @param {*} genreArray 
-     * @param {*} decadeArray 
+     * @param {*} genreArray
+     * @param {*} decadeArray
      */
     function findNextSongWithPreferences(genreArray, decadeArray) {
         let songList=[];
@@ -364,7 +368,7 @@ $(document).ready(function () {
         } else {
             //run through the whole JSON file and get the list of songs that match those genres, and randomize through the list
             songList = makeSongList(genreArray, decadeArray);
-        }   
+        }
         let name = '';
         index = parseInt(Math.random() * songList.length);
         name = songList[index].filename;
@@ -391,7 +395,7 @@ $(document).ready(function () {
     /** Returns a list of songs with the given genre and decade preferences.
      *  Also used to get a count of how many songs pass the filter for sanity checks.
      *  Do not call this function if both are null, but it's fine if one or the other is null.
-     *  @param {*} genreArray 
+     *  @param {*} genreArray
      *  @param {*} decadeArray
      *  @returns an array containing all songs that pass the filter
      * */

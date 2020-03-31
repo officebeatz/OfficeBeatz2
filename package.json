@@ -3,11 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev-start": "NODE_ENV=dev npm start",
+    "build": "node_modules/.bin/browserify client/main.js > public/javascripts/bundle.js",
     "start": "node ./bin/www",
+    "start:dev": "npm run build && NODE_ENV=dev npm start",
     "test": "jasmine"
   },
   "dependencies": {
+    "browserify": "^16.5.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
