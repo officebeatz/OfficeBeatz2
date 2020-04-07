@@ -1,6 +1,8 @@
 header
   nav(class='nav-extended nav-color nav-center')
     div(class='nav-content')
+      div(class="logo", href='#home') 
+        img(src="images/favicon.ico")
       ul(class='tabs tabs-transparent')
         li(class='tab')
           a(class='active', href='#home') Home
@@ -10,6 +12,8 @@ header
           a(href='#old-advanced-settings') Old Advanced Settings
         li(class='tab')
           a(href='#advanced-settings') New Settings
+    div(id="timer", style="width: 100%; text-align: center")
+      h1 Timer Goes Here
     div(class='nav-wrapper container')
       ul(class='middle')
         li
@@ -20,4 +24,9 @@ header
           a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute')
             i(class="material-icons") volume_up
           input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
+          //- div(class='title-container z-depth-1')
+          //-   a(class='songDisplay') Current song: 
+          //-   a(id='titleID', class='songDisplay')
+          //-   a(class='songDisplay')  by 
+          //-   a(id='artistID', class='songDisplay')
     
