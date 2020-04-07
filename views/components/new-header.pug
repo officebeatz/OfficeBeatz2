@@ -1,0 +1,23 @@
+header
+  nav(class='nav-extended nav-color nav-center')
+    div(class='nav-content')
+      ul(class='tabs tabs-transparent')
+        li(class='tab')
+          a(class='active', href='#home') Home
+        li(class='tab')
+          a(href='#getting-started') Getting Started
+        li(class='tab')
+          a(href='#old-advanced-settings') Old Advanced Settings
+        li(class='tab')
+          a(href='#advanced-settings') New Settings
+    div(class='nav-wrapper container')
+      ul(class='middle')
+        li
+          a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='play')
+            i(class="material-icons") play_arrow
+          a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='skip')
+            i(class="material-icons") skip_next
+          a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute')
+            i(class="material-icons") volume_up
+          input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
+    
