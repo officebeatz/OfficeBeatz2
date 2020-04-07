@@ -1,13 +1,12 @@
-extends layout
+extends layouts/layout
 
 block content
-  include header.pug
+  include components/header.pug
 
   main
-    include home-tab.pug
-    include getting-started-tab.pug
-    include advanced-settings-tab.pug
+    include components/home-tab.pug
+    include components/getting-started-tab.pug
+    include components/advanced-settings-tab.pug
 
-  include footer.pug
-  include scripts.pug
-  
+  include components/footer.pug
+  include components/scripts.pug
