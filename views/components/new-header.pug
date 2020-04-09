@@ -12,21 +12,24 @@ header
           a(href='#old-advanced-settings') Old Advanced Settings
         li(class='tab')
           a(href='#advanced-settings') New Settings
-    div(id="timer", style="width: 100%; text-align: center")
-      h1 Timer Goes Here
+    div(id="timer")
+      p(id="timer-time") 15:00:00
+      div
+        button(id="start-timer", class="timer-button") start
+        button(id="reset-timer", class="timer-button") reset
     div(class='nav-wrapper container')
-      ul(class='middle')
+      ul(class='middle-ul')
         li
           a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='play')
             i(class="material-icons") play_arrow
+        li
           a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='skip')
             i(class="material-icons") skip_next
+        li(id="slider-song")
           a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute')
             i(class="material-icons") volume_up
+          include song-controls.pug
           input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
-          //- div(class='title-container z-depth-1')
-          //-   a(class='songDisplay') Current song: 
-          //-   a(id='titleID', class='songDisplay')
-          //-   a(class='songDisplay')  by 
-          //-   a(id='artistID', class='songDisplay')
-    
+        li
+          i(class="settings-icon") settings
+            
