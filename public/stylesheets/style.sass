@@ -60,6 +60,65 @@ nav.nav-center
   margin: auto
   text-align: left
 
+.nav-content
+  width: 100%
+  padding: 10px
+  display: flex
+  justify-content: space-between
+
+#timer
+  width: 100%
+  display: flex
+  justify-content: center
+  background-color: black
+  padding: 10px
+
+#timer-time
+  font-size: 7em
+  margin: auto 15px
+
+.timer-button
+  padding: 30px
+  border-radius: 15px
+  background: rgba(0,0,0,0)
+  margin: 5px
+  font-size: 2em
+
+#start-timer
+  color: rgb(0,255,0)
+  border: solid 5px rgb(0,255,0) 
+
+#reset-timer
+  color: #26B5E2
+  border: solid 5px #26B5E2
+
+.middle-ul
+  width: 100%
+  display: flex
+  justify-content: space-between
+  height: auto
+  margin: auto 0
+
+#play-skip
+  display: flex
+  margin: auto 0
+
+#vol-song
+  width: 100%
+  display: flex
+  margin: auto 0
+
+#slider-song
+  width: 100%
+  display: flex
+
+#current-song-display
+  display: flex
+  margin: auto
+
+.title-container a
+  padding: 0 3px
+
 .smaller
   font-size: 14px
 
@@ -141,6 +200,8 @@ input[type=number]::-webkit-inner-spin-button
   margin-top: 8px
   -webkit-transform: translate(0%,30%)
   -moz-transform: translate(0%,100%)
+  // eventually VVV need to activate for button click
+  // display: none
 
 .thumb
   visibility: hidden
@@ -177,10 +238,7 @@ input[type=number]::-webkit-inner-spin-button
 .title-container
   background-color: #212121
   text-align: center
-  width: 65%
   height: auto
-  margin: 0 auto
-  margin-bottom: 25px
   line-height: 32px
 
 .songDisplay
