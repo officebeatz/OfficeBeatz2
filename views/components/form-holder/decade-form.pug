@@ -1,19 +1,17 @@
 li(class="not-active")
-  div(class="collapsible-header valign-wrapper")
+  div(class="valign-wrapper")
     i(class="small material-icons valign-wrapper") today 
-    | Years
+    |  Years
     div(id="decadeDisplay" class="valign-wrapper")
-  div(class="collapsible-body")
-    p
-      div(class="row")
-        div(class="input-field inline col s12 m9 l4")
-          i(class="material-icons prefix") today
-          input(placeholder="Starting Year" id="startingDecade" type="number" min="1940" max="2019")
-      div(class="row")
-        div(class="input-field inline col s12 m9 l4")
-          i(class="material-icons prefix") today
-          input(placeholder="Ending Year" id="endingDecade" type="number" min="1940" max="2019")
-    
+  div(class="", id="date-box  ")
+    div(class="row")
+      div(class="input-field inline col s12 m9 l4")
+        i(class="material-icons prefix") Start
+        input(placeholder="Starting Year" id="startingDecade" type="number" min="1940" max="2019")
+    div(class="row")
+      div(class="input-field inline col s12 m9 l4")
+        i(class="material-icons prefix") End
+        input(placeholder="Ending Year" id="endingDecade" type="number" min="1940" max="2019")
     div(class="as-notes z-depth-1" id="decadeNotesContainer") 
       p(id="notes-header") Notes
       p Songs will be selected from the years between and including the first and second entry.
