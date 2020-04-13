@@ -1,5 +1,5 @@
 require('isomorphic-fetch');
-var request = require('request');
+var request = require('request-promise');
 const nodeID3 = require('node-id3');
 const Dropbox = require('dropbox').Dropbox;
 const dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
@@ -141,15 +141,22 @@ exports.getRandomFile = function () {
 
  exports.getGenresList = function(){
      return new Promise(function (resolve, reject){
-        dbx.filesGetTemporaryLink({ path: '/config.json'}).then(function(response){
-            request(response.link, function(error, resp, body){
-                if (!error && resp.statusCode == 200){
-                    var config = JSON.parse(body);
+        console.log(dbx.filesGetTemporaryLink);
+        //console.log(request);
+        console.log(dbx);
+        dbx.filesGetTemporaryLink({ path: '/config.json'}).then(function(resp){
+            request.get(resp.link).then(function(response){
+                console.log(response);
+                if (response.statusCode == 200){
+                    var config = JSON.parse(reponse.body); //
                     resolve(config);
                 } else {
-                    console.log(error);
-                    reject(error);
+                    console.log(error); //
+                    reject(error); // 
                 }
+            }).catch(function(error){
+                console.log(error);
+                reject(error);
             });
         }).catch(function(error){
             console.error(error);
@@ -164,13 +171,4 @@ exports.getRandomFile = function () {
   * @returns {url} link
   */
 
-  exports.getSong = function(name){
-      return new Promise(function(resolve, reject){
-          getFile(name).then((result) => {
-              resolve(result);
-          }).catch((err) => {
-              console.log(err);
-              reject(err);
-          });
-      })
-  }
+  exports.getSong = getFile;

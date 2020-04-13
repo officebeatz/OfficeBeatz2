@@ -9,6 +9,7 @@ describe("Dropbox Test", function () {
 
     it("Get Random File Test", function () {
         utils.getRandomFile().then((result) => {
+            expect(false).toBeTruthy();
             expect(result).toContain("dl.dropboxusercontent.com");
         });
     });

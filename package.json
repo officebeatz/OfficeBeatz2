@@ -6,7 +6,7 @@
     "build": "node_modules/.bin/browserify client/main.js > public/javascripts/bundle.js",
     "start": "node ./bin/www",
     "start:dev": "npm run build && NODE_ENV=dev npm start",
-    "test": "jasmine"
+    "test": "jest"
   },
   "dependencies": {
     "browserify": "^16.5.1",
@@ -17,13 +17,16 @@
     "express": "^4.16.4",
     "http-errors": "~1.6.2",
     "isomorphic-fetch": "^2.2.1",
+    "jasmine-core": "^3.5.0",
     "morgan": "^1.9.1",
     "node-id3": "^0.1.7",
     "node-sass-middleware": "0.11.0",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
     "jasmine": "^3.3.0",
+    "jest": "^25.2.7",
     "jsdoc": "^3.5.5"
   }
 }
