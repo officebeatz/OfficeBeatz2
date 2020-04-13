@@ -40,8 +40,10 @@ router.post('/api/genres', function (req, res, next) {
 /**
  * GET Endpoint for webhook
  */
-router.get('/api/webhook', function(req, res, next){
-  utils.updateDBX();
+router.get('/api/webhook', function(req, res, next) {
+  utils.updateDBX().then(() => {
+      res.sendStatus(200);
+  });
 })
 
 
