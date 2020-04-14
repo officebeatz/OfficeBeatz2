@@ -1,8 +1,6 @@
-require('isomorphic-fetch');
-var request = require('request-promise');
+const axios = require('axios');
 const nodeID3 = require('node-id3');
-const Dropbox = require('dropbox').Dropbox;
-const dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
+const dbx = require('./dbx')
 /**
  * Utils module
  * @module utils
@@ -14,32 +12,31 @@ const dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
  * @returns link to the file
  */
 
-function getFile(name) {
-    return new Promise(function (resolve, reject) {
-        dbx.filesGetTemporaryLink({ path: '/' + name }).then(function (response) {
-            resolve(response.link);
-        }).catch(function (error) {
+function getLinkToFile(name) {
+    return dbx.filesGetTemporaryLink({ path: '/' + name })
+        .then(response => {
+            return response.link;
+        })
+        .catch(error => {
             console.log(error);
-            reject(error);
+            throw error;
         });
-    });
-};
+}
 
 /**
- * 
+ *
  * @param {Array} songs
  * @param {function} function
  * @param {JSON} config
  * @return updated_config
  */
 
-function extractAllID3(songs, fn, config){
+function extractAllID3(songs, fn, config) {
     return songs.reduce((p, song) => {
         return p.then((conf) => {
             return fn(song, conf);
         });
     }, Promise.resolve(config));
-    
 }
 
 /**
@@ -48,63 +45,58 @@ function extractAllID3(songs, fn, config){
  * @returns {Promise}
  */
 
-function extractID3(song, config){
-    return new Promise((resolve, reject) => {
-        if (song.name.endsWith('.mp3')){
-            getFile(song.name).then(function(link){
-                request({url: link, encoding: null }, (err, resp, buffer) => {
-                    if (!err && resp.statusCode == 200){
-                        var tags = nodeID3.read(buffer);
-                        if (config.counts[tags.genre]){
-                            config.counts[tags.genre]++;
-                        } else {
-                            config.counts[tags.genre] = 1;
-                        }
-                        config.songs[tags.title] = {
-                            "title": tags.title,
-                            "artist": tags.artist,
-                            "genre": tags.genre,
-                            "year": tags.year,
-                            "filename": song.name
-                        }
-                        resolve(config);
-                    } else {
-                        resolve(config);
-                    }
-                });
-            }).catch(function(error){
-                console.log(error);
-                reject(error);
-            });
-        } else {
-            resolve(config);
-        }
-    })
-    
+function extractID3(song, config) {
+    // skip non-mp3 files (eg existing config.json)
+    if (!song.name.endsWith('.mp3')) {
+        Promise.resolve(config);
+    }
+    return getLinkToFile(song.name)
+        // specify "null encoding" to get bits of mp3 file
+        .then(link => axios.get(link, { responseType: 'arraybuffer'}))
+        .then(response => {
+            const buffer = response.data;
+            const tags = nodeID3.read(buffer);
+            if (config.counts[tags.genre]) {
+                config.counts[tags.genre]++;
+            } else {
+                config.counts[tags.genre] = 1;
+            }
+            config.songs[tags.title] = {
+                "title": tags.title,
+                "artist": tags.artist,
+                "genre": tags.genre,
+                "year": tags.year,
+                "filename": song.name
+            }
+            return config;
+        })
+        // axios will error on non 200 status codes
+        .catch(error => {
+            console.log(error);
+            return config;
+        });
 }
 
-/** 
+/**
  * Takes in nothing, and generates a randomly selected filename from the dropbox
- * which is passed into getFile, and returns the result of calling getFile. 
+ * which is passed into getFile, and returns the result of calling getFile.
  * @returns link to a random file
  */
 
-exports.getRandomFile = function () {
-    return new Promise(function (resolve, reject) {
-        dbx.filesListFolder({ path: '' }).then(function (response) {
+exports.getRandomFile = function() {
+    return dbx.filesListFolder({ path: '' })
+        .then(response => {
             let name = '';
             while (!name.endsWith('.mp3')) {
                 index = parseInt(Math.random() * response.entries.length);
                 name = response.entries[index].name;
             }
-            getFile(name).then(function (result) {
-                resolve(result);
-            });
-        }).catch(function (error) {
-            console.error(error);
-            reject(error);
+            return getLinkToFile(name);
+        })
+        .catch(error => {
+            console.log(error);
+            throw error;
         });
-    });
 }
 
 /**
@@ -112,57 +104,40 @@ exports.getRandomFile = function () {
  * @returns Success or Failure
  */
 
- exports.updateDBX = function(){
-    return new Promise(function (resolve, reject){
-        dbx.filesListFolder({path: ''}).then(function(response){
-            var config = {
-                "counts":{},
-                "songs":{}
-            };
-            extractAllID3(response.entries, extractID3, config).then(result => {
-                dbx.filesUpload({contents: JSON.stringify(result, null, "\t"), path: "/config.json", mode: {".tag": "overwrite"}}).then((response) => {
-                    resolve();
-                }).catch((error) => {
-                    console.log(error);
-                    reject(error);
-                });
-            });
-        }).catch(function(error){
-            console.error(error);
-            reject(error);
+exports.updateDBX = function() {
+    var config = {
+        "counts":{},
+        "songs":{}
+    };
+    return dbx.filesListFolder({path: ''})
+        .then(response => extractAllID3(response.entries, extractID3, config))
+        .then(result => dbx.filesUpload({
+            contents: JSON.stringify(result, null, "\t"),
+            path: "/config.json",
+            mode: { ".tag": "overwrite" }
+        }))
+        .catch(error => {
+            console.log(error);
+            throw error;
         });
-     });
- }
+}
 
 /**
  * Takes in nothing and returns a JSON object with list of all genres and counts of all the songs in the dropbox
  * @returns JSON object of all genres and counts
  */
 
- exports.getGenresList = function(){
-     return new Promise(function (resolve, reject){
-        console.log(dbx.filesGetTemporaryLink);
-        //console.log(request);
-        console.log(dbx);
-        dbx.filesGetTemporaryLink({ path: '/config.json'}).then(function(resp){
-            request.get(resp.link).then(function(response){
-                console.log(response);
-                if (response.statusCode == 200){
-                    var config = JSON.parse(reponse.body); //
-                    resolve(config);
-                } else {
-                    console.log(error); //
-                    reject(error); // 
-                }
-            }).catch(function(error){
-                console.log(error);
-                reject(error);
-            });
-        }).catch(function(error){
-            console.error(error);
-            reject(error);
+ exports.getGenresList = function() {
+    return getLinkToFile('config.json')
+        .then(link => axios.get(link))
+        .then(response => {
+            return response.data;
+        })
+        // axios will error on non 200 status codes
+        .catch(error => {
+            console.log(error);
+            throw error;
         });
-     });
  }
 
  /**
@@ -171,4 +146,4 @@ exports.getRandomFile = function () {
   * @returns {url} link
   */
 
-  exports.getSong = getFile;
+  exports.getSong = getLinkToFile;
