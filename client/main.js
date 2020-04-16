@@ -89,6 +89,7 @@ $(document).ready(function () {
     }
 
     $('#mute').click(function () {
+        console.log("in mute");
         if (audioElement.volume != 0) {
             volumeControl.val(0);
             audioElement.volume = 0;
@@ -98,6 +99,18 @@ $(document).ready(function () {
         }
 
         page.updateVolIcon(audioElement);
+    });
+
+    // $('#pop-settings').click(function () {
+    //     console.log("in pop settings");
+    //     let display = $('#advancedSettingsForm').style.display;
+    //     console.log(display);
+    //     $('advancedSettingsForm').style.display = "block";
+    // });
+
+    $('#start-button').click(function () {
+        console.log("stop display");
+        $('#stop-button').style.display = "block";
     });
 
     //Updates volume when slider is changed.

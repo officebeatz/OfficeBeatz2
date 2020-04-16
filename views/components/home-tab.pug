@@ -1,10 +1,11 @@
 div(id='home', class='col s12')
+  include form-holder.pug
   img(src='/images/officebeatz-banner.png', class='banner')
-  div(class='title-container z-depth-1')
-    a(class='songDisplay') Current song: 
-    a(id='titleID', class='songDisplay')
-    a(class='songDisplay')  by 
-    a(id='artistID', class='songDisplay')
+  //- div(class='title-container z-depth-1')
+  //-   a(class='songDisplay') Current song: 
+  //-   a(id='titleID', class='songDisplay')
+  //-   a(class='songDisplay')  by 
+  //-   a(id='artistID', class='songDisplay')
   div(class='content-container')
     p(id='stuff') Welcome to <span id='accented'>#{title}</span>, a simple web application designed to get you out of your seat and on your feet. Prolonged sitting even for as little as one hour, damages the health of our blood vessels, and over time increases our risk of cardiovascular disease. Standing, stretching, or taking a short walk every 30-60 minutes can help to lessen the damaging effects of sitting.
     br

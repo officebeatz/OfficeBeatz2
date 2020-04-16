@@ -55,6 +55,9 @@ nav.nav-center
   text-align: center
   padding-top: 25px
 
+#advancedSettingsForm
+  display: none
+
 .content-container
   width: 65%
   margin: auto
@@ -87,6 +90,11 @@ nav.nav-center
 #start-timer
   color: rgb(0,255,0)
   border: solid 5px rgb(0,255,0) 
+
+#stop-timer
+  color: rgb(255,0,0)
+  border: solid 5px rgb(255,0,0)
+  display: none 
 
 #reset-timer
   color: #26B5E2
@@ -197,6 +205,11 @@ input[type=number]::-webkit-inner-spin-button
 
 .genre-notes
   padding-top: 15px
+  
+
+.interval-notes
+  padding-top: 15px
+  margin-bottom: 5px
 
 #gs-list
   li:before
@@ -281,7 +294,7 @@ input[type=number]::-webkit-inner-spin-button
   display: flex
   flex-wrap: wrap
 
-#notes-container, #genreNotesContainer, #decadeNotesContainer
+#notes-container, #genreNotesContainer, #decadeNotesContainer, #intervalNotesContainer
   background-color: #212121
   padding: 15px
   p

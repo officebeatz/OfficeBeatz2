@@ -9,13 +9,12 @@ header
         li(class='tab')
           a(href='#getting-started') Getting Started
         li(class='tab')
-          a(href='#old-advanced-settings') Old Advanced Settings
-        li(class='tab')
-          a(href='#advanced-settings') New Settings
+          a(href='#about-tab') About
     div(id="timer")
       p(id="timer-time") 15:00:00
       div
         button(id="start-timer", class="timer-button") start
+        button(id="stop-timer", class="timer-button") stop
         button(id="reset-timer", class="timer-button") reset
     div(class='nav-wrapper container')
       ul(class='middle-ul')
@@ -31,5 +30,6 @@ header
             input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
             include song-controls.pug
         div
-          i(class="settings-icon") settings
+          a(id="pop-settings")
+            i(class="settings-icon") settings
             

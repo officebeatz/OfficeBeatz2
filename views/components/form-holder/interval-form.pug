@@ -1,7 +1,7 @@
 li(class="active")
   div(class="valign-wrapper")
     i(class="small material-icons") timer
-    | Intervals
+    | &nbsp Intervals
     div(id="intervalDisplay" class="valign-wrapper ")
   div(id="intervals")
     p
@@ -21,3 +21,6 @@ li(class="active")
         input(name="intervalGroup", type="radio", id="customInterval", value='custom')
         span Custom Interval 
           input(placeholder="# of Minutes", id="customIntervalValue", type="number", min="1", max="120")
+  div(class="as-notes interval-notes z-depth-1", id="intervalNotesContainer") 
+    p(id="notes-header") Notes
+    p Placeholder for Gabe's interval blurb explaining the traffic lights
