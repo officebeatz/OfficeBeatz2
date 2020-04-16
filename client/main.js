@@ -101,6 +101,8 @@ $(document).ready(function () {
         page.updateVolIcon(audioElement);
     });
 
+    // How I imagine this would work vvv, the console logs didn't even work
+
     // $('#pop-settings').click(function () {
     //     console.log("in pop settings");
     //     let display = $('#advancedSettingsForm').style.display;
@@ -108,10 +110,10 @@ $(document).ready(function () {
     //     $('advancedSettingsForm').style.display = "block";
     // });
 
-    $('#start-button').click(function () {
-        console.log("stop display");
-        $('#stop-button').style.display = "block";
-    });
+    // $('#start-button').click(function () {
+    //     console.log("stop display");
+    //     $('#stop-button').style.display = "block";
+    // });
 
     //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
