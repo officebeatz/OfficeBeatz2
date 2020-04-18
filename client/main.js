@@ -2,13 +2,13 @@ api = require('./api.js');   // AJAX requests to back-end API
 form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
-
+timer = require('../public/javascripts/timer.js');
 $(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
 
-    let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000; // Defaults to 45 minutes if not previously set.
+    let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
@@ -17,6 +17,7 @@ $(document).ready(function () {
     let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+    var songTimeout;
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -73,10 +74,23 @@ $(document).ready(function () {
     // Makes an API request for a new song every TIME_INTERVAL milliseconds.
     let timeout = () => {
         activeInterval = true;
-        setTimeout(function () {
+        songTimeout = setTimeout(function () {
             loopPlayer(audioElement);
         }, TIME_INTERVAL);
+        startTimer();
     }
+
+    $("#start-timer").click(function() { 
+        TIME_INTERVAL=getCurrentMS();
+        timeout();
+    });
+    $("#reset-timer").click(function() {
+        TIME_INTERVAL = getInitialMS();
+        setTimer(TIME_INTERVAL);
+    });
+    $("#pause-timer").click(function() { 
+        clearTimeout(songTimeout);
+    });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
@@ -158,11 +172,14 @@ $(document).ready(function () {
                 TIME_INTERVAL = customValue * 60 * 1000;
                 localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
                 page.updateIntervalDisplay(TIME_INTERVAL);
+                setTimer(TIME_INTERVAL);
             }
         } else {
             TIME_INTERVAL = radioCheck * 60 * 1000;
             localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
             page.updateIntervalDisplay(TIME_INTERVAL);
+            setTimer(TIME_INTERVAL);
+            
         }
     }
 

@@ -13,10 +13,12 @@ header
         li(class='tab')
           a(href='#advanced-settings') New Settings
     div(id="timer")
-      p(id="timer-time") 15:00:00
+      p(id="timer-time")
       div
         button(id="start-timer", class="timer-button") start
         button(id="reset-timer", class="timer-button") reset
+        button(id="pause-timer", class="timer-button") pause
+      script(src='javascripts/timer.js')
     div(class='nav-wrapper container')
       ul(class='middle-ul')
         div(id="play-skip")

@@ -274,7 +274,6 @@
       let key = this.dropdownOptions.id + index;
       let obj = {};
       optionEl.id = key;
-
       obj.el = el;
       obj.optionEl = optionEl;
       this._valueDict[key] = obj;
