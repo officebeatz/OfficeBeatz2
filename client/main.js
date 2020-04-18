@@ -8,7 +8,7 @@ $(document).ready(function () {
     $('.tabs').tabs();
     $('.collapsible').collapsible();
 
-    let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
+    let TIME_INTERVAL = 900000; // Defaults to 15 minutes if not previously set.
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
@@ -94,9 +94,13 @@ $(document).ready(function () {
     $("#reset-timer").click(function() {
         TIME_INTERVAL = getInitialMS();
         setTimer(TIME_INTERVAL);
+        pauseTimer();
+        document.getElementById("timer-time").innerHTML =
+            timeToString(Math.floor(TIME_INTERVAL/1000));
     });
     $("#pause-timer").click(function() {
         clearTimeout(songTimeout);
+        pauseTimer();
     });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
