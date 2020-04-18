@@ -17,6 +17,10 @@ $(document).ready(function () {
     let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+    let settingsDisplay = $('#advSetForm');
+    let stopDisplay = $('#stop-timer');
+    let startDisplay = $('#start-timer');
+
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -103,17 +107,31 @@ $(document).ready(function () {
 
     // How I imagine this would work vvv, the console logs didn't even work
 
-    // $('#pop-settings').click(function () {
-    //     console.log("in pop settings");
-    //     let display = $('#advancedSettingsForm').style.display;
-    //     console.log(display);
-    //     $('advancedSettingsForm').style.display = "block";
-    // });
+    $('#pop-settings').click(function () {
+        console.log("in pop settings");
+        
+        console.log(settingsDisplay[0].style["display"]);
+        let shown = settingsDisplay[0].style["display"];
 
-    // $('#start-button').click(function () {
-    //     console.log("stop display");
-    //     $('#stop-button').style.display = "block";
-    // });
+        if (shown == "none") {
+            settingsDisplay[0].style["display"] = "block";
+        } else {
+            settingsDisplay[0].style["display"] = "none";
+        }
+
+        
+        
+        
+        
+        
+    });
+
+    $('#start-timer').click(function () {
+        console.log("stop display");
+        // $('stop-timer').css("display", "block");
+        $('stop-timer').show();
+        console.log('"showing" the stop');
+    });
 
     //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
