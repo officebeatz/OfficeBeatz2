@@ -25,7 +25,7 @@ header
             i(class="material-icons") skip_next
         div(id="vol-song")
           a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute')
-            i(class="material-icons") volume_up
+            i(class="material-icons", id="vol-change") volume_up
           div(id="slider-song")
             input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
             include song-controls.pug

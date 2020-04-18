@@ -20,7 +20,8 @@ $(document).ready(function () {
     let settingsDisplay = $('#advSetForm');
     let stopDisplay = $('#stop-timer');
     let startDisplay = $('#start-timer');
-
+    let volumeDisplay = $('#vol-control');
+    let titleDisplay = $('#current-song-display');
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -108,29 +109,53 @@ $(document).ready(function () {
     // How I imagine this would work vvv, the console logs didn't even work
 
     $('#pop-settings').click(function () {
-        console.log("in pop settings");
-        
-        console.log(settingsDisplay[0].style["display"]);
+        // console.log("in pop settings");
+        // console.log(settingsDisplay[0].style["display"]);
         let shown = settingsDisplay[0].style["display"];
-
         if (shown == "none") {
             settingsDisplay[0].style["display"] = "block";
         } else {
             settingsDisplay[0].style["display"] = "none";
-        }
-
-        
-        
-        
-        
-        
+        }  
     });
 
     $('#start-timer').click(function () {
-        console.log("stop display");
-        // $('stop-timer').css("display", "block");
-        $('stop-timer').show();
-        console.log('"showing" the stop');
+
+        let shown = startDisplay[0].style["display"];
+
+        if (shown == "none") {
+            startDisplay[0].style["display"] = "inline-block";
+            stopDisplay[0].style["display"] = "none";
+        } else {
+            startDisplay[0].style["display"] = "none";
+            stopDisplay[0].style["display"] = "inline-block";
+        }  
+    });
+
+
+    $('#stop-timer').click(function () {
+
+        let shown = startDisplay[0].style["display"];
+
+        if (shown == "none") {
+            startDisplay[0].style["display"] = "inline-block";
+            stopDisplay[0].style["display"] = "none";
+        } else {
+            startDisplay[0].style["display"] = "none";
+            stopDisplay[0].style["display"] = "inline-block";
+        }  
+    });
+
+    $('#vol-change').click(function () {
+        
+        let shown = volumeDisplay[0].style["display"];
+        if (shown == "none") {
+            volumeDisplay[0].style["display"] = "inline-block";
+            titleDisplay[0].style["display"] = "none";
+        } else {
+            volumeDisplay[0].style["display"] = "none";
+            titleDisplay[0].style["display"] = "inline-block";
+        }  
     });
 
     //Updates volume when slider is changed.
