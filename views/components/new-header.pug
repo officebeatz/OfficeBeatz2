@@ -10,26 +10,31 @@ header
           a(href='#getting-started') Getting Started
         li(class='tab')
           a(href='#about-tab') About
+    div(id="covid")
+      p(id="covid-text") To help curb the spread of COVID 19 and keep you and your community safe, every time a song comes on, we encourage you to wash your hands for 20-seconds. Get some movement, and wash your hands. Stay healthy, stay safe &#9829
     div(id="timer")
       p(id="timer-time") 15:00:00
       div
         button(id="start-timer", class="timer-button") start
         button(id="stop-timer", class="timer-button", style="display: none") stop
         button(id="reset-timer", class="timer-button") reset
-    div(class='nav-wrapper container')
+    div(class='nav-wrapper container content-container col s12')
       ul(class='middle-ul')
-        div(id="play-skip")
-          a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='play')
-            i(class="material-icons") play_arrow        
-          a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='skip')
-            i(class="material-icons") skip_next
-        div(id="vol-song")
-          a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute')
-            i(class="material-icons", id="vol-change") volume_up
-          div(id="slider-song")
-            input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
-            include song-controls.pug
-        div
+        div(id="space-controls")
+          div(id='left-controls')
+            a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='play')
+              i(class="material-icons") play_arrow        
+            a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='skip')
+              i(class="material-icons") skip_next
+            a(class='waves-effect waves-light btn-flat light-blue accent-3' col s12, id='mute')
+              i(class="material-icons", id="vol-change") volume_up
+            div(id="vol-margin-left")
+              input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
+          div
           a(id="pop-settings")
             i(class="settings-icon") settings
+      ul(class='middle-ul')
+        include song-controls.pug
+    include form-holder.pug
+    
             

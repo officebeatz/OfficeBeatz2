@@ -55,7 +55,11 @@ nav.nav-center
   text-align: center
   padding-top: 25px
 
-#advSetForm
+#covid
+  text-align: center
+  background-color: #191919
+#covid-text
+  color: #26B5E2
 
 
 .content-container
@@ -116,19 +120,27 @@ nav.nav-center
   height: auto
   margin: auto 0
 
-#play-skip
+#space-controls
+  width: 80%
   display: flex
-  margin: auto 0
+  justify-content: space-between
+
+#left-controls
+  display: flex
+  justify-content: space-between
+  a
+    margin-top: auto
+    margin-bottom: auto
+  div 
+    input
+      margin: auto
+
 
 #vol-song
   width: 100%
   display: flex
+  justify-content: left
   margin: auto 0
-#slider-song
-  width: 100%
-  display: flex
-  // justify-content: space-between
-  margin-right: 20px
 
 #current-song-display
   display: flex
@@ -163,6 +175,7 @@ input[type=number]::-webkit-inner-spin-button
   width: 100%
   display: flex
   justify-content: space-between
+  text-align: left
 
 #intervals p 
   margin: 5px
@@ -173,7 +186,7 @@ input[type=number]::-webkit-inner-spin-button
 #customIntervalValue
   width: 110px
   height: 40px
-  background-color: #212121
+  background-color: #191919
   color: #00b0ff
   margin-left: 5px
   text-align: center
@@ -246,6 +259,9 @@ input[type=number]::-webkit-inner-spin-button
   // eventually VVV need to activate for button click
   // display: none
 
+#vol-margin-left
+  margin: auto auto auto 15px
+
 .thumb
   visibility: hidden
 
@@ -280,10 +296,11 @@ input[type=number]::-webkit-inner-spin-button
 
 .title-container
   background-color: #212121
-  text-align: center
-  height: auto
+  
   line-height: 32px
 
+.100-wid
+  width: 100%
 
 .songDisplay
   color: #616161
@@ -305,7 +322,9 @@ input[type=number]::-webkit-inner-spin-button
   flex-wrap: wrap
 
 #notes-container, #genreNotesContainer, #decadeNotesContainer, #intervalNotesContainer
-  background-color: #212121
+  width: 100%
+  text-align: left
+  background-color: #191919
   padding: 15px
   p
     color: #616161
