@@ -98,7 +98,7 @@ $(document).ready(function () {
         document.getElementById("timer-time").innerHTML =
             timeToString(Math.floor(TIME_INTERVAL/1000));
     });
-    $("#pause-timer").click(function() {
+    $("#stop-timer").click(function() {
         clearTimeout(songTimeout);
         pauseTimer();
     });
