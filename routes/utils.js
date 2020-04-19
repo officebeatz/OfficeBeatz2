@@ -26,18 +26,19 @@ function getLinkToFile(name) {
 /**
  *
  * @param {Array} songs
- * @param {function} function
- * @param {JSON} config
  * @return updated_config
  */
 
-function extractAllID3(songs, fn, config) {
-    return songs.reduce((p, song) => {
-        return p.then((conf) => {
-            return fn(song, conf);
-        });
-    }, Promise.resolve(config));
-}
+ function extractAllID3(songs) {
+     let config = {
+         "counts":{},
+         "songs":{}
+     };
+     songs.forEach(song => {
+         extractID3(song, config);
+     })
+     return config;
+ }
 
 /**
  * @param {JSON} song song
@@ -110,7 +111,7 @@ exports.updateDBX = function() {
         "songs":{}
     };
     return dbx.filesListFolder({path: ''})
-        .then(response => extractAllID3(response.entries, extractID3, config))
+        .then(response => extractAllID3(response.entries))
         .then(result => dbx.filesUpload({
             contents: JSON.stringify(result, null, "\t"),
             path: "/config.json",
