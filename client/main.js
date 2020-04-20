@@ -2,13 +2,14 @@ api = require('./api.js');   // AJAX requests to back-end API
 form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
+timer = require('./timer.js');
 
 $(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
 
-    let TIME_INTERVAL = localStorage.getItem("TIME_INTERVAL") || 2700000; // Defaults to 45 minutes if not previously set.
+    let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
@@ -17,11 +18,14 @@ $(document).ready(function () {
     let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+
     let settingsDisplay = $('#advSetForm');
     let stopDisplay = $('#stop-timer');
     let startDisplay = $('#start-timer');
     let volumeDisplay = $('#vol-control');
     let titleDisplay = $('#current-song-display');
+
+    var songTimeout;
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -48,11 +52,11 @@ $(document).ready(function () {
         findNextSongWithPreferences(genrePreferences, decadePreferences)
     });
 
-    // Updates entries requiring TIME_INTERVAL
-    page.determineRadioButton(TIME_INTERVAL);
+    // Updates entries requiring timeLeft
+    page.determineRadioButton(timeLeft);
     page.determineCheckboxes(genrePreferences);
     page.determineDecadeInputs(decadePreferences);
-    page.updateIntervalDisplay(TIME_INTERVAL);
+    page.updateIntervalDisplay(timeLeft);
     page.updateGenreDisplay(genrePreferences);
     page.updateDecadeDisplay(decadePreferences);
     page.allSelectedOrNot();
@@ -75,13 +79,30 @@ $(document).ready(function () {
         page.updatePlayIcon(audioElement);
     });
 
-    // Makes an API request for a new song every TIME_INTERVAL milliseconds.
+    // Makes an API request for a new song every timeLeft milliseconds.
     let timeout = () => {
         activeInterval = true;
-        setTimeout(function () {
+        songTimeout = setTimeout(function () {
             loopPlayer(audioElement);
-        }, TIME_INTERVAL);
+        }, timeLeft);
+        timer.startTimer();
     }
+
+    $("#start-timer").click(function() {
+        timeLeft=timer.getCurrentMS();
+        timeout();
+    });
+    $("#reset-timer").click(function() {
+        timeLeft = timer.getInitialMS();
+        timer.setTimer(timeLeft);
+        timer.pauseTimer();
+        document.getElementById("timer-time").innerHTML =
+            timer.timeToString(Math.floor(timeLeft/1000));
+    });
+    $("#stop-timer").click(function() {
+        clearTimeout(songTimeout);
+        timer.pauseTimer();
+    });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
@@ -112,7 +133,7 @@ $(document).ready(function () {
             settingsDisplay[0].style["display"] = "block";
         } else {
             settingsDisplay[0].style["display"] = "none";
-        }  
+        }
     });
 
     $('#start-timer').click(function () {
@@ -125,7 +146,7 @@ $(document).ready(function () {
         } else {
             startDisplay[0].style["display"] = "none";
             stopDisplay[0].style["display"] = "inline-block";
-        }  
+        }
     });
 
 
@@ -139,11 +160,11 @@ $(document).ready(function () {
         } else {
             startDisplay[0].style["display"] = "none";
             stopDisplay[0].style["display"] = "inline-block";
-        }  
+        }
     });
 
     $('#vol-change').click(function () {
-        
+
         let shown = volumeDisplay[0].style["display"];
         if (shown == "none") {
             volumeDisplay[0].style["display"] = "inline-block";
@@ -151,7 +172,7 @@ $(document).ready(function () {
         } else {
             volumeDisplay[0].style["display"] = "none";
             titleDisplay[0].style["display"] = "inline-block";
-        }  
+        }
     });
 
     //Updates volume when slider is changed.
@@ -209,14 +230,16 @@ $(document).ready(function () {
                 event.preventDefault();
                 console.error("Custom intervals must be between 1 and 120 minutes.");
             } else {
-                TIME_INTERVAL = customValue * 60 * 1000;
-                localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
-                page.updateIntervalDisplay(TIME_INTERVAL);
+                timeLeft = customValue * 60 * 1000;
+                localStorage.setItem("TIME_INTERVAL", timeLeft);
+                page.updateIntervalDisplay(timeLeft);
+                timer.setTimer(timeLeft);
             }
         } else {
-            TIME_INTERVAL = radioCheck * 60 * 1000;
-            localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
-            page.updateIntervalDisplay(TIME_INTERVAL);
+            timeLeft = radioCheck * 60 * 1000;
+            localStorage.setItem("TIME_INTERVAL", timeLeft);
+            page.updateIntervalDisplay(timeLeft);
+            timer.setTimer(timeLeft);
         }
     }
 
