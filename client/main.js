@@ -17,6 +17,11 @@ $(document).ready(function () {
     let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+    let settingsDisplay = $('#advSetForm');
+    let stopDisplay = $('#stop-timer');
+    let startDisplay = $('#start-timer');
+    let volumeDisplay = $('#vol-control');
+    let titleDisplay = $('#current-song-display');
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -98,6 +103,55 @@ $(document).ready(function () {
         }
 
         page.updateVolIcon(audioElement);
+    });
+
+
+    $('#pop-settings').click(function () {
+        let shown = settingsDisplay[0].style["display"];
+        if (shown == "none") {
+            settingsDisplay[0].style["display"] = "block";
+        } else {
+            settingsDisplay[0].style["display"] = "none";
+        }  
+    });
+
+    $('#start-timer').click(function () {
+
+        let shown = startDisplay[0].style["display"];
+
+        if (shown == "none") {
+            startDisplay[0].style["display"] = "inline-block";
+            stopDisplay[0].style["display"] = "none";
+        } else {
+            startDisplay[0].style["display"] = "none";
+            stopDisplay[0].style["display"] = "inline-block";
+        }  
+    });
+
+
+    $('#stop-timer').click(function () {
+
+        let shown = startDisplay[0].style["display"];
+
+        if (shown == "none") {
+            startDisplay[0].style["display"] = "inline-block";
+            stopDisplay[0].style["display"] = "none";
+        } else {
+            startDisplay[0].style["display"] = "none";
+            stopDisplay[0].style["display"] = "inline-block";
+        }  
+    });
+
+    $('#vol-change').click(function () {
+        
+        let shown = volumeDisplay[0].style["display"];
+        if (shown == "none") {
+            volumeDisplay[0].style["display"] = "inline-block";
+            titleDisplay[0].style["display"] = "none";
+        } else {
+            volumeDisplay[0].style["display"] = "none";
+            titleDisplay[0].style["display"] = "inline-block";
+        }  
     });
 
     //Updates volume when slider is changed.

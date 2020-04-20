@@ -55,10 +55,115 @@ nav.nav-center
   text-align: center
   padding-top: 25px
 
+#covid
+  text-align: center
+  background-color: #191919
+  padding: 5px 5px
+  line-height: 20px
+#covid-text
+  color: #26B5E2
+
+.about-header
+  margin: 20px
+  text-align: center
+
+.grey
+  color: grey
+
+#about-ul
+  margin: 20px
+
+#about-ul-li
+  margin: 10px 0
+
+
 .content-container
   width: 65%
   margin: auto
   text-align: left
+
+.nav-content
+  width: 100%
+  padding: 10px
+  display: flex
+  justify-content: space-between
+
+#timer
+  width: 100%
+  display: flex
+  justify-content: center
+  background-color: black
+  padding: 10px
+
+#timer-time
+  font-size: 7em
+  margin: auto 15px
+
+.timer-button
+  padding: 30px
+  border-radius: 15px
+  background: rgba(0,0,0,0)
+  margin: 5px
+  font-size: 2em
+
+#start-timer
+  color: rgb(0,200,0)
+  border: solid 5px rgb(0,200,0) 
+#start-timer:hover
+  color: rgb(0,255,0)
+  border: solid 5px rgb(0,255,0) 
+
+#stop-timer
+  color: rgb(200,0,0)
+  border: solid 5px rgb(200,0,0)
+#stop-timer:hover
+  color: rgb(255,0,0)
+  border: solid 5px rgb(255,0,0) 
+
+
+#reset-timer
+  color: #0493C0
+  border: solid 5px #0493C0
+#reset-timer:hover
+  color: #26B5E2
+  border: solid 5px #26B5E2
+
+.middle-ul
+  width: 100%
+  display: flex
+  justify-content: center
+  height: auto
+  margin: auto 0
+
+#space-controls
+  width: 80%
+  display: flex
+  justify-content: space-between
+
+#left-controls
+  display: flex
+  justify-content: space-between
+  a
+    margin-top: auto
+    margin-bottom: auto
+  div 
+    input
+      margin: auto
+
+
+#vol-song
+  width: 100%
+  display: flex
+  justify-content: left
+  margin: auto 0
+
+#current-song-display
+  display: flex
+  margin: auto
+  
+
+.title-container a
+  padding: 0 3px
 
 .smaller
   font-size: 14px
@@ -80,13 +185,23 @@ input[type=number]::-webkit-inner-spin-button
 .submitButton
   margin-bottom: 35px
 
+#intervals
+  margin: 5px
+  width: 100%
+  display: flex
+  justify-content: space-between
+  text-align: left
+
+#intervals p 
+  margin: 5px
+
 .intervalForm
   line-height: 40px
 
 #customIntervalValue
   width: 110px
   height: 40px
-  background-color: #212121
+  background-color: #191919
   color: #00b0ff
   margin-left: 5px
   text-align: center
@@ -104,6 +219,15 @@ input[type=number]::-webkit-inner-spin-button
   padding-left: 5px
   padding-right: 3px
 
+#settings-box
+  width: 100%
+  background-color: black
+  border: solid 10px black
+
+#intervals
+  width: 100%
+  display: flex
+
 #gs-list, #gs-notes
   list-style: none
   counter-reset: item
@@ -119,6 +243,11 @@ input[type=number]::-webkit-inner-spin-button
 
 .genre-notes
   padding-top: 15px
+  
+
+.interval-notes
+  padding-top: 15px
+  margin-bottom: 5px
 
 #gs-list
   li:before
@@ -134,13 +263,19 @@ input[type=number]::-webkit-inner-spin-button
 
 #vol-control
   width: 250px
-  height: 80%
+  // height: 80%
   line-height: 80%
   border: none
   position: relative
-  margin-top: 8px
+  // margin-top: 8px
+  margin: auto
   -webkit-transform: translate(0%,30%)
   -moz-transform: translate(0%,100%)
+  // eventually VVV need to activate for button click
+  // display: none
+
+#vol-margin-left
+  margin: auto auto auto 15px
 
 .thumb
   visibility: hidden
@@ -176,12 +311,11 @@ input[type=number]::-webkit-inner-spin-button
 
 .title-container
   background-color: #212121
-  text-align: center
-  width: 65%
-  height: auto
-  margin: 0 auto
-  margin-bottom: 25px
+  
   line-height: 32px
+
+.100-wid
+  width: 100%
 
 .songDisplay
   color: #616161
@@ -189,10 +323,24 @@ input[type=number]::-webkit-inner-spin-button
 #titleID, #artistID
   color: #00b0ff
 
-#notes-container, #genreNotesContainer, #decadeNotesContainer
-  background-color: #212121
+#genres-box
+  width: 100%
+  display: flex
+  flex-wrap: wrap 
+  div
+    display: flex
+    margin: auto 20px
+
+#date-box
+  width: 100%
+  display: flex
+  flex-wrap: wrap
+
+#notes-container, #genreNotesContainer, #decadeNotesContainer, #intervalNotesContainer
+  width: 100%
+  text-align: left
+  background-color: #191919
   padding: 15px
-  margin-top: 15px
   p
     color: #616161
   #notes-header
