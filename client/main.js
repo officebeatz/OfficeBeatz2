@@ -2,13 +2,12 @@ api = require('./api.js');   // AJAX requests to back-end API
 form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
-timer = require('../public/javascripts/timer.js');
-$(document).ready(function () {
+timer = require('./timer.js');
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
 
-    let TIME_INTERVAL = 900000; // Defaults to 15 minutes if not previously set.
+    let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
@@ -44,11 +43,11 @@ $(document).ready(function () {
         findNextSongWithPreferences(genrePreferences, decadePreferences)
     });
 
-    // Updates entries requiring TIME_INTERVAL
-    page.determineRadioButton(TIME_INTERVAL);
+    // Updates entries requiring timeLeft
+    page.determineRadioButton(timeLeft);
     page.determineCheckboxes(genrePreferences);
     page.determineDecadeInputs(decadePreferences);
-    page.updateIntervalDisplay(TIME_INTERVAL);
+    page.updateIntervalDisplay(timeLeft);
     page.updateGenreDisplay(genrePreferences);
     page.updateDecadeDisplay(decadePreferences);
     page.allSelectedOrNot();
@@ -71,29 +70,29 @@ $(document).ready(function () {
         page.updatePlayIcon(audioElement);
     });
 
-    // Makes an API request for a new song every TIME_INTERVAL milliseconds.
+    // Makes an API request for a new song every timeLeft milliseconds.
     let timeout = () => {
         activeInterval = true;
         songTimeout = setTimeout(function () {
             loopPlayer(audioElement);
-        }, TIME_INTERVAL);
-        startTimer();
+        }, timeLeft);
+        timer.startTimer();
     }
 
     $("#start-timer").click(function() { 
-        TIME_INTERVAL=getCurrentMS();
+        timeLeft=timer.getCurrentMS();
         timeout();
     });
     $("#reset-timer").click(function() {
-        TIME_INTERVAL = getInitialMS();
-        setTimer(TIME_INTERVAL);
-        pauseTimer();
+        timeLeft = timer.getInitialMS();
+        timer.setTimer(timeLeft);
+        timer.pauseTimer();
         document.getElementById("timer-time").innerHTML =
-            timeToString(Math.floor(TIME_INTERVAL/1000));
+            timeToString(Math.floor(timeLeft/1000));
     });
     $("#stop-timer").click(function() { 
         clearTimeout(songTimeout);
-        pauseTimer();
+        timer.pauseTimer();
     });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
@@ -173,16 +172,16 @@ $(document).ready(function () {
                 event.preventDefault();
                 console.error("Custom intervals must be between 1 and 120 minutes.");
             } else {
-                TIME_INTERVAL = customValue * 60 * 1000;
-                localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
-                page.updateIntervalDisplay(TIME_INTERVAL);
-                setTimer(TIME_INTERVAL);
+                timeLeft = customValue * 60 * 1000;
+                localStorage.setItem("TIME_INTERVAL", timeLeft);
+                page.updateIntervalDisplay(timeLeft);
+                timer.setTimer(timeLeft);
             }
         } else {
-            TIME_INTERVAL = radioCheck * 60 * 1000;
-            localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
-            page.updateIntervalDisplay(TIME_INTERVAL);
-            setTimer(TIME_INTERVAL);
+            timeLeft = radioCheck * 60 * 1000;
+            localStorage.setItem("TIME_INTERVAL", timeLeft);
+            page.updateIntervalDisplay(timeLeft);
+            timer.setTimer(timeLeft);
             
         }
     }
