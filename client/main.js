@@ -3,6 +3,8 @@ form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
 timer = require('./timer.js');
+
+$(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
@@ -88,7 +90,7 @@ timer = require('./timer.js');
         timer.setTimer(timeLeft);
         timer.pauseTimer();
         document.getElementById("timer-time").innerHTML =
-            timeToString(Math.floor(timeLeft/1000));
+            timer.timeToString(Math.floor(timeLeft/1000));
     });
     $("#stop-timer").click(function() { 
         clearTimeout(songTimeout);
