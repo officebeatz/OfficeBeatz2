@@ -94,7 +94,6 @@ $(document).ready(function () {
     }
 
     $('#mute').click(function () {
-        console.log("in mute");
         if (audioElement.volume != 0) {
             volumeControl.val(0);
             audioElement.volume = 0;
@@ -106,11 +105,8 @@ $(document).ready(function () {
         page.updateVolIcon(audioElement);
     });
 
-    // How I imagine this would work vvv, the console logs didn't even work
 
     $('#pop-settings').click(function () {
-        // console.log("in pop settings");
-        // console.log(settingsDisplay[0].style["display"]);
         let shown = settingsDisplay[0].style["display"];
         if (shown == "none") {
             settingsDisplay[0].style["display"] = "block";

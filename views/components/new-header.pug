@@ -10,14 +10,8 @@ header
           a(href='#getting-started') Getting Started
         li(class='tab')
           a(href='#about-tab') About
-    div(id="covid")
-      p(id="covid-text") To help curb the spread of COVID 19 and keep you and your community safe, every time a song comes on, we encourage you to wash your hands for 20-seconds. Get some movement, and wash your hands. Stay healthy, stay safe &#9829
-    div(id="timer")
-      p(id="timer-time") 15:00:00
-      div
-        button(id="start-timer", class="timer-button") start
-        button(id="stop-timer", class="timer-button", style="display: none") stop
-        button(id="reset-timer", class="timer-button") reset
+    include banner-message.pug
+    include timer.pug
     div(class='nav-wrapper container content-container col s12')
       ul(class='middle-ul')
         div(id="space-controls")
