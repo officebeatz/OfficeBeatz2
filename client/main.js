@@ -236,19 +236,10 @@ $(document).ready(function () {
                 timer.setTimer(timeLeft);
             }
         } else {
-<<<<<<< HEAD
-            TIME_INTERVAL = radioCheck * 60 * 1000;
-            localStorage.setItem("TIME_INTERVAL", TIME_INTERVAL);
-            page.updateIntervalDisplay(TIME_INTERVAL);
-            setTimer(TIME_INTERVAL);
-
-=======
             timeLeft = radioCheck * 60 * 1000;
             localStorage.setItem("TIME_INTERVAL", timeLeft);
             page.updateIntervalDisplay(timeLeft);
             timer.setTimer(timeLeft);
-
->>>>>>> review changes
         }
     }
 
