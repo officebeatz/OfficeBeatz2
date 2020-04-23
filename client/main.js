@@ -163,6 +163,11 @@ $(document).ready(function () {
         }
     });
 
+    $('#reset-timer').click(function (){
+        startDisplay[0].style["display"] = "inline-block";
+        stopDisplay[0].style["display"] = "none";
+    });
+
     $('#vol-change').click(function () {
 
         let shown = volumeDisplay[0].style["display"];
