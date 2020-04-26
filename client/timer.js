@@ -31,7 +31,7 @@ function setTimer(time){
         initialSettings = time;
         currMilliseconds = time;
 }
-function pauseTimer(){;
+function pauseTimer(){
         clearInterval(timer_display);
 }
 function getCurrentMS(){
