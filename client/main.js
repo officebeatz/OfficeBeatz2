@@ -3,6 +3,7 @@ form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
 timer = require('./timer.js');
+var songTimeout;
 
 $(document).ready(function () {
     // Initializes Materialize components.
@@ -25,7 +26,6 @@ $(document).ready(function () {
     let volumeDisplay = $('#vol-control');
     let titleDisplay = $('#current-song-display');
 
-    var songTimeout;
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -71,10 +71,6 @@ $(document).ready(function () {
             audioElement.pause();
         }
 
-        // If the interval is already determined, do not set another one.
-        if (!activeInterval) {
-            timeout();
-        }
 
         page.updatePlayIcon(audioElement);
     });
@@ -85,12 +81,12 @@ $(document).ready(function () {
         songTimeout = setTimeout(function () {
             loopPlayer(audioElement);
         }, timeLeft);
-        timer.startTimer();
     }
 
     $("#start-timer").click(function() {
         timeLeft=timer.getCurrentMS();
         timeout();
+        timer.startTimer();
     });
     $("#reset-timer").click(function() {
         timeLeft = timer.getInitialMS();
