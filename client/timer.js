@@ -6,9 +6,12 @@ var timer_display;
 
 function timeToString(totalSeconds){
         var hours = Math.floor(totalSeconds/3600);
+        if(hours < 10){hours = "0"+hours;}
         var minutes = Math.floor((totalSeconds%3600)/60);
+        if(minutes < 10){minutes = "0"+minutes};
         var seconds = Math.floor(totalSeconds%60);
-        return hours + "h " + minutes + "m " + seconds + "s";
+        if(seconds<10){seconds="0"+seconds};
+        return hours + ":" + minutes + ":" + seconds;
 }   
 function displayTimer(){
         var seconds_remaining = Math.floor((intervalEnd-new Date())/1000);
