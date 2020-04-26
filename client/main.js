@@ -164,8 +164,6 @@ $(document).ready(function () {
             stopButton[0].style["display"] = "inline-block";
         }
     });
-
-
     $('#stop-timer').click(function () {
         let shown = startButton[0].style["display"];
         if (shown == "none") {
@@ -176,11 +174,11 @@ $(document).ready(function () {
             stopButton[0].style["display"] = "inline-block";
         }
     });
-
     $('#reset-timer').click(function (){
-        startDisplay[0].style["display"] = "inline-block";
-        stopDisplay[0].style["display"] = "none";
+        startButton[0].style["display"] = "inline-block";
+        stopButton[0].style["display"] = "none";
     });
+
 
     $('#vol-change').click(function () {
         let shown = volumeButton[0].style["display"];
@@ -192,7 +190,6 @@ $(document).ready(function () {
             titleDisplay[0].style["display"] = "inline-block";
         }
     });
-
     //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
         tempVol = this.value;
@@ -200,7 +197,6 @@ $(document).ready(function () {
 
         page.updateVolIcon(audioElement);
     });
-
     // Get new song, retaining pause/play state.
     $('#skip').click(function () {
         if (audioElement.paused) {
@@ -211,6 +207,7 @@ $(document).ready(function () {
             audioElement.play();
         }
     });
+
 
     // Submits and updates interval between songs.
     $("#advancedSettingsForm").submit(function (event) {
