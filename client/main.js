@@ -8,6 +8,10 @@ $(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
+    // Make the corner logo also work as the 'Home' tab
+    $('#clickable-home').click(function() {
+        $('.tabs').tabs('select', 'home');
+    });
 
     let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let activeInterval = false;
@@ -19,11 +23,13 @@ $(document).ready(function () {
     let genrePreferences = [];
     let decadePreferences = [];
 
-    let settingsDisplay = $('#advSetForm');
-    let stopDisplay = $('#stop-timer');
-    let startDisplay = $('#start-timer');
-    let volumeDisplay = $('#vol-control');
+    let settingsElement = $('#advSetForm');
+    let stopButton = $('#stop-timer');
+    let startButton = $('#start-timer');
+    let volumeButton = $('#vol-control');
     let titleDisplay = $('#current-song-display');
+    let blueGearIcon = $('#settings-icon-blue');
+    let grayGearIcon = $('#settings-icon-grey');
 
     var songTimeout;
 
@@ -92,6 +98,10 @@ $(document).ready(function () {
         timeLeft=timer.getCurrentMS();
         timeout();
     });
+    $("#stop-timer").click(function() {
+        clearTimeout(songTimeout);
+        timer.pauseTimer();
+    });
     $("#reset-timer").click(function() {
         timeLeft = timer.getInitialMS();
         timer.setTimer(timeLeft);
@@ -99,10 +109,8 @@ $(document).ready(function () {
         document.getElementById("timer-time").innerHTML =
             timer.timeToString(Math.floor(timeLeft/1000));
     });
-    $("#stop-timer").click(function() {
-        clearTimeout(songTimeout);
-        timer.pauseTimer();
-    });
+    // clear the button highlight after reset is clicked (for readability)
+    $("#reset-timer").mouseup(function() { this.blur(); });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
@@ -126,50 +134,61 @@ $(document).ready(function () {
         page.updateVolIcon(audioElement);
     });
 
-
     $('#pop-settings').click(function () {
-        let shown = settingsDisplay[0].style["display"];
+        // toggle display of settings tab
+        let shown = settingsElement[0].style["display"];
         if (shown == "none") {
-            settingsDisplay[0].style["display"] = "block";
+            settingsElement[0].style["display"] = "block";
         } else {
-            settingsDisplay[0].style["display"] = "none";
+            settingsElement[0].style["display"] = "none";
+        }
+
+        // toggle color of settings icon
+        blueGearIconDisplay = blueGearIcon[0].style.display;
+        if (blueGearIconDisplay == "block") {
+            grayGearIcon[0].style["display"] = "block";
+            blueGearIcon[0].style["display"] = "none";
+        } else if (blueGearIconDisplay == "none") {
+            blueGearIcon[0].style["display"] = "block";
+            grayGearIcon[0].style["display"] = "none";
         }
     });
 
     $('#start-timer').click(function () {
-
-        let shown = startDisplay[0].style["display"];
-
+        let shown = startButton[0].style["display"];
         if (shown == "none") {
-            startDisplay[0].style["display"] = "inline-block";
-            stopDisplay[0].style["display"] = "none";
+            startButton[0].style["display"] = "inline-block";
+            stopButton[0].style["display"] = "none";
         } else {
-            startDisplay[0].style["display"] = "none";
-            stopDisplay[0].style["display"] = "inline-block";
+            startButton[0].style["display"] = "none";
+            stopButton[0].style["display"] = "inline-block";
         }
     });
 
 
     $('#stop-timer').click(function () {
-        let shown = startDisplay[0].style["display"];
-
+        let shown = startButton[0].style["display"];
         if (shown == "none") {
-            startDisplay[0].style["display"] = "inline-block";
-            stopDisplay[0].style["display"] = "none";
+            startButton[0].style["display"] = "inline-block";
+            stopButton[0].style["display"] = "none";
         } else {
-            startDisplay[0].style["display"] = "none";
-            stopDisplay[0].style["display"] = "inline-block";
+            startButton[0].style["display"] = "none";
+            stopButton[0].style["display"] = "inline-block";
         }
     });
 
-    $('#vol-change').click(function () {
+    $('#reset-timer').click(function (){
+        startDisplay[0].style["display"] = "inline-block";
+        stopDisplay[0].style["display"] = "none";
+    });
 
-        let shown = volumeDisplay[0].style["display"];
+    $('#vol-change').click(function () {
+        let shown = volumeButton[0].style["display"];
         if (shown == "none") {
-            volumeDisplay[0].style["display"] = "inline-block";
+            volumeButton[0].style["display"] = "inline-block";
             titleDisplay[0].style["display"] = "none";
         } else {
-            volumeDisplay[0].style["display"] = "none";
+            volumeButton[0].style["display"] = "none";
             titleDisplay[0].style["display"] = "inline-block";
         }
     });

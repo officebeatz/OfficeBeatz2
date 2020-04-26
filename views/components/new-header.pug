@@ -1,7 +1,7 @@
 header
   nav(class='nav-extended nav-color nav-center')
     div(class='nav-content')
-      div(class="logo", href='#home')
+      div(class="logo", id="clickable-home")
         img(src="images/favicon.ico")
       ul(class='tabs tabs-transparent')
         li(class='tab')
@@ -26,7 +26,8 @@ header
               input(id="vol-control" type="range" min="0" max="100" value="50" class='volSlider')
           div
           a(id="pop-settings")
-            i(class="settings-icon") settings
-      ul(class='middle-ul')
+            div(id="settings-icon-blue", class="settings-icon", style="display: block")
+            div(id="settings-icon-grey", class="settings-icon")
+      ul(class='middle-ul' id="song-controls")
         include song-controls.pug
     include form-holder.pug
