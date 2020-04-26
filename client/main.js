@@ -19,14 +19,13 @@ $(document).ready(function () {
     let genrePreferences = [];
     let decadePreferences = [];
 
-    let settingsDisplay = $('#advSetForm');
-    let stopDisplay = $('#stop-timer');
-    let startDisplay = $('#start-timer');
-    let volumeDisplay = $('#vol-control');
+    let settingsElement = $('#advSetForm');
+    let stopButton = $('#stop-timer');
+    let startButton = $('#start-timer');
+    let volumeButton = $('#vol-control');
     let titleDisplay = $('#current-song-display');
-    let blueGearDisplay = $('#settings-icon-blue');
-    console.log(blueGearDisplay);
-    let greyGearDisplay = $('#settings-icon-grey');
+    let blueGearIcon = $('#settings-icon-blue');
+    let grayGearIcon = $('#settings-icon-grey');
 
     var songTimeout;
 
@@ -130,59 +129,55 @@ $(document).ready(function () {
     });
 
     $('#pop-settings').click(function () {
-        let shown = settingsDisplay[0].style["display"];
+        // toggle display of settings tab
+        let shown = settingsElement[0].style["display"];
         if (shown == "none") {
-            settingsDisplay[0].style["display"] = "block";
+            settingsElement[0].style["display"] = "block";
         } else {
-            settingsDisplay[0].style["display"] = "none";
+            settingsElement[0].style["display"] = "none";
         }
-        let blueColor = "blue";
-        blueColor = blueGearDisplay[0].style.display;
-        
-        if (blueColor == "block") {
-            greyGearDisplay[0].style["display"] = "block";
-            blueGearDisplay[0].style["display"] = "none";
-        } else if (blueColor == "none") {
-            blueGearDisplay[0].style["display"] = "block";
-            greyGearDisplay[0].style["display"] = "none";
+
+        // toggle color of settings icon
+        blueGearIconDisplay = blueGearIcon[0].style.display;
+        if (blueGearIconDisplay == "block") {
+            grayGearIcon[0].style["display"] = "block";
+            blueGearIcon[0].style["display"] = "none";
+        } else if (blueGearIconDisplay == "none") {
+            blueGearIcon[0].style["display"] = "block";
+            grayGearIcon[0].style["display"] = "none";
         }
     });
 
     $('#start-timer').click(function () {
-
-        let shown = startDisplay[0].style["display"];
-
+        let shown = startButton[0].style["display"];
         if (shown == "none") {
-            startDisplay[0].style["display"] = "inline-block";
-            stopDisplay[0].style["display"] = "none";
+            startButton[0].style["display"] = "inline-block";
+            stopButton[0].style["display"] = "none";
         } else {
-            startDisplay[0].style["display"] = "none";
-            stopDisplay[0].style["display"] = "inline-block";
+            startButton[0].style["display"] = "none";
+            stopButton[0].style["display"] = "inline-block";
         }
     });
 
 
     $('#stop-timer').click(function () {
-
-        let shown = startDisplay[0].style["display"];
-
+        let shown = startButton[0].style["display"];
         if (shown == "none") {
-            startDisplay[0].style["display"] = "inline-block";
-            stopDisplay[0].style["display"] = "none";
+            startButton[0].style["display"] = "inline-block";
+            stopButton[0].style["display"] = "none";
         } else {
-            startDisplay[0].style["display"] = "none";
-            stopDisplay[0].style["display"] = "inline-block";
+            startButton[0].style["display"] = "none";
+            stopButton[0].style["display"] = "inline-block";
         }
     });
 
     $('#vol-change').click(function () {
-
-        let shown = volumeDisplay[0].style["display"];
+        let shown = volumeButton[0].style["display"];
         if (shown == "none") {
-            volumeDisplay[0].style["display"] = "inline-block";
+            volumeButton[0].style["display"] = "inline-block";
             titleDisplay[0].style["display"] = "none";
         } else {
-            volumeDisplay[0].style["display"] = "none";
+            volumeButton[0].style["display"] = "none";
             titleDisplay[0].style["display"] = "inline-block";
         }
     });
