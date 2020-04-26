@@ -1,7 +1,6 @@
 //- need to mess with this class name to display & no slider
-div(class="100-wid")
-    div(class='title-container active', id="current-song-display")
-        a(class='songDisplay') Current song: 
-        a(id='titleID', class='songDisplay')
-        a(class='songDisplay')  by 
-        a(id='artistID', class='songDisplay')
+div(class='title-container active', id="current-song-display")
+    span(class='songDisplay', style="padding-right: 6px") Current song:
+    span(id='titleID')
+    span(class='songDisplay', style="padding: 0px 6px 0px 6px") by
+    span(id='artistID')
