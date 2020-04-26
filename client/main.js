@@ -92,6 +92,10 @@ $(document).ready(function () {
         timeLeft=timer.getCurrentMS();
         timeout();
     });
+    $("#stop-timer").click(function() {
+        clearTimeout(songTimeout);
+        timer.pauseTimer();
+    });
     $("#reset-timer").click(function() {
         timeLeft = timer.getInitialMS();
         timer.setTimer(timeLeft);
@@ -99,10 +103,8 @@ $(document).ready(function () {
         document.getElementById("timer-time").innerHTML =
             timer.timeToString(Math.floor(timeLeft/1000));
     });
-    $("#stop-timer").click(function() {
-        clearTimeout(songTimeout);
-        timer.pauseTimer();
-    });
+    // clear the button highlight after reset is clicked (for readability)
+    $("#reset-timer").mouseup(function() { this.blur(); });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
