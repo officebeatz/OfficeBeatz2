@@ -24,6 +24,9 @@ $(document).ready(function () {
     let startDisplay = $('#start-timer');
     let volumeDisplay = $('#vol-control');
     let titleDisplay = $('#current-song-display');
+    let blueGearDisplay = $('#settings-icon-blue');
+    console.log(blueGearDisplay);
+    let greyGearDisplay = $('#settings-icon-grey');
 
     var songTimeout;
 
@@ -126,13 +129,22 @@ $(document).ready(function () {
         page.updateVolIcon(audioElement);
     });
 
-
     $('#pop-settings').click(function () {
         let shown = settingsDisplay[0].style["display"];
         if (shown == "none") {
             settingsDisplay[0].style["display"] = "block";
         } else {
             settingsDisplay[0].style["display"] = "none";
+        }
+        let blueColor = "blue";
+        blueColor = blueGearDisplay[0].style.display;
+        
+        if (blueColor == "block") {
+            greyGearDisplay[0].style["display"] = "block";
+            blueGearDisplay[0].style["display"] = "none";
+        } else if (blueColor == "none") {
+            blueGearDisplay[0].style["display"] = "block";
+            greyGearDisplay[0].style["display"] = "none";
         }
     });
 
