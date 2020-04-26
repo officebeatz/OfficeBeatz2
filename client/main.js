@@ -8,6 +8,10 @@ $(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
+    // Make the corner logo also work as the 'Home' tab
+    $('#clickable-home').click(function() {
+        $('.tabs').tabs('select', 'home');
+    });
 
     let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let activeInterval = false;
