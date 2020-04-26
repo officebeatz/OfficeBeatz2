@@ -201,9 +201,12 @@ $(document).ready(function () {
         page.updateVolIcon(audioElement);
     });
 
-    //Loads up a new song if a song is already playing, otherwise does nothing.
+    // Get new song, retaining pause/play state.
     $('#skip').click(function () {
-        if (!audioElement.paused) {
+        if (audioElement.paused) {
+            findNextSongWithPreferences(genrePreferences, decadePreferences);
+        } else {
+            audioElement.pause();
             findNextSongWithPreferences(genrePreferences, decadePreferences);
             audioElement.play();
         }
