@@ -1,4 +1,5 @@
 song = require('./song.js')
+genreToCheckboxIdMapping = require('./checkboxes')
 
 function submitForm(genreList) {
     genrePreferences = populateGenres(genreList);
@@ -26,6 +27,7 @@ function submitForm(genreList) {
     }
 }
 
+// return list of genreNames, based off current status of genre form checkboxes
 function populateGenres(genreList) {
     let genres = [];
     for (let genre in genreList.counts) {
@@ -33,37 +35,30 @@ function populateGenres(genreList) {
     }
 
     let genrePreferences = [];
-    if ($('#reggaeBox').is(':checked')) {
-        genrePreferences.push(genres[0]);
-    }
-    if ($('#popBox').is(':checked')) {
-        genrePreferences.push(genres[1]);
-    }
-    if ($('#rAndBBox').is(':checked')) {
-        genrePreferences.push(genres[3]);
-    }
-    if ($('#rockBox').is(':checked')) {
-        genrePreferences.push(genres[4]);
-    }
-    if ($('#latinBox').is(':checked')) {
-        genrePreferences.push(genres[5]);
-    }
-    if ($('#hipHopBox').is(':checked')) {
-        genrePreferences.push(genres[6]);
-    }
-    if ($('#bluesBox').is(':checked')) {
-        genrePreferences.push(genres[7]);
-    }
-    if ($('#rockPopBox').is(':checked')) {
-        genrePreferences.push(genres[8]);
-    }
-    if ($('#rapBox').is(':checked')) {
-        genrePreferences.push(genres[9]);
-    }
-    if ($('#otherBox').is(':checked')) {
-        genrePreferences.push(genres[2]);
-        genrePreferences.push(genres[10]);
-    }
+    let genreNames = Object.keys(genreToCheckboxIdMapping);
+    let checkboxIds = Object.values(genreToCheckboxIdMapping);
+    $('.genreGroup').each(function () {
+        // only add genres that are checked off
+        if (this.checked) {
+            let checkboxId = this.id;
+            // do the weird ones first
+            if (checkboxId === 'hipHopBox') {
+                genrePreferences.push("Hip Hop");
+                genrePreferences.push("Hip-Hop");
+                genrePreferences.push("Rap");
+                genrePreferences.push("Gangsta");
+            } else if (checkboxId === 'otherBox') {
+                genrePreferences.push("Ska");
+                genrePreferences.push("Acoustic");
+            } else { // otherwise use the genreToCheckboxId mappings
+                let genreIndex = checkboxIds.indexOf(checkboxId);
+                if (genreIndex > -1) {
+                    let genreName = genreNames[genreIndex];
+                    genrePreferences.push(genreName);
+                }
+            }
+        }
+    });
 
     // If no genres selected, then default to select all
     if (genrePreferences.length == 0) {

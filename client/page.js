@@ -1,3 +1,4 @@
+genreToCheckboxIdMapping = require('./checkboxes')
 
 function updateSongDisplay(title, artist) {
     $("#titleID").html(function () {
@@ -27,34 +28,27 @@ function updateIntervalDisplay(interval) {
  */
 function updateGenreDisplay(genrePreferences) {
     $("#genreDisplay").html(function () {
-        if (!genrePreferences) {
-            let spannedGenre = "<span id='spannedGenre'> Reggae, Pop, R&B, Rock, Latin, Hip-Hop, Blues, Pop Rock, Rap, Miscellaneous </span>";
+        if (!genrePreferences || genrePreferences.length === 0) {
+            let spannedGenre = "<span id='spannedGenre'> Hip-Hop, Rock, Reggae, Pop, Electronic, Alternative, Blues, Latin, Jazz, Country, Miscellaneous </span>";
             return "Current Genres: " + spannedGenre + ".";
         }
-        if (genrePreferences.length > 0) {
-            let parsedGenres = []
-
-            for (let i = 0; i < genrePreferences.length; i++) {
-                if (genrePreferences[i] == 'Blues Rock') {
-                    parsedGenres.push("Blues");
-                } else if (genrePreferences[i] == 'Rock/Pop') {
-                    parsedGenres.push("Pop Rock");
-                } else if (genrePreferences[i] == 'undefined' || genrePreferences[i] == 'Other') {
-                    if (parsedGenres.includes("Miscellaneous")) {
-                        // Avoids adding Misc tag twice.
-                    } else {
-                        parsedGenres.push("Miscellaneous");
-                    }
+        let parsedGenres = []
+        for (let i = 0; i < genrePreferences.length; i++) {
+            let genre = genrePreferences[i];
+            if (genre === "Hip Hop" || genre === "Gangsta" || genre === "Rap") {
+                continue;
+            } else if (genre === 'Acoustic' || genre === 'Ska') {
+                if (parsedGenres.includes("Miscellaneous")) {
+                    // Avoids adding Misc tag twice.
                 } else {
-                    parsedGenres.push(genrePreferences[i]);
+                    parsedGenres.push("Miscellaneous");
                 }
+            } else {
+                parsedGenres.push(genrePreferences[i]);
             }
-            let spannedGenre = "<span id='spannedGenre'>" + parsedGenres.join(", ") + "</span>";
-            return "Current Genres: " + spannedGenre + ".";
-        } else {
-            let spannedGenre = "<span id='spannedGenre'> Unfiltered </span>";
-            return "Current Genres: " + spannedGenre + ".";
         }
+        let spannedGenre = "<span id='spannedGenre'>" + parsedGenres.join(", ") + "</span>";
+        return "Current Genres: " + spannedGenre;
     });
 }
 
@@ -67,14 +61,14 @@ function updateDecadeDisplay(decadePreferences) {
     $("#decadeDisplay").html(function () {
         if (!decadePreferences) {
             let spannedDecades = "<span id='spannedDecades'> 1940 </span> - <span id='spannedDecades'> 2019 </span>";
-            return "Current Timespan: " + spannedDecades + ".";
+            return "Current Timespan: " + spannedDecades;
         }
         if (decadePreferences.length > 0) {
             let spannedDecades = "<span id='spannedDecades'>" + decadePreferences[0] + "</span>" + " - " + "<span id='spannedDecades'>" + decadePreferences[1] + "</span>";
-            return "Current Timespan: " + spannedDecades + ".";
+            return "Current Timespan: " + spannedDecades;
         } else {
             let spannedDecades = "<span id='spannedDecades'> 1940 </span> - <span id='spannedDecades'> 2019 </span>";
-            return "Current Timespan: " + spannedDecades + ".";
+            return "Current Timespan: " + spannedDecades;
         }
     });
 }
@@ -137,52 +131,22 @@ function determineRadioButton(TIME_INTERVAL) {
 
 /**
  * Creates the genre checkboxes for advanced settings.
- * Unfortunately hardcoded, so if a new genre was added you'd need to add it here.
+ * Uses genreName -> checkboxId mapping
  * @param {*} genrePreferences
  */
 function determineCheckboxes(genrePreferences) {
-    if (genrePreferences) {
-        if (genrePreferences.indexOf('Reggae') > -1) {
-            $('#reggaeBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Pop') > -1) {
-            $('#popBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('R&B') > -1) {
-            $('#rAndBBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Rock') > -1) {
-            $('#rockBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Latin') > -1) {
-            $('#latinBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Hip-Hop') > -1) {
-            $('#hipHopBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Blues Rock') > -1) {
-            $('#bluesBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Rock/Pop') > -1) {
-            $('#rockPopBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('undefined') > -1) {
-            $('#otherBox').prop('checked', true);
-        }
-        if (genrePreferences.indexOf('Rap') > -1) {
-            $('#rapBox').prop('checked', true);
+    if (!genrePreferences || genrePreferences.length === 0) {
+        // check all
+        for (let [genreName, checkboxId] of Object.entries(genreToCheckboxIdMapping)) {
+            $('#' + checkboxId).prop('checked', true);
         }
     } else {
-        $('#reggaeBox').prop('checked', true);
-        $('#popBox').prop('checked', true);
-        $('#rAndBBox').prop('checked', true);
-        $('#rockBox').prop('checked', true);
-        $('#latinBox').prop('checked', true);
-        $('#hipHopBox').prop('checked', true);
-        $('#bluesBox').prop('checked', true);
-        $('#rockPopBox').prop('checked', true);
-        $('#otherBox').prop('checked', true);
-        $('#rapBox').prop('checked', true);
+        // check only ones in the list
+        for (let [genreName, checkboxId] of Object.entries(genreToCheckboxIdMapping)) {
+            if (genrePreferences.indexOf(genreName) > -1) {
+                $('#' + checkboxId).prop('checked', true);
+            }
+        }
     }
 }
 
