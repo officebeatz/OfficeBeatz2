@@ -9,9 +9,7 @@ $(document).ready(function () {
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
-
     let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
-    let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
     let tempVol = 50;
@@ -77,7 +75,6 @@ $(document).ready(function () {
 
     // Makes an API request for a new song every timeLeft milliseconds.
     let timeout = () => {
-        activeInterval = true;
         songTimeout = setTimeout(function () {
             loopPlayer(audioElement);
         }, timeLeft);
