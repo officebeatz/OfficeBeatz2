@@ -67,8 +67,8 @@ nav.nav-center
   margin: 20px
   text-align: center
 
-.grey
-  color: grey
+.gray
+  color: gray
 
 #about-ul
   margin: 20px
@@ -160,7 +160,7 @@ nav.nav-center
 #current-song-display
   display: flex
   margin: auto
-  
+  padding-bottom: 5px
 
 .title-container a
   padding: 0 3px
@@ -219,6 +219,25 @@ input[type=number]::-webkit-inner-spin-button
   padding-left: 5px
   padding-right: 3px
 
+#pop-settings
+  height: 100%
+  margin: auto 0
+  padding: 15px
+
+.settings-icon
+  height: 40px
+  width: 40px
+  background-size: cover
+  background-repeat: no-repeat
+
+#settings-icon-blue
+  display: block
+  background-image: url("../images/settings.png")
+
+#settings-icon-grey
+  background-image: url("../images/settings-gray.png")
+  display: none
+
 #settings-box
   width: 100%
   background-color: black
@@ -263,16 +282,12 @@ input[type=number]::-webkit-inner-spin-button
 
 #vol-control
   width: 250px
-  // height: 80%
   line-height: 80%
   border: none
   position: relative
-  // margin-top: 8px
   margin: auto
   -webkit-transform: translate(0%,30%)
   -moz-transform: translate(0%,100%)
-  // eventually VVV need to activate for button click
-  // display: none
 
 #vol-margin-left
   margin: auto auto auto 15px
@@ -311,11 +326,8 @@ input[type=number]::-webkit-inner-spin-button
 
 .title-container
   background-color: #212121
-  
-  line-height: 32px
 
-.100-wid
-  width: 100%
+  line-height: 32px
 
 .songDisplay
   color: #616161
@@ -326,10 +338,11 @@ input[type=number]::-webkit-inner-spin-button
 #genres-box
   width: 100%
   display: flex
-  flex-wrap: wrap 
+  flex-wrap: wrap
+  margin: 20px 
   div
     display: flex
-    margin: auto 20px
+    width: 175px
 
 #date-box
   width: 100%

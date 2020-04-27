@@ -3,11 +3,16 @@ form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
 timer = require('./timer.js');
+
 $(document).ready(function () {
 
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
+    // Make the corner logo also work as the 'Home' tab
+    $('#clickable-home').click(function() {
+        $('.tabs').tabs('select', 'home');
+
     let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
@@ -17,11 +22,13 @@ $(document).ready(function () {
     let genrePreferences = [];
     let decadePreferences = [];
 
-    let settingsDisplay = $('#advSetForm');
-    let stopDisplay = $('#stop-timer');
-    let startDisplay = $('#start-timer');
-    let volumeDisplay = $('#vol-control');
+    let settingsElement = $('#advSetForm');
+    let stopButton = $('#stop-timer');
+    let startButton = $('#start-timer');
+    let volumeButton = $('#vol-control');
     let titleDisplay = $('#current-song-display');
+    let blueGearIcon = $('#settings-icon-blue');
+    let grayGearIcon = $('#settings-icon-grey');
 
 
     timer.updateTimerDisplay(Math.floor(timeLeft/1000));
@@ -70,7 +77,6 @@ $(document).ready(function () {
             audioElement.pause();
         }
 
-
         page.updatePlayIcon(audioElement);
     });
 
@@ -79,15 +85,17 @@ $(document).ready(function () {
         timeLeft=timer.getCurrentMS();
         timer.startTimer();
     });
+    $("#stop-timer").click(function() {
+        timer.pauseTimer();
+    });
     $("#reset-timer").click(function() {
         timeLeft = timer.getInitialMS();
         timer.setTimer(timeLeft);
         timer.pauseTimer();
         timer.updateTimerDisplay(Math.floor(timeLeft/1000));
     });
-    $("#stop-timer").click(function() {
-        timer.pauseTimer();
-    });
+    // clear the button highlight after reset is clicked (for readability)
+    $("#reset-timer").mouseup(function() { this.blur(); });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
@@ -111,60 +119,62 @@ $(document).ready(function () {
         page.updateVolIcon(audioElement);
     });
 
-
     $('#pop-settings').click(function () {
-        let shown = settingsDisplay[0].style["display"];
+        // toggle display of settings tab
+        let shown = settingsElement[0].style["display"];
         if (shown == "none") {
-            settingsDisplay[0].style["display"] = "block";
+            settingsElement[0].style["display"] = "block";
         } else {
-            settingsDisplay[0].style["display"] = "none";
+            settingsElement[0].style["display"] = "none";
+        }
+
+        // toggle color of settings icon
+        blueGearIconDisplay = blueGearIcon[0].style.display;
+        if (blueGearIconDisplay == "block") {
+            grayGearIcon[0].style["display"] = "block";
+            blueGearIcon[0].style["display"] = "none";
+        } else if (blueGearIconDisplay == "none") {
+            blueGearIcon[0].style["display"] = "block";
+            grayGearIcon[0].style["display"] = "none";
         }
     });
 
     $('#start-timer').click(function () {
-
-        let shown = startDisplay[0].style["display"];
-
+        let shown = startButton[0].style["display"];
         if (shown == "none") {
-            startDisplay[0].style["display"] = "inline-block";
-            stopDisplay[0].style["display"] = "none";
+            startButton[0].style["display"] = "inline-block";
+            stopButton[0].style["display"] = "none";
         } else {
-            startDisplay[0].style["display"] = "none";
-            stopDisplay[0].style["display"] = "inline-block";
+            startButton[0].style["display"] = "none";
+            stopButton[0].style["display"] = "inline-block";
         }
     });
-
-
     $('#stop-timer').click(function () {
-
-        let shown = startDisplay[0].style["display"];
-
+        let shown = startButton[0].style["display"];
         if (shown == "none") {
-            startDisplay[0].style["display"] = "inline-block";
-            stopDisplay[0].style["display"] = "none";
+            startButton[0].style["display"] = "inline-block";
+            stopButton[0].style["display"] = "none";
         } else {
-            startDisplay[0].style["display"] = "none";
-            stopDisplay[0].style["display"] = "inline-block";
+            startButton[0].style["display"] = "none";
+            stopButton[0].style["display"] = "inline-block";
         }
     });
-
     $('#reset-timer').click(function (){
-        startDisplay[0].style["display"] = "inline-block";
-        stopDisplay[0].style["display"] = "none";
+        startButton[0].style["display"] = "inline-block";
+        stopButton[0].style["display"] = "none";
     });
+
 
     $('#vol-change').click(function () {
-
-        let shown = volumeDisplay[0].style["display"];
+        let shown = volumeButton[0].style["display"];
         if (shown == "none") {
-            volumeDisplay[0].style["display"] = "inline-block";
+            volumeButton[0].style["display"] = "inline-block";
             titleDisplay[0].style["display"] = "none";
         } else {
-            volumeDisplay[0].style["display"] = "none";
+            volumeButton[0].style["display"] = "none";
             titleDisplay[0].style["display"] = "inline-block";
         }
     });
-
     //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
         tempVol = this.value;
@@ -172,14 +182,17 @@ $(document).ready(function () {
 
         page.updateVolIcon(audioElement);
     });
-
-    //Loads up a new song if a song is already playing, otherwise does nothing.
+    // Get new song, retaining pause/play state.
     $('#skip').click(function () {
-        if (!audioElement.paused) {
+        if (audioElement.paused) {
+            findNextSongWithPreferences(genrePreferences, decadePreferences);
+        } else {
+            audioElement.pause();
             findNextSongWithPreferences(genrePreferences, decadePreferences);
             audioElement.play();
         }
     });
+
 
     // Submits and updates interval between songs.
     $("#advancedSettingsForm").submit(function (event) {
@@ -253,7 +266,4 @@ $(document).ready(function () {
             $("#selectBox").prop("checked", false);
         }
     });
-
-    
-
 });
