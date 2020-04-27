@@ -24,8 +24,7 @@ $(document).ready(function () {
     let titleDisplay = $('#current-song-display');
 
 
-    document.getElementById("timer-time").innerHTML =
-            timer.timeToString(Math.floor(timeLeft/1000));
+    timer.updateTimerDisplay(Math.floor(timeLeft/1000));
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -84,8 +83,7 @@ $(document).ready(function () {
         timeLeft = timer.getInitialMS();
         timer.setTimer(timeLeft);
         timer.pauseTimer();
-        document.getElementById("timer-time").innerHTML =
-            timer.timeToString(Math.floor(timeLeft/1000));
+        timer.updateTimerDisplay(Math.floor(timeLeft/1000));
     });
     $("#stop-timer").click(function() {
         timer.pauseTimer();
