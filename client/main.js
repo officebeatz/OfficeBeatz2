@@ -104,7 +104,7 @@ $(document).ready(function () {
         // Delay to prevent overlap while changing audio source.
         setTimeout(function () {
             audioElement.play();
-            page.updatePlayIcon();
+            page.updatePlayIcon(audioElement);
         }, 1500);
     }
     timer.setSongPlayer(loopPlayer, audioElement);
