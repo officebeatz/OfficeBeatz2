@@ -2,10 +2,58 @@ api = require('./api.js');   // AJAX requests to back-end API
 form = require('./form.js'); // form submission
 page = require('./page.js'); // page display
 song = require('./song.js'); // choose next song
-timer = require('./timer.js');
-var songTimeout;
-
+//timer = require('./timer.js');
 $(document).ready(function () {
+
+    //timer components
+    var initialSettings = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; 
+    var currMilliseconds = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; 
+    var intervalEnd;
+    var timer_display;
+
+    function timeToString(totalSeconds){
+        var hours = Math.floor(totalSeconds/3600);
+        if(hours < 10){hours = "0"+hours;}
+        var minutes = Math.floor((totalSeconds%3600)/60);
+        if(minutes < 10){minutes = "0"+minutes};
+        var seconds = Math.floor(totalSeconds%60);
+        if(seconds<10){seconds="0"+seconds};
+        return hours + ":" + minutes + ":" + seconds;
+    }      
+    function displayTimer(){
+        var seconds_remaining = Math.floor((intervalEnd-new Date())/1000);
+        var timer = timeToString(seconds_remaining);
+        if(seconds_remaining > 0){
+            document.getElementById("timer-time").innerHTML = timer;
+            currMilliseconds=currMilliseconds-500;
+        } else{
+                //play song
+                loopPlayer(audioElement);
+                setTimer(initialSettings);
+                intervalEnd = new Date(new Date().getTime() + (currMilliseconds));
+                
+        }
+    }
+    function startTimer(){
+        intervalEnd = new Date(new Date().getTime() + (currMilliseconds));
+        timer_display = setInterval(displayTimer, 500);
+    //note: the occasional slight lagging can make the timer look like it skips a step, 
+    //hence 500 rather than 1000ms
+    }  
+    function setTimer(time){
+        initialSettings = time;
+        currMilliseconds = time;
+    }
+    function pauseTimer(){
+        clearInterval(timer_display);
+    }
+    function getCurrentMS(){
+        return currMilliseconds;
+    }
+    function getInitialMS(){
+        return initialSettings;
+    }  
+
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
@@ -24,6 +72,9 @@ $(document).ready(function () {
     let volumeDisplay = $('#vol-control');
     let titleDisplay = $('#current-song-display');
 
+
+    document.getElementById("timer-time").innerHTML =
+            timeToString(Math.floor(timeLeft/1000));
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -73,28 +124,20 @@ $(document).ready(function () {
         page.updatePlayIcon(audioElement);
     });
 
-    // Makes an API request for a new song every timeLeft milliseconds.
-    let timeout = () => {
-        songTimeout = setTimeout(function () {
-            loopPlayer(audioElement);
-        }, timeLeft);
-    }
 
     $("#start-timer").click(function() {
-        timeLeft=timer.getCurrentMS();
-        timeout();
-        timer.startTimer();
+        timeLeft=getCurrentMS();
+        startTimer();
     });
     $("#reset-timer").click(function() {
-        timeLeft = timer.getInitialMS();
-        timer.setTimer(timeLeft);
-        timer.pauseTimer();
+        timeLeft = getInitialMS();
+        setTimer(timeLeft);
+        pauseTimer();
         document.getElementById("timer-time").innerHTML =
-            timer.timeToString(Math.floor(timeLeft/1000));
+            timeToString(Math.floor(timeLeft/1000));
     });
     $("#stop-timer").click(function() {
-        clearTimeout(songTimeout);
-        timer.pauseTimer();
+        pauseTimer();
     });
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
@@ -104,7 +147,6 @@ $(document).ready(function () {
         setTimeout(function () {
             audioElement.play();
         }, 1500);
-        timeout();
     }
 
     $('#mute').click(function () {
@@ -231,13 +273,13 @@ $(document).ready(function () {
                 timeLeft = customValue * 60 * 1000;
                 localStorage.setItem("TIME_INTERVAL", timeLeft);
                 page.updateIntervalDisplay(timeLeft);
-                timer.setTimer(timeLeft);
+                setTimer(timeLeft);
             }
         } else {
             timeLeft = radioCheck * 60 * 1000;
             localStorage.setItem("TIME_INTERVAL", timeLeft);
             page.updateIntervalDisplay(timeLeft);
-            timer.setTimer(timeLeft);
+            setTimer(timeLeft);
         }
     }
 

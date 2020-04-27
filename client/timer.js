@@ -1,8 +1,8 @@
-
-var initialSettings = 900000;
-var currMilliseconds = 900000;
+var initialSettings = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; 
+var currMilliseconds = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; 
 var intervalEnd;
 var timer_display;
+var audio;
 
 function timeToString(totalSeconds){
         var hours = Math.floor(totalSeconds/3600);
@@ -15,10 +15,19 @@ function timeToString(totalSeconds){
 }   
 function displayTimer(){
         var seconds_remaining = Math.floor((intervalEnd-new Date())/1000);
+        console.log(intervalEnd);
+        console.log(seconds_remaining);
         var timer = timeToString(seconds_remaining);
         if(seconds_remaining > 0){
             document.getElementById("timer-time").innerHTML = timer;
             currMilliseconds=currMilliseconds-500;
+        } else{
+                console.log("play song");
+                //play song
+                main.loopPlayer(audio);
+                setTimer(initialSettings);
+                intervalEnd = new Date(new Date().getTime() + (currMilliseconds));
+                
         }
 }
 function startTimer(){
@@ -40,11 +49,15 @@ function getCurrentMS(){
 function getInitialMS(){
         return initialSettings;
 }
+function setAudioElement(audioElement){
+        audio = audioElement;
+}
 module.exports = {
     timeToString,
     startTimer,
     setTimer,
     pauseTimer,
     getCurrentMS,
-    getInitialMS
+    getInitialMS,
+    setAudioElement
 }
