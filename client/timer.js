@@ -22,7 +22,6 @@ function displayTimer(){
             document.getElementById("timer-time").innerHTML = timer;
             currMilliseconds=currMilliseconds-500;
         } else{
-                console.log("play song");
                 //play song
                 loopPlayer(audio);
                 setTimer(initialSettings);
