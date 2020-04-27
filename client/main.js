@@ -5,16 +5,15 @@ song = require('./song.js'); // choose next song
 timer = require('./timer.js');
 
 $(document).ready(function () {
+
     // Initializes Materialize components.
     $('.tabs').tabs();
     $('.collapsible').collapsible();
     // Make the corner logo also work as the 'Home' tab
     $('#clickable-home').click(function() {
         $('.tabs').tabs('select', 'home');
-    });
 
     let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
-    let activeInterval = false;
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
     let tempVol = 50;
@@ -31,7 +30,8 @@ $(document).ready(function () {
     let blueGearIcon = $('#settings-icon-blue');
     let grayGearIcon = $('#settings-icon-grey');
 
-    var songTimeout;
+
+    timer.updateTimerDisplay(Math.floor(timeLeft/1000));
 
     try {
         genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
@@ -77,37 +77,22 @@ $(document).ready(function () {
             audioElement.pause();
         }
 
-        // If the interval is already determined, do not set another one.
-        if (!activeInterval) {
-            timeout();
-        }
-
         page.updatePlayIcon(audioElement);
     });
 
-    // Makes an API request for a new song every timeLeft milliseconds.
-    let timeout = () => {
-        activeInterval = true;
-        songTimeout = setTimeout(function () {
-            loopPlayer(audioElement);
-        }, timeLeft);
-        timer.startTimer();
-    }
 
     $("#start-timer").click(function() {
         timeLeft=timer.getCurrentMS();
-        timeout();
+        timer.startTimer();
     });
     $("#stop-timer").click(function() {
-        clearTimeout(songTimeout);
         timer.pauseTimer();
     });
     $("#reset-timer").click(function() {
         timeLeft = timer.getInitialMS();
         timer.setTimer(timeLeft);
         timer.pauseTimer();
-        document.getElementById("timer-time").innerHTML =
-            timer.timeToString(Math.floor(timeLeft/1000));
+        timer.updateTimerDisplay(Math.floor(timeLeft/1000));
     });
     // clear the button highlight after reset is clicked (for readability)
     $("#reset-timer").mouseup(function() { this.blur(); });
@@ -119,8 +104,8 @@ $(document).ready(function () {
         setTimeout(function () {
             audioElement.play();
         }, 1500);
-        timeout();
     }
+    timer.setSongPlayer(loopPlayer, audioElement);
 
     $('#mute').click(function () {
         if (audioElement.volume != 0) {
@@ -281,5 +266,4 @@ $(document).ready(function () {
             $("#selectBox").prop("checked", false);
         }
     });
-
 });

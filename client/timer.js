@@ -1,24 +1,31 @@
-
-var initialSettings = 900000;
-var currMilliseconds = 900000;
+var initialSettings = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; 
+var currMilliseconds = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; 
 var intervalEnd;
 var timer_display;
+var audio;
+function loopPlayer(){};
 
-function timeToString(totalSeconds){
-        var hours = Math.floor(totalSeconds/3600);
-        if(hours < 10){hours = "0"+hours;}
-        var minutes = Math.floor((totalSeconds%3600)/60);
+
+function updateTimerDisplay(totalSeconds){
+        var minutes = Math.floor(totalSeconds/60);
         if(minutes < 10){minutes = "0"+minutes};
         var seconds = Math.floor(totalSeconds%60);
         if(seconds<10){seconds="0"+seconds};
-        return hours + ":" + minutes + ":" + seconds;
+        document.getElementById("timer-time").innerHTML=
+        (minutes + ":" + seconds);
+
 }   
 function displayTimer(){
         var seconds_remaining = Math.floor((intervalEnd-new Date())/1000);
-        var timer = timeToString(seconds_remaining);
         if(seconds_remaining > 0){
-            document.getElementById("timer-time").innerHTML = timer;
+            updateTimerDisplay(seconds_remaining);
             currMilliseconds=currMilliseconds-500;
+        } else{
+                //play song
+                loopPlayer(audio);
+                setTimer(initialSettings);
+                intervalEnd = new Date(new Date().getTime() + (currMilliseconds));
+                
         }
 }
 function startTimer(){
@@ -40,11 +47,17 @@ function getCurrentMS(){
 function getInitialMS(){
         return initialSettings;
 }
+function setSongPlayer(playerFunction, audioElement){
+        loopPlayer = playerFunction;
+        audio = audioElement;
+}
+
 module.exports = {
-    timeToString,
+    updateTimerDisplay,
     startTimer,
     setTimer,
     pauseTimer,
     getCurrentMS,
-    getInitialMS
+    getInitialMS,
+    setSongPlayer
 }
