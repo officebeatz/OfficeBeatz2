@@ -12,6 +12,7 @@ $(document).ready(function () {
     // Make the corner logo also work as the 'Home' tab
     $('#clickable-home').click(function() {
         $('.tabs').tabs('select', 'home');
+    });
 
     let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
@@ -103,6 +104,7 @@ $(document).ready(function () {
         // Delay to prevent overlap while changing audio source.
         setTimeout(function () {
             audioElement.play();
+            page.updatePlayIcon();
         }, 1500);
     }
     timer.setSongPlayer(loopPlayer, audioElement);
