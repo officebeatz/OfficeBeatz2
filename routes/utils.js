@@ -1,19 +1,10 @@
 const axios = require('axios');
 const nodeID3 = require('node-id3');
 const dbx = require('./dbx')
-/**
- * Utils module
- * @module utils
- */
 
-/**
- * Takes in a filename as a string and returns a shareable link to the corresponding dropbox file.
- * @param {string} name filename
- * @returns link to the file
- */
-
-function getLinkToFile(name) {
-    return dbx.filesGetTemporaryLink({ path: '/' + name })
+// Given a dropbox filename, returns a URL to the corresponding dropbox file.
+function getLinkToFile(filename) {
+    return dbx.filesGetTemporaryLink({ path: '/' + filename })
         .then(response => {
             return response.link;
         })
@@ -23,13 +14,8 @@ function getLinkToFile(name) {
         });
 }
 
-/**
- *
- * @param {Array} songs
- * @return updated_config
- */
-
- function extractAllID3(songs) {
+// Given a list of songs, returns a config file based off the songs ID3 info
+ function makeConfig(songs) {
      let config = {
          "counts":{},
          "songs":{}
@@ -40,12 +26,7 @@ function getLinkToFile(name) {
      return config;
  }
 
-/**
- * @param {JSON} song song
- * @param {JSON} config config
- * @returns {Promise}
- */
-
+// Given a song's filename, returns the config file with the song's info added
 function extractID3(song, config) {
     // skip non-mp3 files (eg existing config.json)
     if (!song.name.endsWith('.mp3')) {
@@ -78,12 +59,7 @@ function extractID3(song, config) {
         });
 }
 
-/**
- * Takes in nothing, and generates a randomly selected filename from the dropbox
- * which is passed into getFile, and returns the result of calling getFile.
- * @returns link to a random file
- */
-
+// Returns a URL to a randomly selected song
 exports.getRandomFile = function() {
     return dbx.filesListFolder({ path: '' })
         .then(response => {
@@ -100,18 +76,11 @@ exports.getRandomFile = function() {
         });
 }
 
-/**
- * Takes in nothing and updates the dropbox genre file
- * @returns Success or Failure
- */
-
+// Creates a new config file based off the dropbox contents, and uploads it
+// WARNING: This doesn't work anymore, because nodeID3 fails to read tags.year
 exports.updateDBX = function() {
-    var config = {
-        "counts":{},
-        "songs":{}
-    };
     return dbx.filesListFolder({path: ''})
-        .then(response => extractAllID3(response.entries))
+        .then(response => makeConfig(response.entries))
         .then(result => dbx.filesUpload({
             contents: JSON.stringify(result, null, "\t"),
             path: "/config.json",
@@ -123,12 +92,8 @@ exports.updateDBX = function() {
         });
 }
 
-/**
- * Takes in nothing and returns a JSON object with list of all genres and counts of all the songs in the dropbox
- * @returns JSON object of all genres and counts
- */
-
- exports.getGenresList = function() {
+// Returns a JSON object of the config file (genres and counts of all songs)
+exports.getGenresList = function() {
     return getLinkToFile('config.json')
         .then(link => axios.get(link))
         .then(response => {
@@ -141,10 +106,5 @@ exports.updateDBX = function() {
         });
  }
 
- /**
-  * Takes a song name and returns temp link for song
-  * @param {string} name
-  * @returns {url} link
-  */
-
+// Given a song name, returns a URL to the corresponding song
   exports.getSong = getLinkToFile;
