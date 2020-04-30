@@ -14,8 +14,6 @@ if (process.env.NODE_ENV == 'dev') {
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-var port = process.env.PORT || 3752
-
 var app = express();
 
 // view engine setup
@@ -65,13 +63,6 @@ app.use(function (err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
-});
-/**
- * Starts up the webpage.
- * @param {number} port the port the page is hosted on
- */
-app.listen(port, function () {
-  console.log('app running on port: ' + port);
 });
 
 module.exports = app;
