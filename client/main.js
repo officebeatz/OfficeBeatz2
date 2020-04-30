@@ -171,36 +171,19 @@ $(document).ready(function () {
     // Submits and updates interval between songs.
     $("#advancedSettingsForm").submit(function (event) {
         event.preventDefault();
-        intervalHandler();
         let formSubmission = form.submitForm(genreList);
         if (formSubmission.isValid) {
-            genrePreferences = formSubmission.genrePreferences;
-            decadePreferences = formSubmission.decadePreferences;
+            genrePreferences = formSubmission.genres;
+            decadePreferences = formSubmission.decades;
+            timeInterval = formSubmission.interval;
+            timer.setTimerInterval(timeInterval);
             page.updateGenreDisplay(genrePreferences);
             page.updateDecadeDisplay(decadePreferences);
+            page.updateIntervalDisplay(timeInterval);
             localStorage.setItem("GENRE_PREFERENCES", JSON.stringify(genrePreferences));
             localStorage.setItem("DECADE_PREFERENCES", JSON.stringify(decadePreferences));
+            localStorage.setItem("TIME_INTERVAL", timeInterval);
             findNextSongWithPreferences(genrePreferences, decadePreferences);
         }
     });
-    function intervalHandler() {
-        let radioCheck = $('input[name=intervalGroup]:checked', '#advancedSettingsForm').val();
-        if (radioCheck == 'custom') {
-            let customValue = $('#customIntervalValue').val();
-            if (customValue < 1 || customValue > 120) {
-                event.preventDefault();
-                console.error("Custom intervals must be between 1 and 120 minutes.");
-            } else {
-                timeInterval = customValue * 60 * 1000;
-                localStorage.setItem("TIME_INTERVAL", timeInterval);
-                page.updateIntervalDisplay(timeInterval);
-                timer.setTimerInterval(timeInterval);
-            }
-        } else {
-            timeInterval = radioCheck * 60 * 1000;
-            localStorage.setItem("TIME_INTERVAL", timeInterval);
-            page.updateIntervalDisplay(timeInterval);
-            timer.setTimerInterval(timeInterval);
-        }
-    }
 });
