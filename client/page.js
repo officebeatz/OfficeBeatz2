@@ -73,45 +73,33 @@ function updateDecadeDisplay(decadePreferences) {
     });
 }
 
-function allSelectedOrNot() {
-    var isAllChecked = 0;
-
+function updateSelectAllCheckbox() {
+    let allSelected = true;
     $(".genreGroup").each(function () {
-        if (!this.checked)
-            isAllChecked = 1;
+        if (!this.checked) {
+            allSelected = false;
+        }
     });
-
-    if (isAllChecked == 0) {
-        $("#selectBox").prop("checked", true);
-    }
+    $("#selectBox").prop("checked", allSelected);
 }
 
 function updatePlayIcon (audioElement) {
-    if(audioElement.paused) {
-        $("#play").html(function () {
-            let currentIcon = "<i class='material-icons'>play_arrow</i>";
-            return currentIcon;
-        });
-    }
-
-    if(!audioElement.paused) {
-        $("#play").html(function () {
-            let currentIcon = "<i class='material-icons'>pause</i>";
-            return currentIcon;
-        });
-    }
+    $("#play").html(function () {
+        if (audioElement.paused) {
+            return "<i class='material-icons'>play_arrow</i>";
+        } else {
+            return "<i class='material-icons'>pause</i>";
+        }
+    });
 }
 
 function updateVolIcon (audioElement) {
-    let volIcon;
-    if (audioElement.volume == 0) {
-        volIcon = "<i class='material-icons'>volume_off</i>";
-    } else {
-        volIcon = "<i class='material-icons'>volume_up</i>";
-    }
-
     $("#mute").html(function () {
-        return volIcon;
+        if (audioElement.volume == 0) {
+            return volIcon = "<i class='material-icons'>volume_off</i>";
+        } else {
+            return volIcon = "<i class='material-icons'>volume_up</i>";
+        }
     });
 }
 
@@ -135,19 +123,19 @@ function determineRadioButton(TIME_INTERVAL) {
  * @param {*} genrePreferences
  */
 function determineCheckboxes(genrePreferences) {
+    // if no preferences, set all to checked
     if (!genrePreferences || genrePreferences.length === 0) {
-        // check all
         for (let [genreName, checkboxId] of Object.entries(genreToCheckboxIdMapping)) {
             $('#' + checkboxId).prop('checked', true);
         }
-    } else {
-        // check only ones in the list
+    } else { // otherwise, set only those in genrePreferences
         for (let [genreName, checkboxId] of Object.entries(genreToCheckboxIdMapping)) {
             if (genrePreferences.indexOf(genreName) > -1) {
                 $('#' + checkboxId).prop('checked', true);
             }
         }
     }
+    updateSelectAllCheckbox();
 }
 
 function determineDecadeInputs(decadePreferences) {
@@ -162,7 +150,7 @@ module.exports = {
     updateIntervalDisplay,
     updateGenreDisplay,
     updateDecadeDisplay,
-    allSelectedOrNot,
+    updateSelectAllCheckbox,
     updatePlayIcon,
     updateVolIcon,
     determineRadioButton,

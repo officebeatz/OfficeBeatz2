@@ -42,14 +42,13 @@ $(document).ready(function () {
         findNextSongWithPreferences(genrePreferences, decadePreferences)
     });
 
-    // Initialize dynamic page displays
+    // Initialize form/form displays based on local settings
     page.determineRadioButton(timeInterval);
     page.determineCheckboxes(genrePreferences);
     page.determineDecadeInputs(decadePreferences);
     page.updateIntervalDisplay(timeInterval);
     page.updateGenreDisplay(genrePreferences);
     page.updateDecadeDisplay(decadePreferences);
-    page.allSelectedOrNot();
 
 
 
@@ -166,11 +165,7 @@ $(document).ready(function () {
         }
     });
     $(".genreGroup").click(function () {
-        if ($(this).is(":checked")) {
-            page.allSelectedOrNot();
-        } else {
-            $("#selectBox").prop("checked", false);
-        }
+        page.updateSelectAllCheckbox();
     });
 
     // Submits and updates interval between songs.
