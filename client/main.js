@@ -84,41 +84,21 @@ $(document).ready(function () {
     timer.setTimerInterval(timeInterval);
     timer.setSongPlayer(loopPlayer, audioElement);
 
-    // TIMER LOGIC //
+    // TIMER LOGIC/DISPLAY //
     $("#start-timer").click(function() {
         timer.startTimer();
+        startButton.hide();
+        stopButton.show();
     });
     $("#stop-timer").click(function() {
         timer.pauseTimer();
+        startButton.show();
+        stopButton.hide();
     });
     $("#reset-timer").click(function() {
         timer.resetTimer();
-    });
-
-    // TIMER DISPLAY //
-    $('#start-timer').click(function () {
-        let shown = startButton[0].style["display"];
-        if (shown == "none") {
-            startButton[0].style["display"] = "inline-block";
-            stopButton[0].style["display"] = "none";
-        } else {
-            startButton[0].style["display"] = "none";
-            stopButton[0].style["display"] = "inline-block";
-        }
-    });
-    $('#stop-timer').click(function () {
-        let shown = startButton[0].style["display"];
-        if (shown == "none") {
-            startButton[0].style["display"] = "inline-block";
-            stopButton[0].style["display"] = "none";
-        } else {
-            startButton[0].style["display"] = "none";
-            stopButton[0].style["display"] = "inline-block";
-        }
-    });
-    $('#reset-timer').click(function (){
-        startButton[0].style["display"] = "inline-block";
-        stopButton[0].style["display"] = "none";
+        startButton.show();
+        stopButton.hide();
     });
     // clear the button highlight after reset is clicked (for readability)
     $("#reset-timer").mouseup(function() { this.blur(); });
@@ -127,10 +107,9 @@ $(document).ready(function () {
 
     /* SONG CONTROLS */
 
-    // SONG CONTROLS LOGIC //
     $('#play').click(function () {
         audioElement.autoplay = true; // Updates autoplay after an action has taken place.
-        if(audioElement.paused) {
+        if (audioElement.paused) {
             audioElement.play();
         } else {
             audioElement.pause();
@@ -157,18 +136,6 @@ $(document).ready(function () {
         }
         page.updateVolIcon(audioElement);
     });
-
-    // SONG CONTROLS DISPLAY
-    $('#vol-change').click(function () {
-        let shown = volumeButton[0].style["display"];
-        if (shown == "none") {
-            volumeButton[0].style["display"] = "inline-block";
-            titleDisplay[0].style["display"] = "none";
-        } else {
-            volumeButton[0].style["display"] = "none";
-            titleDisplay[0].style["display"] = "inline-block";
-        }
-    });
     $('#vol-control').on("input change", function () {
         tempVol = this.value;
         audioElement.volume = this.value / 100;
@@ -182,21 +149,10 @@ $(document).ready(function () {
     // FORM DISPLAY //
     $('#pop-settings').click(function () {
         // toggle display of settings tab
-        let shown = settingsElement[0].style["display"];
-        if (shown == "none") {
-            settingsElement[0].style["display"] = "block";
-        } else {
-            settingsElement[0].style["display"] = "none";
-        }
+        settingsElement.toggle();
         // toggle color of settings icon
-        blueGearIconDisplay = blueGearIcon[0].style.display;
-        if (blueGearIconDisplay == "block") {
-            grayGearIcon[0].style["display"] = "block";
-            blueGearIcon[0].style["display"] = "none";
-        } else if (blueGearIconDisplay == "none") {
-            blueGearIcon[0].style["display"] = "block";
-            grayGearIcon[0].style["display"] = "none";
-        }
+        grayGearIcon.toggle();
+        blueGearIcon.toggle();
     });
     $("#selectBox").change(function () {
         if (this.checked) {
@@ -212,8 +168,7 @@ $(document).ready(function () {
     $(".genreGroup").click(function () {
         if ($(this).is(":checked")) {
             page.allSelectedOrNot();
-        }
-        else {
+        } else {
             $("#selectBox").prop("checked", false);
         }
     });
