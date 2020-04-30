@@ -15,7 +15,7 @@ $(document).ready(function () {
         $('.tabs').tabs('select', 'home');
     });
 
-    let timeInterval = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
+    let timeInterval = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; // Defaults to 15 minutes if not previously set.
     let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
     let volumeControl = $('.volSlider');
     let tempVol = 50;
@@ -80,7 +80,8 @@ $(document).ready(function () {
     /* TIMER CONTROLS */
 
     // TIMER SET UP //
-    timer.updateTimerDisplay(Math.floor(timeInterval/1000));
+    timer.setTimerDisplay(timeInterval);
+    timer.setTimerInterval(timeInterval);
     timer.setSongPlayer(loopPlayer, audioElement);
 
     // TIMER LOGIC //
@@ -91,10 +92,7 @@ $(document).ready(function () {
         timer.pauseTimer();
     });
     $("#reset-timer").click(function() {
-        timeInterval = timer.getInitialMS();
-        timer.setTimer(timeInterval);
-        timer.pauseTimer();
-        timer.updateTimerDisplay(Math.floor(timeInterval/1000));
+        timer.resetTimer();
     });
 
     // TIMER DISPLAY //
@@ -246,13 +244,13 @@ $(document).ready(function () {
                 timeInterval = customValue * 60 * 1000;
                 localStorage.setItem("TIME_INTERVAL", timeInterval);
                 page.updateIntervalDisplay(timeInterval);
-                timer.setTimer(timeInterval);
+                timer.setTimerInterval(timeInterval);
             }
         } else {
             timeInterval = radioCheck * 60 * 1000;
             localStorage.setItem("TIME_INTERVAL", timeInterval);
             page.updateIntervalDisplay(timeInterval);
-            timer.setTimer(timeInterval);
+            timer.setTimerInterval(timeInterval);
         }
     }
 });
