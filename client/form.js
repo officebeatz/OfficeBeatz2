@@ -9,7 +9,7 @@ function submitForm(genreList) {
     $("#formFeedback").html(function () {
         if (isValid) {
             let successMessage = "<span id='successMessage'> Success! </span>"
-            return successMessage + "Settings successfully updated!"
+            return successMessage + "Click the skip icon to load a song with your new preferences."
         } else {
             let errorMessage = "<span id='errorMessage'> Error! </span>"
             return errorMessage + "Fewer than five songs available, please broaden your preferences."

@@ -16,11 +16,8 @@ $(document).ready(function () {
     });
 
     let timeInterval = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; // Defaults to 15 minutes if not previously set.
-    let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
-    let volumeControl = $('.volSlider');
     let tempVol = 50;
     let genreList;
-    let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
     try {
@@ -28,6 +25,8 @@ $(document).ready(function () {
         decadePreferences = JSON.parse(localStorage.getItem("DECADE_PREFERENCES"));
     } catch (error) { }
 
+    let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
+    let volumeControl = $('.volSlider');
     let settingsElement = $('#advSetForm');
     let stopButton = $('#stop-timer');
     let startButton = $('#start-timer');
@@ -59,6 +58,7 @@ $(document).ready(function () {
         findNextSongWithPreferences(genrePreferences, decadePreferences);
         // Delay to prevent overlap while changing audio source.
         setTimeout(function () {
+            audioElement.autoplay = true;
             audioElement.play();
             page.updatePlayIcon(audioElement);
         }, 1500);
@@ -68,7 +68,6 @@ $(document).ready(function () {
     function findNextSongWithPreferences(genreArray, decadeArray) {
         nextSong = song.chooseNextSongWithPreferences(genreList, genreArray, decadeArray);
         page.updateSongDisplay(nextSong.title, nextSong.artist);
-        // post request to /api/song in the headers make a tag called song, put name there
         api.getSongFile(nextSong.fileName).then((songFile) => {
             audioElement.src = songFile;
         });
@@ -107,7 +106,7 @@ $(document).ready(function () {
     /* SONG CONTROLS */
 
     $('#play').click(function () {
-        audioElement.autoplay = true; // Updates autoplay after an action has taken place.
+        audioElement.autoplay = true;
         if (audioElement.paused) {
             audioElement.play();
         } else {
@@ -118,10 +117,12 @@ $(document).ready(function () {
     $('#skip').click(function () {
         // Get new song, retaining pause/play state.
         if (audioElement.paused) {
+            audioElement.autoplay = false;
             findNextSongWithPreferences(genrePreferences, decadePreferences);
         } else {
             audioElement.pause();
             findNextSongWithPreferences(genrePreferences, decadePreferences);
+            audioElement.autoplay = true;
             audioElement.play();
         }
     });
@@ -183,7 +184,7 @@ $(document).ready(function () {
             localStorage.setItem("GENRE_PREFERENCES", JSON.stringify(genrePreferences));
             localStorage.setItem("DECADE_PREFERENCES", JSON.stringify(decadePreferences));
             localStorage.setItem("TIME_INTERVAL", timeInterval);
-            findNextSongWithPreferences(genrePreferences, decadePreferences);
+            // findNextSongWithPreferences(genrePreferences, decadePreferences);
         }
     });
 });
