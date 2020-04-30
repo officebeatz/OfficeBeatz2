@@ -3,7 +3,6 @@ form = require('./form.js'); // form submission
 page = require('./page.js'); // page display updates
 song = require('./song.js'); // choose next song
 timer = require('./timer.js'); // handles interval timer
-clicks = require('./clicks.js'); // on-click functionality of elements
 
 $(document).ready(function () {
 
