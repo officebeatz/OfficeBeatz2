@@ -18,16 +18,13 @@
     "express": "^4.16.4",
     "http-errors": "~1.6.2",
     "isomorphic-fetch": "^2.2.1",
-    "jasmine-core": "^3.5.0",
     "morgan": "^1.9.1",
     "node-id3": "^0.1.7",
     "node-sass-middleware": "0.11.0",
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
-    "jasmine": "^3.3.0",
     "jest": "^25.2.7",
-    "jsdoc": "^3.5.5",
     "supertest": "^4.0.2"
   }
 }

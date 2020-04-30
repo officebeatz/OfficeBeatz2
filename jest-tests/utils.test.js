@@ -53,38 +53,3 @@ describe('getGenresList', () => {
 	// 	done();
 	// });
 });
-
-
-// test('dbx function test', () => {
-// 	dbx.filesGetTemporaryLink({ path: '/config.json'}).then(function(response){
-// 		expect(response).toBe({link: '/test_dbx.json'});
-// 	})
-// })
-
-	// const mockRequestFunction = jest.fn();
-	// mockRequestFunction.mockImplementation(request);
-
-	// const mockDBXFilesGetTemporaryLink = jest.fn();
-	// mockDBXFilesGetTemporaryLink.mockImplementation(dbx.filesGetTemporaryLink());
-	// mockDBXFilesGetTemporaryLink.mockReturnValueOnce('/config.json');
-	// const path_to_file = dbx.filesGetTemporaryLink().then(function(response) {
-	// 	console.log(response);
-	// });
-	// const mockRequestFunction = jest.fn( (url, callback) => {
-	// 	data = "{counts: {rnb:1}}";
-	// 	response = {statusCode: 200};
-	// 	callback(false, reponse, data);
-	// });
-
-
-
-
-	//console.log(request());
-	//console.log(mockRequestFunction());
-
-	//const dbx_promise = dbx.filesGetTemporaryLink();
-	//dbx_promise.then(function (response) {console.log(response)});
-	//mockRequestFunction.mockReturnValueOnce('full_file/config.json');
-	//console.log(request(path_to_file));
-	//result = functions.getGenresList();
-	//await expect(result).toBe(JSON);
