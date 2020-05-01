@@ -6,9 +6,10 @@
     "build": "node_modules/.bin/browserify client/main.js > public/javascripts/bundle.js",
     "start": "node ./bin/www",
     "start:dev": "npm run build && NODE_ENV=dev npm start",
-    "test": "jasmine"
+    "test": "jest"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "browserify": "^16.5.1",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
@@ -23,7 +24,7 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
-    "jasmine": "^3.3.0",
-    "jsdoc": "^3.5.5"
+    "jest": "^25.2.7",
+    "supertest": "^4.0.2"
   }
 }

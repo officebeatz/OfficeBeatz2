@@ -12,7 +12,6 @@ if (process.env.NODE_ENV == 'dev') {
 }
 
 var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 var port = process.env.PORT || 3752
 
@@ -41,7 +40,6 @@ app.use(sassMiddleware({
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 /**
  * Passes 404 errors to the error handler.
