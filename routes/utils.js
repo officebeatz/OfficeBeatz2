@@ -1,176 +1,110 @@
-require('isomorphic-fetch');
-var request = require('request');
+const axios = require('axios');
 const nodeID3 = require('node-id3');
-const Dropbox = require('dropbox').Dropbox;
-const dbx = new Dropbox({ accessToken: process.env.DBX_TOKEN });
-/**
- * Utils module
- * @module utils
- */
+const dbx = require('./dbx')
 
-/**
- * Takes in a filename as a string and returns a shareable link to the corresponding dropbox file.
- * @param {string} name filename
- * @returns link to the file
- */
-
-function getFile(name) {
-    return new Promise(function (resolve, reject) {
-        dbx.filesGetTemporaryLink({ path: '/' + name }).then(function (response) {
-            resolve(response.link);
-        }).catch(function (error) {
+// Given a dropbox filename, returns a URL to the corresponding dropbox file.
+function getLinkToFile(filename) {
+    return dbx.filesGetTemporaryLink({ path: '/' + filename })
+        .then(response => {
+            return response.link;
+        })
+        .catch(error => {
             console.log(error);
-            reject(error);
+            throw error;
         });
-    });
-};
-
-/**
- * 
- * @param {Array} songs
- * @param {function} function
- * @param {JSON} config
- * @return updated_config
- */
-
-function extractAllID3(songs, fn, config){
-    return songs.reduce((p, song) => {
-        return p.then((conf) => {
-            return fn(song, conf);
-        });
-    }, Promise.resolve(config));
-    
 }
 
-/**
- * @param {JSON} song song
- * @param {JSON} config config
- * @returns {Promise}
- */
+// Given a list of songs, returns a config file based off the songs ID3 info
+ function makeConfig(songs) {
+     let config = {
+         "counts":{},
+         "songs":{}
+     };
+     songs.forEach(song => {
+         extractID3(song, config);
+     })
+     return config;
+ }
 
-function extractID3(song, config){
-    return new Promise((resolve, reject) => {
-        if (song.name.endsWith('.mp3')){
-            getFile(song.name).then(function(link){
-                request({url: link, encoding: null }, (err, resp, buffer) => {
-                    if (!err && resp.statusCode == 200){
-                        var tags = nodeID3.read(buffer);
-                        if (config.counts[tags.genre]){
-                            config.counts[tags.genre]++;
-                        } else {
-                            config.counts[tags.genre] = 1;
-                        }
-                        config.songs[tags.title] = {
-                            "title": tags.title,
-                            "artist": tags.artist,
-                            "genre": tags.genre,
-                            "year": tags.year,
-                            "filename": song.name
-                        }
-                        resolve(config);
-                    } else {
-                        resolve(config);
-                    }
-                });
-            }).catch(function(error){
-                console.log(error);
-                reject(error);
-            });
-        } else {
-            resolve(config);
-        }
-    })
-    
+// Given a song's filename, returns the config file with the song's info added
+function extractID3(song, config) {
+    // skip non-mp3 files (eg existing config.json)
+    if (!song.name.endsWith('.mp3')) {
+        Promise.resolve(config);
+    }
+    return getLinkToFile(song.name)
+        // specify "null encoding" to get bits of mp3 file
+        .then(link => axios.get(link, { responseType: 'arraybuffer'}))
+        .then(response => {
+            const buffer = response.data;
+            const tags = nodeID3.read(buffer);
+            if (config.counts[tags.genre]) {
+                config.counts[tags.genre]++;
+            } else {
+                config.counts[tags.genre] = 1;
+            }
+            config.songs[tags.title] = {
+                "title": tags.title,
+                "artist": tags.artist,
+                "genre": tags.genre,
+                "year": tags.year,
+                "filename": song.name
+            }
+            return config;
+        })
+        // axios will error on non 200 status codes
+        .catch(error => {
+            console.log(error);
+            return config;
+        });
 }
 
-/** 
- * Takes in nothing, and generates a randomly selected filename from the dropbox
- * which is passed into getFile, and returns the result of calling getFile. 
- * @returns link to a random file
- */
-
-exports.getRandomFile = function () {
-    return new Promise(function (resolve, reject) {
-        dbx.filesListFolder({ path: '' }).then(function (response) {
+// Returns a URL to a randomly selected song
+exports.getRandomFile = function() {
+    return dbx.filesListFolder({ path: '' })
+        .then(response => {
             let name = '';
             while (!name.endsWith('.mp3')) {
                 index = parseInt(Math.random() * response.entries.length);
                 name = response.entries[index].name;
             }
-            getFile(name).then(function (result) {
-                resolve(result);
-            });
-        }).catch(function (error) {
-            console.error(error);
-            reject(error);
+            return getLinkToFile(name);
+        })
+        .catch(error => {
+            console.log(error);
+            throw error;
         });
-    });
 }
 
-/**
- * Takes in nothing and updates the dropbox genre file
- * @returns Success or Failure
- */
-
- exports.updateDBX = function(){
-    return new Promise(function (resolve, reject){
-        dbx.filesListFolder({path: ''}).then(function(response){
-            var config = {
-                "counts":{},
-                "songs":{}
-            };
-            extractAllID3(response.entries, extractID3, config).then(result => {
-                dbx.filesUpload({contents: JSON.stringify(result, null, "\t"), path: "/config.json", mode: {".tag": "overwrite"}}).then((response) => {
-                    resolve();
-                }).catch((error) => {
-                    console.log(error);
-                    reject(error);
-                });
-            });
-        }).catch(function(error){
-            console.error(error);
-            reject(error);
+// Creates a new config file based off the dropbox contents, and uploads it
+// WARNING: This doesn't work anymore, because nodeID3 fails to read tags.year
+exports.updateDBX = function() {
+    return dbx.filesListFolder({path: ''})
+        .then(response => makeConfig(response.entries))
+        .then(result => dbx.filesUpload({
+            contents: JSON.stringify(result, null, "\t"),
+            path: "/config.json",
+            mode: { ".tag": "overwrite" }
+        }))
+        .catch(error => {
+            console.log(error);
+            throw error;
         });
-     });
+}
+
+// Returns a JSON object of the config file (genres and counts of all songs)
+exports.getGenresList = function() {
+    return getLinkToFile('config.json')
+        .then(link => axios.get(link))
+        .then(response => {
+            return response.data;
+        })
+        // axios will error on non 200 status codes
+        .catch(error => {
+            console.log(error);
+            throw error;
+        });
  }
 
-/**
- * Takes in nothing and returns a JSON object with list of all genres and counts of all the songs in the dropbox
- * @returns JSON object of all genres and counts
- */
-
- exports.getGenresList = function(){
-     return new Promise(function (resolve, reject){
-        dbx.filesGetTemporaryLink({ path: '/config.json'}).then(function(response){
-            request(response.link, function(error, resp, body){
-                if (!error && resp.statusCode == 200){
-                    var config = JSON.parse(body);
-                    resolve(config);
-                } else {
-                    console.log(error);
-                    reject(error);
-                }
-            });
-        }).catch(function(error){
-            console.error(error);
-            reject(error);
-        });
-     });
- }
-
- /**
-  * Takes a song name and returns temp link for song
-  * @param {string} name
-  * @returns {url} link
-  */
-
-  exports.getSong = function(name){
-      return new Promise(function(resolve, reject){
-          getFile(name).then((result) => {
-              resolve(result);
-          }).catch((err) => {
-              console.log(err);
-              reject(err);
-          });
-      })
-  }
+// Given a song name, returns a URL to the corresponding song
+  exports.getSong = getLinkToFile;
