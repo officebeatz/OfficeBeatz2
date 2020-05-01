@@ -3,7 +3,7 @@
 function makeSongList(genreList, genreArray, decadeArray) {
     let songList = [];
     if (genreArray === null && decadeArray === null) {
-        songList = Object.keys(genreList.songs);
+        songList = Object.values(genreList.songs);
     } else if (decadeArray === null) {
         for (key in genreList.songs) {
             if (genreArray.includes(genreList.songs[key].genre)) {
@@ -30,7 +30,7 @@ function chooseNextSongWithPreferences(genreList, genreArray, decadeArray) {
     let songList = makeSongList(genreList, genreArray, decadeArray);
     let randomIndex = parseInt(Math.random() * songList.length);
     let chosenSong = songList[randomIndex];
-    console.log('findNextSongWithPreferences: ', chosenSong.filename);
+    console.log('chooseNextSongWithPreferences: ', chosenSong.filename);
     return {
         title: chosenSong.title+" ",
         artist: chosenSong.artist,
