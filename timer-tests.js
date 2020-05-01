@@ -5,7 +5,7 @@ test('counts down correctly after starting', () => {
     timer.setTimerInterval(900000)
     timer.startTimer();
     jest.advanceTimersByTime(500000);
-    expect(timer.getCurrentMS()).toBe(400000);
+    expect(timer.getCurrentMS()).toBeWithinRange(399900, 400100);
   });
 
 
@@ -20,7 +20,7 @@ test('pauses after starting and stopping', () => {
     timer.startTimer();
     timer.pauseTimer();
     jest.advanceTimersByTime(500000);
-    expect(timer.getCurrentMS().toBe(400000));
+    expect(timer.getCurrentMS().toBeWithinRange(399900, 400100));
   });
 
 test('pauses after starting and resetting', () => {
@@ -28,7 +28,7 @@ test('pauses after starting and resetting', () => {
     timer.startTimer();
     timer.resetTimer();
     jest.advanceTimersByTime(500000);
-    expect(timer.getCurrentMS().toBe(900000));
+    expect(timer.getCurrentMS().toBeWithinRange(899900, 900000));
   });
 
 test('correctly resets interval', () => {
