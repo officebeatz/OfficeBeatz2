@@ -1,8 +1,8 @@
 api = require('./api.js');   // AJAX requests to back-end API
 form = require('./form.js'); // form submission
-page = require('./page.js'); // page display
+page = require('./page.js'); // page display updates
 song = require('./song.js'); // choose next song
-timer = require('./timer.js');
+timer = require('./timer.js'); // handles interval timer
 
 $(document).ready(function () {
 
@@ -14,15 +14,18 @@ $(document).ready(function () {
         $('.tabs').tabs('select', 'home');
     });
 
-    let timeLeft = localStorage.getItem("TIME_INTERVAL") || 900000; // Defaults to 15 minutes if not previously set.
-    let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
-    let volumeControl = $('.volSlider');
+    let timeInterval = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000; // Defaults to 15 minutes if not previously set.
     let tempVol = 50;
     let genreList;
-    let genres = []
     let genrePreferences = [];
     let decadePreferences = [];
+    try {
+        genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
+        decadePreferences = JSON.parse(localStorage.getItem("DECADE_PREFERENCES"));
+    } catch (error) { }
 
+    let audioElement = $('#audioSource')[0]; // jQuery syntax to grab the first child of the audio object.
+    let volumeControl = $('.volSlider');
     let settingsElement = $('#advSetForm');
     let stopButton = $('#stop-timer');
     let startButton = $('#start-timer');
@@ -31,84 +34,97 @@ $(document).ready(function () {
     let blueGearIcon = $('#settings-icon-blue');
     let grayGearIcon = $('#settings-icon-grey');
 
-
-    timer.updateTimerDisplay(Math.floor(timeLeft/1000));
-
-    try {
-        genrePreferences = JSON.parse(localStorage.getItem("GENRE_PREFERENCES"));
-    } catch (error) {
-
-    }
-
-    try {
-        decadePreferences = JSON.parse(localStorage.getItem("DECADE_PREFERENCES"));
-    } catch (error) {
-
-    }
-
+    // Load initial song
     api.getGenres().then((result) => {
         genreList = result;
-        console.log(genreList.counts);
-        for (let key in genreList.counts) {
-            genres.push(key);
-        }
-        //This iterates through the genre stuff, add in making checkboxes out of this later~
-        for (let i = 0; i < genres.length; i++) {
-            console.log(genres[i] + ": " + genreList.counts[genres[i]]);
-        }
         findNextSongWithPreferences(genrePreferences, decadePreferences)
     });
 
-    // Updates entries requiring timeLeft
-    page.determineRadioButton(timeLeft);
+    // Initialize form/form displays based on local settings
+    page.determineRadioButton(timeInterval);
     page.determineCheckboxes(genrePreferences);
     page.determineDecadeInputs(decadePreferences);
-    page.updateIntervalDisplay(timeLeft);
+    page.updateIntervalDisplay(timeInterval);
     page.updateGenreDisplay(genrePreferences);
     page.updateDecadeDisplay(decadePreferences);
-    page.allSelectedOrNot();
-
-    $('#play').click(function () {
-        // Updates autoplay after an action has taken place.
-        audioElement.autoplay = true;
-
-        if(audioElement.paused) {
-            audioElement.play();
-        } else {
-            audioElement.pause();
-        }
-
-        page.updatePlayIcon(audioElement);
-    });
 
 
-    $("#start-timer").click(function() {
-        timeLeft=timer.getCurrentMS();
-        timer.startTimer();
-    });
-    $("#stop-timer").click(function() {
-        timer.pauseTimer();
-    });
-    $("#reset-timer").click(function() {
-        timeLeft = timer.getInitialMS();
-        timer.setTimer(timeLeft);
-        timer.pauseTimer();
-        timer.updateTimerDisplay(Math.floor(timeLeft/1000));
-    });
-    // clear the button highlight after reset is clicked (for readability)
-    $("#reset-timer").mouseup(function() { this.blur(); });
+
+    /* HELPER FUNCTIONS */
 
     // Makes an AJAX request for a new song and then replaces current song with the response.
     function loopPlayer(audioElement) {
         findNextSongWithPreferences(genrePreferences, decadePreferences);
         // Delay to prevent overlap while changing audio source.
         setTimeout(function () {
+            audioElement.autoplay = true;
             audioElement.play();
             page.updatePlayIcon(audioElement);
         }, 1500);
     }
+    // Makes a post request to get the next song based on preferences.
+    // It works even if the preferences are null.
+    function findNextSongWithPreferences(genreArray, decadeArray) {
+        nextSong = song.chooseNextSongWithPreferences(genreList, genreArray, decadeArray);
+        page.updateSongDisplay(nextSong.title, nextSong.artist);
+        api.getSongFile(nextSong.fileName).then((songFile) => {
+            audioElement.src = songFile;
+        });
+    }
+
+
+
+    /* TIMER CONTROLS */
+
+    // TIMER SET UP //
+    timer.setTimerDisplay(timeInterval);
+    timer.setTimerInterval(timeInterval);
     timer.setSongPlayer(loopPlayer, audioElement);
 
+    // TIMER LOGIC/DISPLAY //
+    $("#start-timer").click(function() {
+        timer.startTimer();
+        startButton.hide();
+        stopButton.show();
+    });
+    $("#stop-timer").click(function() {
+        timer.pauseTimer();
+        startButton.show();
+        stopButton.hide();
+    });
+    $("#reset-timer").click(function() {
+        timer.resetTimer();
+        startButton.show();
+        stopButton.hide();
+    });
+    // clear the button highlight after reset is clicked (for readability)
+    $("#reset-timer").mouseup(function() { this.blur(); });
+
+
+
+    /* SONG CONTROLS */
+
+    $('#play').click(function () {
+        audioElement.autoplay = true;
+        if (audioElement.paused) {
+            audioElement.play();
+        } else {
+            audioElement.pause();
+        }
+        page.updatePlayIcon(audioElement);
+    });
+    $('#skip').click(function () {
+        // Get new song, retaining pause/play state.
+        if (audioElement.paused) {
+            audioElement.autoplay = false;
+            findNextSongWithPreferences(genrePreferences, decadePreferences);
+        } else {
+            audioElement.pause();
+            findNextSongWithPreferences(genrePreferences, decadePreferences);
+            audioElement.autoplay = true;
+            audioElement.play();
+        }
+    });
     $('#mute').click(function () {
         if (audioElement.volume != 0) {
             volumeControl.val(0);
@@ -117,137 +133,26 @@ $(document).ready(function () {
             audioElement.volume = tempVol / 100;
             volumeControl.val(tempVol);
         }
-
         page.updateVolIcon(audioElement);
     });
-
-    $('#pop-settings').click(function () {
-        // toggle display of settings tab
-        let shown = settingsElement[0].style["display"];
-        if (shown == "none") {
-            settingsElement[0].style["display"] = "block";
-        } else {
-            settingsElement[0].style["display"] = "none";
-        }
-
-        // toggle color of settings icon
-        blueGearIconDisplay = blueGearIcon[0].style.display;
-        if (blueGearIconDisplay == "block") {
-            grayGearIcon[0].style["display"] = "block";
-            blueGearIcon[0].style["display"] = "none";
-        } else if (blueGearIconDisplay == "none") {
-            blueGearIcon[0].style["display"] = "block";
-            grayGearIcon[0].style["display"] = "none";
-        }
-    });
-
-    $('#start-timer').click(function () {
-        let shown = startButton[0].style["display"];
-        if (shown == "none") {
-            startButton[0].style["display"] = "inline-block";
-            stopButton[0].style["display"] = "none";
-        } else {
-            startButton[0].style["display"] = "none";
-            stopButton[0].style["display"] = "inline-block";
-        }
-    });
-    $('#stop-timer').click(function () {
-        let shown = startButton[0].style["display"];
-        if (shown == "none") {
-            startButton[0].style["display"] = "inline-block";
-            stopButton[0].style["display"] = "none";
-        } else {
-            startButton[0].style["display"] = "none";
-            stopButton[0].style["display"] = "inline-block";
-        }
-    });
-    $('#reset-timer').click(function (){
-        startButton[0].style["display"] = "inline-block";
-        stopButton[0].style["display"] = "none";
-    });
-
-
-    $('#vol-change').click(function () {
-        let shown = volumeButton[0].style["display"];
-        if (shown == "none") {
-            volumeButton[0].style["display"] = "inline-block";
-            titleDisplay[0].style["display"] = "none";
-        } else {
-            volumeButton[0].style["display"] = "none";
-            titleDisplay[0].style["display"] = "inline-block";
-        }
-    });
-    //Updates volume when slider is changed.
     $('#vol-control').on("input change", function () {
         tempVol = this.value;
         audioElement.volume = this.value / 100;
-
         page.updateVolIcon(audioElement);
     });
-    // Get new song, retaining pause/play state.
-    $('#skip').click(function () {
-        if (audioElement.paused) {
-            findNextSongWithPreferences(genrePreferences, decadePreferences);
-        } else {
-            audioElement.pause();
-            findNextSongWithPreferences(genrePreferences, decadePreferences);
-            audioElement.play();
-        }
+
+
+
+    /* SETTINGS / FORM */
+
+    // FORM DISPLAY //
+    $('#pop-settings').click(function () {
+        // toggle display of settings tab
+        settingsElement.toggle();
+        // toggle color of settings icon
+        grayGearIcon.toggle();
+        blueGearIcon.toggle();
     });
-
-
-    // Submits and updates interval between songs.
-    $("#advancedSettingsForm").submit(function (event) {
-        event.preventDefault();
-        intervalHandler();
-        let formSubmission = form.submitForm(genreList);
-        if (formSubmission.isValid) {
-            genrePreferences = formSubmission.genrePreferences;
-            decadePreferences = formSubmission.decadePreferences;
-            page.updateGenreDisplay(genrePreferences);
-            page.updateDecadeDisplay(decadePreferences);
-            localStorage.setItem("GENRE_PREFERENCES", JSON.stringify(genrePreferences));
-            localStorage.setItem("DECADE_PREFERENCES", JSON.stringify(decadePreferences));
-            findNextSongWithPreferences(genrePreferences, decadePreferences);
-        }
-    });
-
-    /**
-     * Makes a post request to get the next song based on preferences.
-     * It works even if the preferences are null.
-     * @param {*} genreArray
-     * @param {*} decadeArray
-     */
-    function findNextSongWithPreferences(genreArray, decadeArray) {
-        nextSong = song.chooseNextSongWithPreferences(genreList, genreArray, decadeArray);
-        page.updateSongDisplay(nextSong.title, nextSong.artist);
-        // post request to /api/song in the headers make a tag called song, put name there
-        api.getSongFile(nextSong.fileName).then((songFile) => {
-            audioElement.src = songFile;
-        });
-    }
-
-    function intervalHandler() {
-        let radioCheck = $('input[name=intervalGroup]:checked', '#advancedSettingsForm').val();
-        if (radioCheck == 'custom') {
-            let customValue = $('#customIntervalValue').val();
-            if (customValue < 1 || customValue > 120) {
-                event.preventDefault();
-                console.error("Custom intervals must be between 1 and 120 minutes.");
-            } else {
-                timeLeft = customValue * 60 * 1000;
-                localStorage.setItem("TIME_INTERVAL", timeLeft);
-                page.updateIntervalDisplay(timeLeft);
-                timer.setTimer(timeLeft);
-            }
-        } else {
-            timeLeft = radioCheck * 60 * 1000;
-            localStorage.setItem("TIME_INTERVAL", timeLeft);
-            page.updateIntervalDisplay(timeLeft);
-            timer.setTimer(timeLeft);
-        }
-    }
-
     $("#selectBox").change(function () {
         if (this.checked) {
             $(".genreGroup").each(function () {
@@ -259,13 +164,26 @@ $(document).ready(function () {
             });
         }
     });
-
     $(".genreGroup").click(function () {
-        if ($(this).is(":checked")) {
-            page.allSelectedOrNot();
-        }
-        else {
-            $("#selectBox").prop("checked", false);
+        page.updateSelectAllCheckbox();
+    });
+
+    // Submits and updates interval between songs.
+    $("#advancedSettingsForm").submit(function (event) {
+        event.preventDefault();
+        let formSubmission = form.submitForm(genreList);
+        if (formSubmission.isValid) {
+            genrePreferences = formSubmission.genres;
+            decadePreferences = formSubmission.decades;
+            timeInterval = formSubmission.interval;
+            timer.setTimerInterval(timeInterval);
+            page.updateGenreDisplay(genrePreferences);
+            page.updateDecadeDisplay(decadePreferences);
+            page.updateIntervalDisplay(timeInterval);
+            localStorage.setItem("GENRE_PREFERENCES", JSON.stringify(genrePreferences));
+            localStorage.setItem("DECADE_PREFERENCES", JSON.stringify(decadePreferences));
+            localStorage.setItem("TIME_INTERVAL", timeInterval);
+            // findNextSongWithPreferences(genrePreferences, decadePreferences);
         }
     });
 });

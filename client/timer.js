@@ -1,61 +1,72 @@
-var initialSettings = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000;
-var currMilliseconds = parseInt(localStorage.getItem("TIME_INTERVAL")) || 900000;
-var intervalEnd;
-var timer_display;
-var audio;
-function loopPlayer(){};
+let initialSettings, currMilliseconds, intervalEnd;
+let timerIsNew = true;
+let timer_tick_loop;
+let audio, loopPlayer;
 
+// MS per tick of the timer display
+// numbers close to 500 or 1000 lead to lagging
+// because setInterval is only a minimum request, not a guarante
+const TICK_MS = 100;
 
-function updateTimerDisplay(totalSeconds){
-        var minutes = Math.floor(totalSeconds/60);
-        if(minutes < 10){minutes = "0"+minutes};
-        var seconds = Math.floor(totalSeconds%60);
-        if(seconds<10){seconds="0"+seconds};
-        document.getElementById("timer-time").innerHTML=
-        (minutes + ":" + seconds);
+/* Helper functions */
+function setTimerDisplay (ms) {
+    let totalSeconds = Math.floor(ms/1000);
+    let minutes = Math.floor(totalSeconds/60);
+    let seconds = Math.floor(totalSeconds%60);
+    if (minutes < 10) { minutes = "0"+minutes; };
+    if (seconds < 10) { seconds="0"+seconds; };
+    $('#timer-time').html(function () {
+        return (minutes + ":" + seconds);
+    })
 }
-function displayTimer(){
-        var seconds_remaining = Math.floor((intervalEnd-new Date())/1000);
-        if(seconds_remaining > 0){
-            updateTimerDisplay(seconds_remaining);
-            currMilliseconds=currMilliseconds-500;
-        } else{
-            //play song
-            loopPlayer(audio);
-            setTimer(initialSettings);
-            intervalEnd = new Date(new Date().getTime() + (currMilliseconds));
-        }
-}
-function startTimer(){
-        intervalEnd = new Date(new Date().getTime() + (currMilliseconds));
-        timer_display = setInterval(displayTimer, 500);
-    //note: the occasional slight lagging can make the timer look like it skips a step,
-    //hence 500 rather than 1000ms
-}
-function setTimer(time){
-        initialSettings = time;
-        currMilliseconds = time;
-}
-function pauseTimer(){
-        clearInterval(timer_display);
-}
-function getCurrentMS(){
-        return currMilliseconds;
-}
-function getInitialMS(){
-        return initialSettings;
+
+/* Interval settings */
+function setTimerInterval(ms){
+    initialSettings = parseInt(ms);
 }
 function setSongPlayer(playerFunction, audioElement){
-        loopPlayer = playerFunction;
-        audio = audioElement;
+    loopPlayer = playerFunction;
+    audio = audioElement;
 }
 
+/* Interval controls */
+function startTimer() {
+    // check if we need to reset currMilliseconds
+    // ie on pageload or resetTimer
+    if (timerIsNew) {
+        currMilliseconds = initialSettings;
+        timerIsNew = false;
+    }
+    intervalEnd = new Date((new Date()).getTime() + currMilliseconds);
+    timer_tick_loop = setInterval(tick, TICK_MS);
+}
+function pauseTimer() {
+    clearInterval(timer_tick_loop);
+}
+function resetTimer() {
+    pauseTimer();
+    timerIsNew = true;
+    setTimerDisplay(initialSettings);
+}
+
+/* Core interval loop */
+function tick() {
+    currMilliseconds = (intervalEnd - new Date());
+    if (currMilliseconds > 0){
+        setTimerDisplay(currMilliseconds);
+    } else {
+        loopPlayer(audio); //play song
+        resetTimer();
+        startTimer();
+    }
+}
+
+
 module.exports = {
-    updateTimerDisplay,
+    setTimerDisplay,
+    setTimerInterval,
+    setSongPlayer,
     startTimer,
-    setTimer,
     pauseTimer,
-    getCurrentMS,
-    getInitialMS,
-    setSongPlayer
+    resetTimer
 }
