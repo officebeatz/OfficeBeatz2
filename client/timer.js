@@ -8,6 +8,14 @@ let audio, loopPlayer;
 // because setInterval is only a minimum request, not a guarante
 const TICK_MS = 100;
 
+/* Getters for testing */
+function getCurrentMS() {
+    return currMilliseconds;
+}
+function getLoopPlayer() {
+    return loopPlayer;
+}
+
 /* Helper functions */
 function setTimerDisplay (ms) {
     let totalSeconds = Math.floor(ms/1000);
@@ -15,9 +23,7 @@ function setTimerDisplay (ms) {
     let seconds = Math.floor(totalSeconds%60);
     if (minutes < 10) { minutes = "0"+minutes; };
     if (seconds < 10) { seconds="0"+seconds; };
-    $('#timer-time').html(function () {
-        return (minutes + ":" + seconds);
-    })
+    document.getElementById('timer-time').innerHTML = (minutes + ":" + seconds);
 }
 
 /* Interval settings */
@@ -68,5 +74,9 @@ module.exports = {
     setSongPlayer,
     startTimer,
     pauseTimer,
-    resetTimer
+    resetTimer,
+    
+    // for tests
+    getCurrentMS,
+    getLoopPlayer
 }
