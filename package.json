@@ -25,6 +25,10 @@
   },
   "devDependencies": {
     "jest": "^25.2.7",
+    "jest-date-mock": "^1.0.8",
     "supertest": "^4.0.2"
+  },
+  "jest": {
+    "setupFiles": ["jest-date-mock"]
   }
 }
