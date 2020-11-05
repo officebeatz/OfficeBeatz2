@@ -4,6 +4,8 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
+var session = require('express-session');
+
 
 // load dev environment variables (BEFORE setting routes)
 if (process.env.NODE_ENV == 'dev') {
@@ -23,6 +25,9 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(session({secret: "sadhsafhsfsajf", cookie: {maxAge: 7*24*3600*1000}}));
+
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
