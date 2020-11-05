@@ -3,7 +3,7 @@ const nodeID3 = require('node-id3');
 const dbx = require('./dbx')
 
 var admin = require('firebase-admin');
-var serviceAccount = process.env.GOOGLE_FIREBASE_AUTH;
+var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
 
 
 admin.initializeApp({
