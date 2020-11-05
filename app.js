@@ -6,6 +6,7 @@ var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 var session = require('express-session');
 
+
 // load dev environment variables (BEFORE setting routes)
 if (process.env.NODE_ENV == 'dev') {
     console.log("Loading dev .env variables");

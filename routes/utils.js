@@ -5,6 +5,7 @@ const dbx = require('./dbx')
 var admin = require('firebase-admin');
 var serviceAccount = process.env.GOOGLE_FIREBASE_AUTH;
 
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://officebeatz-1918b.firebaseio.com"

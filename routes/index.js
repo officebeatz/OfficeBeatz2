@@ -82,6 +82,7 @@ router.get('/authenticate/:key?', function(req, res, next){
     {
       res.redirect("/");
     }
+
     else if (auth1 && !auth2)
     {
       res.render("access-denied", {title: 'OfficeBeatZ', message: 'Your access has expired'});
