@@ -5,7 +5,6 @@ const dbx = require('./dbx')
 var admin = require('firebase-admin');
 var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
 
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://officebeatz-1918b.firebaseio.com"
@@ -117,6 +116,12 @@ exports.getGenresList = function() {
         });
  }
 
+ function updateLoginTime(req, time)
+ {
+     if (req.session.fire_key)
+        defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').set(time.toString());
+ }
+
 /**
  * Returns if user is allowed to be on the website
  * @param {Request}
@@ -125,7 +130,10 @@ exports.getGenresList = function() {
 exports.hasValidAccess = function (req) {
     if (req.session.hasAccess && req.session.hasAccess===true) {
         return Promise.resolve([new Date(req.session.expire_date) ]).then(function (res) {
-            if (res[0]>= new Date()) return 0;
+            if (res[0]>= new Date()) {
+                updateLoginTime(req, new Date());
+                return 0;
+            }
             else return 2;
         });
     }
@@ -141,7 +149,10 @@ exports.hasValidAccess = function (req) {
                 req.session.expire_date = expiration_date;
                 req.session.hasAccess = true;
                 if (!(exp_date >= today)) return 2;
-                else return 0;
+                else {
+                    updateLoginTime(req, today);
+                    return 0;
+                }
             } else {
                 req.session.hasAccess = false;
                 return 1;
@@ -150,7 +161,42 @@ exports.hasValidAccess = function (req) {
         });
     }
     return Promise.resolve().then(function(f) {return 1;});
+};
+
+/**
+ * Resets session vals
+ */
+function logout(req) {
+    req.session.hasAccess = false;
+    req.session.hasEntered = false;
+    req.session.fire_key = null;
+    req.session.expire_date = null;
 }
+
+function logoutHelper(dataSnapshot)
+{
+    logoutAllCallBack(dataSnapshot)
+}
+
+function logoutAllCallBack(dataSnapshot, req) {
+    if (req.session.hasEntered) {
+        logout(req);
+        defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
+        req.session.fun = null;
+        req.session.redirectURL = "/logout";
+        req.session.save();
+    }
+    req.session.hasEntered = true;
+}
+
+exports.logoutAllOtherSessions = function (req) {
+    req.session.fun = defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login')
+        .on("value", function(dataSnapshot) {
+            logoutAllCallBack(dataSnapshot, req);
+        });
+    req.session.save();
+
+};
 
 // Given a song name, returns a URL to the corresponding song
   exports.getSong = getLinkToFile;

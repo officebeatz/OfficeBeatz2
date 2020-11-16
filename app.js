@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(session({secret: "sadhsafhsfsajf", cookie: {maxAge: 7*24*3600*1000}}));
+app.use(session({secret: "sadhsafhsfsajf", cookie: {maxAge: 7*24*3600*1000, secure:false}}));
 
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
