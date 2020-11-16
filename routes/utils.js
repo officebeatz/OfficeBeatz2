@@ -1,10 +1,9 @@
 const axios = require('axios');
 const nodeID3 = require('node-id3');
-const dbx = require('./dbx')
+const dbx = require('./dbx');
 
 var admin = require('firebase-admin');
 var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
-
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://officebeatz-1918b.firebaseio.com"
@@ -116,13 +115,15 @@ exports.getGenresList = function() {
         });
  }
 
+ //Written by Alex Amin Zamani
+ //Updates the time that the user last logged in
  function updateLoginTime(req, time)
  {
      if (req.session.fire_key)
         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').set(time.toString());
  }
 
-/**
+/** Written by Alex Amin Zamani
  * Returns if user is allowed to be on the website
  * @param {Request}
  * @returns int if user's has access (0=success, 1=key does not exist, 2=key has expired)
@@ -165,6 +166,7 @@ exports.hasValidAccess = function (req) {
 
 /**
  * Resets session vals
+ * Written by Alex Amin Zamani
  */
 function logout(req) {
     req.session.hasAccess = false;
@@ -173,11 +175,31 @@ function logout(req) {
     req.session.expire_date = null;
 }
 
-function logoutHelper(dataSnapshot)
+/**
+ * Updates user's time in Firebase realtime database
+ * Written by Alex Amin Zamani
+ */
+exports.updateTime = function (req, time)
 {
-    logoutAllCallBack(dataSnapshot)
+    if (req.session.fire_key) {
+        var today = new Date();
+        var path = '/users/' + req.session.fire_key + '/timeOnSite_' + today.toDateString();
+
+        defaultDatabase.ref(path).once('value').then(function(snapshot) {
+
+            if (snapshot.exists())
+            {
+                var adding = parseFloat(snapshot.val()) + parseFloat(time);
+                defaultDatabase.ref(path).set(adding);
+            }
+            else {
+                defaultDatabase.ref(path).set(parseFloat(time));
+            }
+        });
+    }
 }
 
+//Written by Alex Amin Zamani
 function logoutAllCallBack(dataSnapshot, req) {
     if (req.session.hasEntered) {
         logout(req);
@@ -189,6 +211,7 @@ function logoutAllCallBack(dataSnapshot, req) {
     req.session.hasEntered = true;
 }
 
+//Written by Alex Amin Zamani
 exports.logoutAllOtherSessions = function (req) {
     req.session.fun = defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login')
         .on("value", function(dataSnapshot) {

@@ -2,7 +2,8 @@ extends layouts/layout
 
 block content
   include components/header.pug
-
+  script(src='/javascripts/timeme.min.js')
+  script(src='/javascripts/PageTimeTracker.js')
   main
     include components/home-tab.pug
     include components/getting-started-tab.pug

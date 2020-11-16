@@ -14,6 +14,20 @@ function getSongFile(songFileName) {
     });
 }
 
+ function updatePageViewTime (timeSpent) {
+    return $.ajax({
+        url: '/api/timing',
+        data: null,
+        headers: {
+            'timeSpent': timeSpent
+        },
+        type: "POST",
+        success: function (responseData) {
+            //Do nothing
+        }, error: console.error
+    })
+}
+
 /**
  * Creates the genre preferences based on id3 information from getGenres().
  */
@@ -37,5 +51,6 @@ function getGenres() {
 
 module.exports = {
     getSongFile: getSongFile,
-    getGenres: getGenres
+    getGenres: getGenres,
+    updatePageViewTime: updatePageViewTime
 }
