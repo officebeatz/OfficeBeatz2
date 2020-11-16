@@ -5,6 +5,7 @@ var utils = require('./utils');
  * GET home page.
  */
 router.get('/', function (req, res, next) {
+  //Authentication code by Alex Amin Zamani
   var auth = req.session.hasAccess && req.session.hasAccess===true && new Date(req.session.expire_date) >= new Date();
   if (req.session.redirectURL && req.session.redirectURL.length>0)
   {
@@ -15,14 +16,10 @@ router.get('/', function (req, res, next) {
 
 
     //Commented out for demo purposes
-    //Ben's additions below
-    TimeMe.setIdleDurationInSeconds(-1);
-	  TimeMe.setCurrentPageName("homepage");
-    TimeMe.initialize();
-    //Ben's additions above
+
     
     utils.getRandomFile().then(function (result) {
-      res.render('error', {title: 'OfficeBeatZ', link: result});
+      res.render('index', {title: 'OfficeBeatZ', link: result});
     });
 
 
@@ -31,6 +28,10 @@ router.get('/', function (req, res, next) {
   }
 });
 
+/**
+ * GET shows user when they have been logged out
+ * Written by Alex Amin Zamani
+ */
 router.get('/logout', function (req, res, next) {
   if (req.session.redirectURL && req.session.redirectURL==="/logout")
   {
@@ -48,6 +49,15 @@ router.post('/api/next', function (req, res, next) {
   utils.getRandomFile().then(function (result) {
     res.send(result);
   })
+});
+
+/**
+ * POST Endpoint for updating the time they spent on the page
+ * Written by Alex Amin Zamani
+ */
+router.post('/api/timing', function (req, res, next) {
+  if (req.session.fire_key)
+    utils.updateTime(req, req.get("timeSpent"));
 });
 
 /**
@@ -79,6 +89,7 @@ router.get('/api/webhook', function(req, res, next) {
 
 /**
  * GET if user has access
+ * Written by Alex Amin Zamani
  */
 router.get('/authenticate/:key?', function(req, res, next){
   var auth1 = req.session.hasAccess && req.session.hasAccess===true;
@@ -115,13 +126,5 @@ router.get('/authenticate/:key?', function(req, res, next){
     }
   }
 });
-//Ben time EDITS----------------------------------------
-window.onbeforeunload = function (event) {
-	xmlhttp = new XMLHttpRequest();
-	xmlhttp.open("POST","ENTER_URL_HERE",false);
-	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
-	var timeSpentOnPage = TimeMe.getTimeOnAllPagesInSeconds();
-	xmlhttp.send(timeSpentOnPage);
-};
 
 module.exports = router;
