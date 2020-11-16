@@ -16,6 +16,7 @@ router.get('/', function (req, res, next) {
 
 
     //Commented out for demo purposes
+
     
     utils.getRandomFile().then(function (result) {
       res.render('index', {title: 'OfficeBeatZ', link: result});
