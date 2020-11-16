@@ -15,6 +15,12 @@ router.get('/', function (req, res, next) {
 
 
     //Commented out for demo purposes
+    //Ben's additions below
+    TimeMe.setIdleDurationInSeconds(-1);
+	  TimeMe.setCurrentPageName("homepage");
+    TimeMe.initialize();
+    //Ben's additions above
+    
     utils.getRandomFile().then(function (result) {
       res.render('error', {title: 'OfficeBeatZ', link: result});
     });
@@ -109,5 +115,13 @@ router.get('/authenticate/:key?', function(req, res, next){
     }
   }
 });
+//Ben time EDITS----------------------------------------
+window.onbeforeunload = function (event) {
+	xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("POST","ENTER_URL_HERE",false);
+	xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded"); 
+	var timeSpentOnPage = TimeMe.getTimeOnAllPagesInSeconds();
+	xmlhttp.send(timeSpentOnPage);
+};
 
 module.exports = router;
