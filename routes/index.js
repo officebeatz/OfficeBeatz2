@@ -6,17 +6,33 @@ var utils = require('./utils');
  */
 router.get('/', function (req, res, next) {
   var auth = req.session.hasAccess && req.session.hasAccess===true && new Date(req.session.expire_date) >= new Date();
+  if (req.session.redirectURL && req.session.redirectURL.length>0)
+  {
+    res.redirect(req.session.redirectURL);
+  }
   if (auth) {
     //res.render("access-denied", {title: 'OfficeBeatz',message: 'Access granted'});
 
+
     //Commented out for demo purposes
     utils.getRandomFile().then(function (result) {
-      res.render('index', {title: 'OfficeBeatZ', link: result});
-    })
+      res.render('error', {title: 'OfficeBeatZ', link: result});
+    });
+
 
   } else {
     res.redirect("/authenticate/");
   }
+});
+
+router.get('/logout', function (req, res, next) {
+  if (req.session.redirectURL && req.session.redirectURL==="/logout")
+  {
+    res.render("access-denied", {title: 'OfficeBeatz',message: 'You have been logged out. Please use the emailed link to log back in.'});
+    req.session.redirectURL = null;
+    req.session.save();
+  }
+  res.redirect("/");
 });
 
 /**
@@ -67,6 +83,7 @@ router.get('/authenticate/:key?', function(req, res, next){
     utils.hasValidAccess(req).then(function(has_access) {
       if (has_access===0)
       {
+        utils.logoutAllOtherSessions(req, res);
         res.redirect("/");
       }
       else if (has_access===1) {
