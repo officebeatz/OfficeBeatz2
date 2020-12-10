@@ -14,10 +14,13 @@ function updatePageViewTime (timeSpent) {
     })
 }
 
+/*
 TimeMe.initialize({
     currentPageName: "homePage",
     idleTimeoutInSeconds: -1,
 });
+*/
+var PLEASE_DO_NOT_TOUCH_THIS_VAR = new Date();
 console.log("initialized");
 var isOnIOS = navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/iPhone/i) ||navigator.userAgent.match(/iPod/i);
 var eventName = isOnIOS ? "pagehide" : "beforeunload";
@@ -27,8 +30,8 @@ window.addEventListener(eventName, function (event) {
     if (typeof event == undefined)
         event = window.event;
     if (event) event.returnValue = message;
-    var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
-    updatePageViewTime(timeSpentOnPage);
-    TimeMe.resetAllRecordedPageTimes();
+    //var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
+    updatePageViewTime((new Date() - PLEASE_DO_NOT_TOUCH_THIS_VAR)/1000);
+    //TimeMe.resetAllRecordedPageTimes();
     return message;
 });
