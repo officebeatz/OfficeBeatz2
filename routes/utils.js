@@ -5,6 +5,7 @@ const dbx = require('./dbx');
 var admin = require('firebase-admin');
 var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
 //var serviceAccount = require('../verySecretKey.json')
+
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
     databaseURL: "https://officebeatz-1918b.firebaseio.com"
