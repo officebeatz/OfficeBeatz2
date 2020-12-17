@@ -124,6 +124,12 @@ exports.getGenresList = function() {
         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').set(time.toString());
  }
 
+ exports.updatePageViewTime = function (req, time)
+ {
+     if (req.session.fire_key)
+         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).set(time.toString());
+ }
+
 /** Written by Alex Amin Zamani
  * Returns if user is allowed to be on the website
  * @param {Request}
@@ -203,11 +209,21 @@ exports.updateTime = function (req, time)
 //Written by Alex Amin Zamani
 function logoutAllCallBack(dataSnapshot, req) {
     if (req.session.hasEntered) {
-        logout(req);
-        defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
-        req.session.fun = null;
-        req.session.redirectURL = "/logout";
-        req.session.save();
+        console.log("DATE:::"+req.sessionID);
+        defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).once('value').then(function(snapshot) {
+
+            if (snapshot.exists()) {
+                exports.updateTime(req, (new Date() - new Date(snapshot.val()))/1000);
+            }
+            logout(req);
+            defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
+            req.session.fun = null;
+            req.session.redirectURL = "/logout";
+            req.session.pageViewDate = null;
+            req.session.save();
+        });
+        //exports.updateTime(req, new Date() - req.session.pageViewDate);
+
     }
     req.session.hasEntered = true;
 }
