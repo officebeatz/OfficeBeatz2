@@ -33,5 +33,6 @@ window.addEventListener(eventName, function (event) {
     //var timeSpentOnPage = TimeMe.getTimeOnCurrentPageInSeconds();
     updatePageViewTime((new Date() - PLEASE_DO_NOT_TOUCH_THIS_VAR)/1000);
     //TimeMe.resetAllRecordedPageTimes();
+    PLEASE_DO_NOT_TOUCH_THIS_VAR = new Date();
     return message;
 });

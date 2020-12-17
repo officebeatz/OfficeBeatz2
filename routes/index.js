@@ -16,8 +16,9 @@ router.get('/', function (req, res, next) {
 
 
     //Commented out for demo purposes
-
-    
+    req.session.pageViewDate = new Date();
+    utils.updatePageViewTime(req,new Date());
+    req.session.save();
     utils.getRandomFile().then(function (result) {
       res.render('index', {title: 'OfficeBeatZ', link: result});
     });
