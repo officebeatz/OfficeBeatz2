@@ -17,7 +17,8 @@ router.get('/', function (req, res, next) {
 
     //Commented out for demo purposes
     req.session.pageViewDate = new Date();
-    utils.updatePageViewTime(req,new Date());
+    utils.UpdateOffPageViewDiff(req.session.fire_key, req.session.id);
+    //utils.updatePageViewTime(req.session.fire_key,req.session.id,new Date());
     req.session.save();
     utils.getRandomFile().then(function (result) {
       res.render('index', {title: 'OfficeBeatZ', link: result});
@@ -58,7 +59,7 @@ router.post('/api/next', function (req, res, next) {
  */
 router.post('/api/timing', function (req, res, next) {
   if (req.session.fire_key)
-    utils.updateTime(req, req.get("timeSpent"));
+    utils.updateTime(req.session.fire_key, req.get("timeSpent"));
 });
 
 /**

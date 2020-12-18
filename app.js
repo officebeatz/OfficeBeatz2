@@ -1,10 +1,12 @@
 var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser')();
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
 var session = require('express-session');
+var sharedsession = require("express-socket.io-session");
+var actual_session = session({secret: "sadhsafhsfsajf", cookie: {maxAge: 7*24*3600*1000, secure:false}});
 
 
 // load dev environment variables (BEFORE setting routes)
@@ -24,9 +26,9 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+app.use(cookieParser);
 
-app.use(session({secret: "sadhsafhsfsajf", cookie: {maxAge: 7*24*3600*1000, secure:false}}));
+app.use(actual_session);
 
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
@@ -68,4 +70,21 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+var server = require('http').createServer(app);
+var io = require('socket.io')(server);
+
+io.use(sharedsession(actual_session,cookieParser));
+
+var utils = require('./routes/utils');
+
+io.on('connection', function(socket){
+  console.log('a user connected: ' + socket.handshake.session.id);
+  socket.on('disconnect', function(){
+    if (socket.handshake.session.fire_key) {
+      utils.UpdateOffPageViewDiff(socket.handshake.session.fire_key, socket.handshake.session.id);
+    }
+    console.log('a user disconnected: ' + socket.handshake.session.id);
+  });
+});
+
+module.exports = server;
