@@ -124,11 +124,11 @@ exports.getGenresList = function() {
      if (req.session.fire_key)
         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').set(time.toString());
  }
-
- exports.updatePageViewTime = function (req, time)
+//Written by Alex Amin Zamani
+ exports.updatePageViewTime = function (fire_key,session_id, time)
  {
-     if (req.session.fire_key)
-         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).set(time.toString());
+     if (fire_key)
+         defaultDatabase.ref('/users/' + fire_key + '/last_page_view_'+session_id).set(time.toString());
  }
 
 /** Written by Alex Amin Zamani
@@ -187,11 +187,11 @@ function logout(req) {
  * Updates user's time in Firebase realtime database
  * Written by Alex Amin Zamani
  */
-exports.updateTime = function (req, time)
+exports.updateTime = function (fire_key, time)
 {
-    if (req.session.fire_key) {
+    if (fire_key) {
         var today = new Date();
-        var path = '/users/' + req.session.fire_key + '/timeOnSite_' + today.toDateString();
+        var path = '/users/' + fire_key + '/timeOnSite_' + today.toDateString();
 
         defaultDatabase.ref(path).once('value').then(function(snapshot) {
 
@@ -207,6 +207,17 @@ exports.updateTime = function (req, time)
     }
 }
 
+exports.UpdateOffPageViewDiff = function (fire_key, sessionID)
+{
+    defaultDatabase.ref('/users/' + fire_key + '/last_page_view_'+sessionID).once('value').then(function(snapshot) {
+
+        if (snapshot.exists()) {
+            exports.updateTime(fire_key, (new Date() - new Date(snapshot.val())) / 1000);
+        }
+        exports.updatePageViewTime(fire_key,sessionID,new Date());
+    });
+}
+
 //Written by Alex Amin Zamani
 function logoutAllCallBack(dataSnapshot, req) {
     if (req.session.hasEntered) {
@@ -214,7 +225,7 @@ function logoutAllCallBack(dataSnapshot, req) {
         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).once('value').then(function(snapshot) {
 
             if (snapshot.exists()) {
-                exports.updateTime(req, (new Date() - new Date(snapshot.val()))/1000);
+                exports.updateTime(req.session.fire_key, (new Date() - new Date(snapshot.val()))/1000);
             }
             logout(req);
             defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
