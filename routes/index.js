@@ -11,14 +11,14 @@ router.get('/', function (req, res, next) {
   {
     res.redirect(req.session.redirectURL);
   }
-  if (auth) {
+  else if (auth) {
     //res.render("access-denied", {title: 'OfficeBeatz',message: 'Access granted'});
 
 
     //Commented out for demo purposes
     req.session.pageViewDate = new Date();
-    utils.UpdateOffPageViewDiff(req.session.fire_key, req.session.id);
-    //utils.updatePageViewTime(req.session.fire_key,req.session.id,new Date());
+    //utils.UpdateOffPageViewDiff(req.session.fire_key, req.session.id);
+
     req.session.save();
     utils.getRandomFile().then(function (result) {
       res.render('index', {title: 'OfficeBeatZ', link: result});
@@ -41,7 +41,9 @@ router.get('/logout', function (req, res, next) {
     req.session.redirectURL = null;
     req.session.save();
   }
-  res.redirect("/");
+  else {
+    res.redirect("/");
+  }
 });
 
 /**
@@ -103,6 +105,7 @@ router.get('/authenticate/:key?', function(req, res, next){
       if (has_access===0)
       {
         utils.logoutAllOtherSessions(req, res);
+        utils.checkLogout(req.session.fire_key, req.sessionID);
         res.redirect("/");
       }
       else if (has_access===1) {

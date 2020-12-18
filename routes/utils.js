@@ -171,6 +171,27 @@ exports.hasValidAccess = function (req) {
     return Promise.resolve().then(function(f) {return 1;});
 };
 
+//Written by Alex Amin Zamani
+exports.checkLogout = function(fire_key,id)
+{
+    return defaultDatabase.ref('/users/' + fire_key + '/has_logout'+id).once('value').then(function(snapshot) {
+
+        if (snapshot.exists()) {
+            return snapshot.val();
+        }
+        else {
+            defaultDatabase.ref('/users/' + fire_key + '/has_logout'+id).set(false);
+            return false;
+        }
+    });
+}
+
+//Written by Alex Amin Zamani
+exports.setLogOut = function(fire_key, id, val)
+{
+    defaultDatabase.ref('/users/' + fire_key + '/has_logout'+id).set(val);
+}
+
 /**
  * Resets session vals
  * Written by Alex Amin Zamani
@@ -206,6 +227,7 @@ exports.updateTime = function (fire_key, time)
     }
 }
 
+//Written by Alex Amin Zamani
 exports.UpdateOffPageViewDiff = function (fire_key, sessionID)
 {
     defaultDatabase.ref('/users/' + fire_key + '/last_page_view_'+sessionID).once('value').then(function(snapshot) {
@@ -220,7 +242,8 @@ exports.UpdateOffPageViewDiff = function (fire_key, sessionID)
 //Written by Alex Amin Zamani
 function logoutAllCallBack(dataSnapshot, req) {
     if (req.session.hasEntered) {
-        console.log("DATE:::"+req.sessionID);
+        console.log("LOGGED IN FROM ANOTHER PLACE...SO LOGOUT IS HAPPENING:::"+req.sessionID);
+        defaultDatabase.ref('/users/' + req.session.fire_key + '/has_logout'+req.sessionID).set(true);
         defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).once('value').then(function(snapshot) {
 
             if (snapshot.exists()) {
@@ -229,6 +252,7 @@ function logoutAllCallBack(dataSnapshot, req) {
             logout(req);
             defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
             req.session.fun = null;
+            req.session.function_set = false;
             req.session.redirectURL = "/logout";
             req.session.pageViewDate = null;
             req.session.save();
@@ -245,6 +269,7 @@ exports.logoutAllOtherSessions = function (req) {
         .on("value", function(dataSnapshot) {
             logoutAllCallBack(dataSnapshot, req);
         });
+    req.session.function_set = true;
     req.session.save();
 
 };
