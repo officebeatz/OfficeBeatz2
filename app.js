@@ -73,7 +73,9 @@ app.use(function (err, req, res, next) {
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
-io.use(sharedsession(actual_session,cookieParser));
+io.use(sharedsession(actual_session,{
+  autoSave:true
+}));
 
 var utils = require('./routes/utils');
 
@@ -81,10 +83,28 @@ io.on('connection', function(socket){
   console.log('a user connected: ' + socket.handshake.session.id);
   socket.on('disconnect', function(){
     if (socket.handshake.session.fire_key) {
-      utils.UpdateOffPageViewDiff(socket.handshake.session.fire_key, socket.handshake.session.id);
+      //utils.UpdateOffPageViewDiff(socket.handshake.session.fire_key, socket.handshake.session.id);
+      if (socket.handshake.session.pageViewDate && socket.handshake.session.function_set) {
+
+        utils.checkLogout(socket.handshake.session.fire_key,socket.handshake.session.id).then(function(has_logout){
+          if (has_logout)
+          {
+            socket.handshake.session.function_set = false;
+            utils.setLogOut(socket.handshake.session.fire_key,socket.handshake.session.id,false);
+          }
+          else {
+            utils.updateTime(socket.handshake.session.fire_key, (new Date() - socket.handshake.session.pageViewDate) / 1000);
+            socket.handshake.session.pageViewDate = null;
+          }
+        });
+
+      }
+
     }
     console.log('a user disconnected: ' + socket.handshake.session.id);
   });
+  socket.handshake.session.pageViewDate = new Date();
+  utils.updatePageViewTime(socket.handshake.session.fire_key,socket.handshake.session.id,new Date());
 });
 
 module.exports = server;
