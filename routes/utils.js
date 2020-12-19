@@ -244,20 +244,22 @@ exports.UpdateOffPageViewDiff = function (fire_key, sessionID)
 function logoutAllCallBack(dataSnapshot, req) {
     if (req.session.hasEntered) {
         console.log("LOGGED IN FROM ANOTHER PLACE...SO LOGOUT IS HAPPENING:::"+req.sessionID);
-        defaultDatabase.ref('/users/' + req.session.fire_key + '/has_logout'+req.sessionID).set(true);
-        defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).once('value').then(function(snapshot) {
+        defaultDatabase.ref('/users/' + req.session.fire_key + '/has_logout'+req.sessionID).set(true).then(() => {
+            defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).once('value').then(function(snapshot) {
 
-            if (snapshot.exists()) {
-                exports.updateTime(req.session.fire_key, (new Date() - new Date(snapshot.val()))/1000);
-            }
-            logout(req);
-            defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
-            req.session.fun = null;
-            req.session.function_set = false;
-            req.session.redirectURL = "/logout";
-            req.session.pageViewDate = null;
-            req.session.save();
+                if (snapshot.exists()) {
+                    exports.updateTime(req.session.fire_key, (new Date() - new Date(snapshot.val()))/1000);
+                }
+                logout(req);
+                defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
+                req.session.fun = null;
+                req.session.function_set = false;
+                req.session.redirectURL = "/logout";
+                req.session.pageViewDate = null;
+                req.session.save();
+            });
         });
+
         //exports.updateTime(req, new Date() - req.session.pageViewDate);
 
     }
