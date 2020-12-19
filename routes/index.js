@@ -98,8 +98,11 @@ router.get('/api/webhook', function(req, res, next) {
 router.get('/authenticate/:key?', function(req, res, next){
   var auth1 = req.session.hasAccess && req.session.hasAccess===true;
   var auth2 = req.session.expire_date && new Date(req.session.expire_date) >= new Date();
-
-  if (req.params.key && req.params.key.length > 0) {
+  if (auth1 && auth2)
+  {
+    res.redirect("/");
+  }
+  else if (req.params.key && req.params.key.length > 0) {
     req.session.fire_key = req.params.key;
     utils.hasValidAccess(req).then(function(has_access) {
       if (has_access===0)
@@ -117,12 +120,9 @@ router.get('/authenticate/:key?', function(req, res, next){
     });
   }
   else {
-    if (auth1 && auth2)
-    {
-      res.redirect("/");
-    }
 
-    else if (auth1 && !auth2)
+
+    if (auth1 && !auth2)
     {
       res.render("access-denied", {title: 'OfficeBeatZ', message: 'Your access has expired'});
     }
