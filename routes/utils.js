@@ -187,6 +187,25 @@ exports.checkLogout = function(fire_key,id)
 }
 
 //Written by Alex Amin Zamani
+exports.checkView = function(fire_key, id) {
+    return defaultDatabase.ref('/users/' + fire_key + '/check_view'+id).once('value').then(function(snapshot) {
+        if (snapshot.exists()) {
+            return snapshot.val();
+        }
+        else {
+            defaultDatabase.ref('/users/' + fire_key + '/check_view'+id).set(true);
+            return true;
+        }
+    });
+}
+
+//Written by Alex Amin Zamani
+exports.setView = function (fire_key, id, val)
+{
+    defaultDatabase.ref('/users/' + fire_key + '/check_view'+id).set(val);
+}
+
+//Written by Alex Amin Zamani
 exports.setLogOut = function(fire_key, id, val)
 {
     defaultDatabase.ref('/users/' + fire_key + '/has_logout'+id).set(val);
@@ -247,15 +266,19 @@ function logoutAllCallBack(dataSnapshot, req) {
             defaultDatabase.ref('/users/' + req.session.fire_key + '/last_page_view_'+req.sessionID).once('value').then(function(snapshot) {
 
                 if (snapshot.exists()) {
-                    exports.updateTime(req.session.fire_key, (new Date() - new Date(snapshot.val()))/1000);
+                    defaultDatabase.ref('/users/' + req.session.fire_key + '/check_view'+req.sessionID).once('value').then(function(snap) {
+                        if (snap.exists() && snap.val()===true)
+                        { exports.updateTime(req.session.fire_key, (new Date() - new Date(snapshot.val())) / 1000); }
+                        logout(req);
+                        defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
+                        req.session.fun = null;
+                        req.session.function_set = false;
+                        req.session.redirectURL = "/logout";
+                        req.session.pageViewDate = null;
+                        req.session.save();
+                    });
                 }
-                logout(req);
-                defaultDatabase.ref('/users/' + req.session.fire_key + '/last_login').off('value', req.session.fun);
-                req.session.fun = null;
-                req.session.function_set = false;
-                req.session.redirectURL = "/logout";
-                req.session.pageViewDate = null;
-                req.session.save();
+
             });
         });
 
