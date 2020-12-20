@@ -108,8 +108,11 @@ router.get('/authenticate/:key?', function(req, res, next){
       if (has_access===0)
       {
         utils.logoutAllOtherSessions(req, res);
-        utils.checkLogout(req.session.fire_key, req.sessionID);
-        res.redirect("/");
+        utils.checkLogout(req.session.fire_key, req.sessionID).then((b) => {
+          utils.checkView(req.session.fire_key, req.sessionID).then((c) => {
+            res.redirect("/");
+          });
+        });
       }
       else if (has_access===1) {
         res.render("access-denied", {title: 'OfficeBeatZ', message: 'You do not have access to this site'});
@@ -120,7 +123,6 @@ router.get('/authenticate/:key?', function(req, res, next){
     });
   }
   else {
-
 
     if (auth1 && !auth2)
     {

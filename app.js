@@ -85,7 +85,7 @@ io.on('connection', function(socket){
     if (socket.handshake.session.fire_key) {
       //utils.UpdateOffPageViewDiff(socket.handshake.session.fire_key, socket.handshake.session.id);
       if (socket.handshake.session.pageViewDate && socket.handshake.session.function_set) {
-
+        utils.setView(socket.handshake.session.fire_key,socket.handshake.session.id, false);
         utils.checkLogout(socket.handshake.session.fire_key,socket.handshake.session.id).then(function(has_logout){
           if (has_logout)
           {
@@ -105,6 +105,7 @@ io.on('connection', function(socket){
   });
   socket.handshake.session.pageViewDate = new Date();
   utils.updatePageViewTime(socket.handshake.session.fire_key,socket.handshake.session.id,new Date());
+  utils.setView(socket.handshake.session.fire_key,socket.handshake.session.id, true);
 });
 
 module.exports = server;
