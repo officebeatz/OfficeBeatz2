@@ -76,6 +76,54 @@ h3
     background-color: #696969
     
 
+.dropbtn
+  background-color: $accent
+  color: white
+  padding: 16px
+  font-size: 16px
+  border: none
+  width: 250px
+  margin-top: 10px
+  &:hover
+    background-color: #00B7FF
+  &:focus
+    background-color: #00B7FF
+  
+
+.dropdown
+  position: relative
+  display: inline-block
+  &:hover 
+    .dropdownContent
+      display: block
+  
+
+.dropdownContent
+  display: none
+  position: absolute
+  background-color: #555
+  width: 100%
+  overflow: auto
+  
+.dropdownContent > li
+  border: solid
+  border-color: #000000
+  border-width: 2px 5px
+  height: 75px
+  padding: 5px
+  
+.exampleGif
+  width: 60px
+  height: 60px
+  vertical-align: middle 
+  float: right
+  
+.ideas
+  text-align: center
+  margin-bottom: 10px
+  
+  
+
 audio
   text-align: center
 
