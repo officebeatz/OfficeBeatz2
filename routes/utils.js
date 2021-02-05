@@ -4,8 +4,8 @@ const dbx = require('./dbx');
 
 var admin = require('firebase-admin');
 require('firebase/storage');
-//var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
-var serviceAccount = require('../verySecretKey.json')
+var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
+//var serviceAccount = require('../verySecretKey.json')
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
