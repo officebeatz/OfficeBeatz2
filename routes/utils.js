@@ -3,18 +3,24 @@ const nodeID3 = require('node-id3');
 const dbx = require('./dbx');
 
 var admin = require('firebase-admin');
+require('firebase/storage');
 var serviceAccount = JSON.parse(process.env.GOOGLE_FIREBASE_AUTH);
 //var serviceAccount = require('../verySecretKey.json')
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://officebeatz-1918b.firebaseio.com"
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://officebeatz-74b2d-default-rtdb.firebaseio.com"
 });
 
 var defaultDatabase = admin.database();
 
+// Get a reference to the storage service, which is used to create references in your storage bucket
+var storage = admin.storage();
+// Create a storage reference from our storage service
+var storageRef = storage.bucket('gs://officebeatz-74b2d.appspot.com/');
+
 // Given a dropbox filename, returns a URL to the corresponding dropbox file.
-function getLinkToFile(filename) {
+/*function getLinkToFile(filename) {
     return dbx.filesGetTemporaryLink({ path: '/' + filename })
         .then(response => {
             return response.link;
@@ -23,6 +29,19 @@ function getLinkToFile(filename) {
             console.log(error);
             throw error;
         });
+}*/
+//Written by Ben Rosenberger
+//gets temporary URL for specified song file name ie '01 As We Enter.mp3'
+function getLinkToFile(songname) {
+    const urlOptions = {
+        action: "read",
+        expires: Date.now() + 1000 * 60 * 10, // 10 minutes
+      }
+    return storageRef.file(songname).getSignedUrl(urlOptions).then((response) => {
+        //console.log(response[0])
+        return response[0];
+    })
+    
 }
 
 // Given a list of songs, returns a config file based off the songs ID3 info
@@ -71,7 +90,7 @@ function extractID3(song, config) {
 }
 
 // Returns a URL to a randomly selected song
-exports.getRandomFile = function() {
+/*exports.getRandomFile = function() {
     return dbx.filesListFolder({ path: '' })
         .then(response => {
             let name = '';
@@ -85,7 +104,22 @@ exports.getRandomFile = function() {
             console.log(error);
             throw error;
         });
+}*/
+
+//chooses random song name to get url from google storage
+//written by Ben Rosenberger
+exports.getRandomFile = async function() {
+    allFiles = await storageRef.getFiles()
+    only_files = allFiles[0]
+    let name = '';
+    while (!name.endsWith('.mp3')) {
+        index = parseInt(Math.random() * only_files.length);
+        name = only_files[index].name;
+    }
+    //console.log(name)
+    return getLinkToFile(name)
 }
+
 
 // Creates a new config file based off the dropbox contents, and uploads it
 // WARNING: This doesn't work anymore, because nodeID3 fails to read tags.year
@@ -104,7 +138,7 @@ exports.updateDBX = function() {
 }
 
 // Returns a JSON object of the config file (genres and counts of all songs)
-exports.getGenresList = function() {
+/*exports.getGenresList = function() {
     return getLinkToFile('config.json')
         .then(link => axios.get(link))
         .then(response => {
@@ -115,7 +149,29 @@ exports.getGenresList = function() {
             console.log(error);
             throw error;
         });
- }
+ }*/
+//gets config.json file from google storage
+//Written by Ben Rosenberger
+exports.getGenresList = function() {
+    const urlOptions = {
+        action: "read",
+        expires: Date.now() + 1000 * 60 * 480, // 8 hours
+    }
+    return storageRef.file('config.json').getSignedUrl(urlOptions).then(
+        (res) => {
+            axios.get(res[0]).then((response) => {
+                console.log(response.data)
+                return response.data
+            })
+        }
+    ).catch(error => {
+        console.log(error);
+        throw error;
+    });
+    
+}
+
+
 
  //Written by Alex Amin Zamani
  //Updates the time that the user last logged in
