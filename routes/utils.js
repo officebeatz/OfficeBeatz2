@@ -40,7 +40,10 @@ function getLinkToFile(songname) {
     return storageRef.file(songname).getSignedUrl(urlOptions).then((response) => {
         //console.log(response[0])
         return response[0];
-    })
+    }).catch(error => {
+        console.log(error);
+        throw error;
+    });
     
 }
 
@@ -152,22 +155,16 @@ exports.updateDBX = function() {
  }*/
 //gets config.json file from google storage
 //Written by Ben Rosenberger
-exports.getGenresList = function() {
-    const urlOptions = {
-        action: "read",
-        expires: Date.now() + 1000 * 60 * 480, // 8 hours
-    }
-    return storageRef.file('config.json').getSignedUrl(urlOptions).then(
-        (res) => {
-            axios.get(res[0]).then((response) => {
-                console.log(response.data)
-                return response.data
-            })
-        }
-    ).catch(error => {
+exports.getGenresList = async function() {
+    try {
+        const link = await getLinkToFile('config.json');
+        var res = await axios.get(link)
+       // console.log(res.data.counts);
+        return res.data;
+    } catch (error) {
         console.log(error);
         throw error;
-    });
+    }
     
 }
 
