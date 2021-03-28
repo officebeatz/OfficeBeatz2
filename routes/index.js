@@ -98,12 +98,8 @@ router.get('/api/webhook', function(req, res, next) {
 router.get('/authenticate/:key?', function(req, res, next){
   var auth1 = req.session.hasAccess && req.session.hasAccess===true;
   var auth2 = req.session.expire_date && new Date(req.session.expire_date) >= new Date();
-  if (auth1 && auth2)
-  {
-    res.redirect("/");
-  }
-  else if (req.params.key && req.params.key.length > 0) {
-    req.session.fire_key = req.params.key;
+  if (req.query.key && req.query.key.length > 0) {
+    req.session.fire_key = req.query.key;
     utils.hasValidAccess(req).then(function(has_access) {
       if (has_access===0)
       {
@@ -123,13 +119,15 @@ router.get('/authenticate/:key?', function(req, res, next){
     });
   }
   else {
-
+    if (!req.query.key || req.query.key.length === 0) {
+      res.render("form");
+    } else
     if (auth1 && !auth2)
     {
       res.render("access-denied", {title: 'OfficeBeatZ', message: 'Your access has expired'});
     }
     else {
-      res.render("access-denied", {title: 'OfficeBeatZ', message: 'You do not have access to this site'});
+      res.render("access-denied", {title: 'OfficeBeatZ', message: 'You do not have access to this site OR the code that you entered was incorrect. You can try going back and making sure you correctly entered the code.'});
     }
   }
 });
