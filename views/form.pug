@@ -1,0 +1,10 @@
+extends layouts/layout
+
+
+block content
+    script(src='/javascripts/form_subm.js')
+    form(onsubmit="sub(this);")
+        p
+            | Access Key:
+            input(type='text', name='key', value='', style="color:white")
+        input(type='submit', value='Submit')
