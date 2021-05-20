@@ -2,56 +2,34 @@
 // Also used to get a count of how many songs pass the filter for sanity checks.
 function makeSongList(genreList, genreArray, decadeArray, selectedClean) {
     let songList = [];
-    if (genreArray === null && decadeArray === null && !selectedClean) {
+    if (genreArray === null && decadeArray === null) {
         songList = Object.values(genreList.songs);
-    } else if (decadeArray === null && !selectedClean) {
+    } else if (decadeArray === null) {
         for (key in genreList.songs) {
             if (genreArray.includes(genreList.songs[key].genre)) {
                 songList.push(genreList.songs[key]);
             }
         }
-    } else if (decadeArray === null && selectedClean) {
-        for (key in genreList.songs) {
-            if (genreArray.includes(genreList.songs[key].genre)) {
-                if (!genreList.songs[key].explicit) {
-                    songList.push(genreList.songs[key]);
-                }
-            }
-        }
     } else if (genreArray === null || genreArray.length === 0) {
         for (key in genreList.songs) {
             if (decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                if (!selectedClean) {
-                    songList.push(genreList.songs[key]);
-                } else {
-                    if (!genreList.songs[key].explicit) {
-                        songList.push(genreList.songs[key]);
-                    }
-                }
-                
-            }
-        }
-    } else if (selectedClean && genreArray === null && decadeArray === null) {
-        for (key in genreList.songs) {
-            if (!genreList.songs[key].explicit) {
                 songList.push(genreList.songs[key]);
             }
         }
     } else {
         for (key in genreList.songs) {
             if (genreArray.includes(genreList.songs[key].genre) && decadeArray[0] <= genreList.songs[key].year && genreList.songs[key].year <= decadeArray[1]) {
-                if (!selectedClean) {
-                    songList.push(genreList.songs[key]);
-                } else {
-                    if (!genreList.songs[key].explicit) {
-                        songList.push(genreList.songs[key]);
-                    }
-                }
-                
+                songList.push(genreList.songs[key]);
             }
         }
     }
-    return songList;
+
+    if (selectedClean) {
+        return songList.filter(song=>song.explicit == false);
+    } else {
+        return songList;
+    }
+    
 }
 
 function chooseNextSongWithPreferences(genreList, genreArray, decadeArray) {
