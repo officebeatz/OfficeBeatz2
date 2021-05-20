@@ -5,7 +5,8 @@ function submitForm(genreList) {
     let selectedGenres = getGenrePreferences(genreList);
     let selectedDecades = getDecadePreferences();
     let selectedInterval = getTimeInterval();
-    let isValid = song.makeSongList(genreList, selectedGenres, selectedDecades).length > 5;
+    let selectedClean = $('#explicitBox').prop('checked');
+    let isValid = song.makeSongList(genreList, selectedGenres, selectedDecades, selectedClean).length > 5;
     $("#formFeedback").html(function () {
         if (isValid) {
             let successMessage = "<span id='successMessage'> Success! </span>"
@@ -20,7 +21,8 @@ function submitForm(genreList) {
         genres: selectedGenres,
         decades: selectedDecades,
         interval: selectedInterval,
-        isValid: isValid
+        isValid: isValid,
+        selectedExplicit: selectedExplicit
     }
 }
 

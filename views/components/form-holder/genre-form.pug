@@ -11,7 +11,7 @@ li(class="not-active")
     div
       label(for="hipHopBox")
         input(name="genreGroup", type="checkbox", id="hipHopBox", class="genreGroup")
-        span Hip-Hop#[b <span style='color:PaleGoldenRod'>*</span>]
+        span Hip-Hop
         span(class="starter") (
         span(id="genreCount") 161
         span )
@@ -85,9 +85,11 @@ li(class="not-active")
         span(class="starter") (
         span(id="genreCount") 24
         span )
-
+  div 
+      label(for="explicitBox")
+        input(name="explicitGroup", type="checkbox", id="explicitBox")
+        span If you would prefer no explicit songs, check this box
   div(class="as-notes genre-notes z-depth-1", id="genreNotesContainer")
     p(id="notes-header") Notes
     p If no selection is made, a song will be picked from any genre.
     p The number in parenthesis indicates how many total songs of that genre are available across all years.
-    p #[b <span style='color:PaleGoldenRod'>*Caution:</span>] contains explicit songs
