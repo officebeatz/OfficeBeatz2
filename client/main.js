@@ -65,7 +65,7 @@ $(document).ready(function () {
     // Makes a post request to get the next song based on preferences.
     // It works even if the preferences are null.
     function findNextSongWithPreferences(genreArray, decadeArray) {
-        nextSong = song.chooseNextSongWithPreferences(genreList, genreArray, decadeArray);
+        nextSong = song.chooseNextSongWithPreferences(genreList, genreArray, decadeArray, $('#explicitBox').prop('checked'));
         page.updateSongDisplay(nextSong.title, nextSong.artist);
         api.getSongFile(nextSong.fileName).then((songFile) => {
             audioElement.src = songFile;

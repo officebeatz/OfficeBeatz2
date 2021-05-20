@@ -32,8 +32,8 @@ function makeSongList(genreList, genreArray, decadeArray, selectedClean) {
     
 }
 
-function chooseNextSongWithPreferences(genreList, genreArray, decadeArray) {
-    let songList = makeSongList(genreList, genreArray, decadeArray);
+function chooseNextSongWithPreferences(genreList, genreArray, decadeArray, selectedClean) {
+    let songList = makeSongList(genreList, genreArray, decadeArray, selectedClean);
     let randomIndex = parseInt(Math.random() * songList.length);
     let chosenSong = songList[randomIndex];
     console.log('chooseNextSongWithPreferences: ', chosenSong.filename);
