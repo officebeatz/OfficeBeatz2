@@ -22,7 +22,7 @@ function submitForm(genreList) {
         decades: selectedDecades,
         interval: selectedInterval,
         isValid: isValid,
-        selectedExplicit: selectedExplicit
+        selectedClean: selectedClean
     }
 }
 
